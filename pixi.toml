@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "metalncrna"
 version = "1.1.0"
 description = "A portable and modular meta-predictor for lncRNA identification."
@@ -16,8 +16,6 @@ pyyaml = ">=6.0"
 rich = ">=13.0.0"
 matplotlib = ">=3.7.0"
 matplotlib-venn = ">=0.11"
-
-[host-dependencies]
 pip = "*"
 setuptools = ">=61.0"
 
@@ -27,6 +25,7 @@ pytest-cov = "*"
 planemo = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
+pre-commit = "*"
 
 [environments]
 default = ["dev"]
@@ -39,3 +38,4 @@ test-mock = "pytest tests/test_adapters_mock.py"
 docs = "sphinx-build -b html docs/ docs/_build"
 install = "pip install -e ."
 pre-commit = "pre-commit install"
+postinstall = "pip install -e ."

@@ -84,8 +84,9 @@ class Dispatcher:
 
     def run_all(self, input_fasta, output_dir, log_file=None, parallel=True):
         output_dir = Path(output_dir).absolute()
+        output_dir.mkdir(parents=True, exist_ok=True)
         intermediate_dir = output_dir / "intermediates"
-        intermediate_dir.mkdir(exist_ok=True)
+        intermediate_dir.mkdir(parents=True, exist_ok=True)
         
         results = {}
         for name, adapter in self.adapters.items():
