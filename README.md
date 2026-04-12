@@ -1,78 +1,69 @@
-# metaLncRNA v1.1
+# metaLncRNA v1.1 🧬🤖
+
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Powered by Ollama](https://img.shields.io/badge/AI-Powered_by_Ollama-orange.svg)](https://ollama.com)
+[![Bioinformatics](https://img.shields.io/badge/Bioinformatics-lncRNA-green.svg)](https://github.com/LaBiOmicS/metaLncRNA)
+[![Ensemble Learning](https://img.shields.io/badge/Method-Ensemble_Learning-blueviolet.svg)](https://github.com/LaBiOmicS/metaLncRNA)
+[![JOSS Status](https://img.shields.io/badge/JOSS-Pre--submission-brightgreen.svg)](https://joss.theoj.org/)
 
 `metaLncRNA` is a modular, high-performance Python framework designed to identify Long Non-coding RNAs (lncRNAs) by orchestrating an ensemble of seven diverse computational tools. It resolves the "reproducibility gap" by automating environment management and providing a robust consensus prediction through weighted soft-voting.
 
-## 📊 Why use an Ensemble Predictor?
-Single-tool predictions are often biased by the specific features they prioritize (e.g., codon bias vs. k-mer profile). `metaLncRNA` mitigates these biases by combining Deep Learning, Support Vector Machines (SVM), and statistical methodologies into a unified pipeline.
+---
+
+## 🚀 Key Features
+
+- **Ensemble Prediction:** Combines 7 tools (RNAsamba, CPAT, CPC2, PLEK, CNCI, CPPred, LGC).
+- **Interactive AI Agent:** Integrated local LLM assistant (**Llama-3.2** or **OpenBioLLM**) to interpret results and explain classification decisions.
+- **Reproducibility First:** Built-in environment isolation via **Mamba** and **Pixi**.
+- **Scientific Dashboard:** Interactive HTML reports with tool congruence matrices.
+- **Publication Ready:** Formatted according to JOSS standards for scientific software.
 
 ---
 
-## 🛠️ Integrated Tools & Methodologies
+## 📖 Documentation
 
-| Tool | Approach | Core Logic |
-| :--- | :--- | :--- |
-| **RNAsamba** | Deep Learning | Uses a deep neural network to classify transcripts based on learned sequence patterns. |
-| **CPAT** | Logistic Regression | Calculates the Coding-Potential Assessment score using hexamer frequency and ORF size. |
-| **CPPred** | SVM | Integrates multiple features including CTD (Composition, Transition, Distribution) and ORF characteristics. |
-| **CNCI** | Motif Analysis | Identifies non-coding sequences based on the frequency of adjoining nucleotide triplets. |
-| **CPC2** | SVM | Evaluates coding potential based on sequence intrinsic features, specifically peptide length and Fickett score. |
-| **LGC** | Feature Relation | Uses the relationship between ORF length and GC content to distinguish lncRNAs. |
-| **PLEK** | SVM | Analyzes transcripts using an improved k-mer scheme to capture fine-grained sequence patterns. |
+For detailed instructions, please refer to our **[Documentation Hub](docs/README.md)**:
+
+- 🛠️ **[User Guide](docs/user_guide.md)**: Installation, common commands, and AI Chat usage.
+- 🏗️ **[Technical Architecture](docs/technical_architecture.md)**: Ensemble methodology and AI-driven interpretation layer.
+- 🔧 **[Troubleshooting](docs/troubleshooting.md)**: Common issues and hardware requirements.
 
 ---
 
-## 📖 Usage Guide
+## 🛠️ Quick Start
 
-### 1. Installation (Recommended: Pixi)
-Pixi provides a deterministic environment and manages all Python 2.7/3.x dependencies automatically.
-```bash
-# Install dependencies and setup environments
-pixi run setup
-```
-
-### 2. Integrated Pipeline
-Run the full ensemble on your dataset. The pipeline is **checkpoint-aware**; if an analysis is interrupted, simply re-run the command to resume from the last successful tool.
-```bash
-pixi run predict -i transcripts.fasta -o results/ --project MyAnalysis --config metaLncRNA_config.yaml
-```
-
-### 3. Training Custom Models
-Train species-specific models for **RNAsamba** (Deep Learning) and **CPAT** (Logistic Regression) using your own coding/non-coding datasets:
-```bash
-pixi run train --coding coding.fa --noncoding noncoding.fa -o my_models/
-```
-
-### 4. Output Structure
-The project folder (`results/MyAnalysis/`) includes:
-- `metalncrna_results.tsv`: Unified consensus table with individual tool probabilities and final `meta_score`.
-- `metalncrna_report.html`: Interactive scientific dashboard featuring congruence matrices and transcript landscapes.
-- **predicted_lncrnas.fasta**: Filtered FASTA file containing only identified lncRNAs.
-
-### 5. Interactive AI Insights (New! 🤖)
-Interpret your genomic results using a local AI Agent. While the default is the lightweight `llama3.2`, we highly recommend using a **Specialist Biomedical Model** for scientific publications:
-
-- **Recommended Specialist:** `saama/openbiollm-llama3-8b` (Fine-tuned on PubMed and biomedical data).
-- **Hardware Requirement:** Minimum **8GB RAM** (16GB recommended for 8B models).
+### 1. Installation
 
 ```bash
-# Pull the specialist model
-ollama pull saama/openbiollm-llama3-8b
+# Recommended: Install with AI Agent support
+pip install "metalncrna[agent]"
 
-# Ask a specific question using the specialist
-pixi run metalncrna ask "Why was sequence X classified as noncoding?" -r results/MyAnalysis/metalncrna_results.tsv -m saama/openbiollm-llama3-8b
-
-# Start an interactive chat session
-pixi run metalncrna chat -r results/MyAnalysis/metalncrna_results.tsv -m saama/openbiollm-llama3-8b
+# Pull the lightweight default model
+ollama pull llama3.2
 ```
-*Note: Requires [Ollama](https://ollama.com) installed and running.*
+
+### 2. Run Integrated Pipeline
+```bash
+metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis
+```
+
+### 3. Ask the AI Agent
+```bash
+# Get a summary of your findings
+metalncrna ask "Summarize the analysis results" -r ./results/MyAnalysis/metalncrna_results.tsv
+```
 
 ---
 
-## 🐳 Deployment (Docker & Singularity)
+## 🐳 Deployment
+Pre-configured definitions are available for **Docker** and **Singularity/Apptainer** in the `deploy/` directory.
 
-For cloud or HPC environments, we provide pre-configured definitions in the `deploy/` directory:
+## 🤝 Contributing
+Contributions are welcome! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-- **Docker:** `docker build -f deploy/Dockerfile .`
-- **Singularity/Apptainer:** `singularity build metaLncRNA.sif deploy/Singularity.def`
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-*For detailed architectural documentation and API reference, see the `docs/` directory.*
+---
+**Developed by [LaBiOmicS](https://github.com/LaBiOmicS)** - *Laboratory of Bioinformatics and Omics Sciences.*
