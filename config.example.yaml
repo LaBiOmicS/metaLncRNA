@@ -1,0 +1,17 @@
+# metaLncRNA configuration example
+# Use this file to point to your tool paths and their respective conda/mamba environments.
+
+rnasamba:
+  env_name: "rnasamba_env"
+  path: "rnasamba"
+  weights: "path/to/full_length_weights.hdf5"
+
+cpc2:
+  env_name: "cpc2_env"
+  path: "path/to/CPC2.py"
+
+cpat:
+  env_name: "cpat_env"
+  path: "cpat.py"
+  logit_model: "path/to/Human_logitModel.RData"
+  hexamer_table: "path/to/Human_Hexamer.tsv"

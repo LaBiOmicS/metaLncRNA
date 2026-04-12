@@ -1,0 +1,21 @@
+2026-04-10 22:13:37, started.
+	Settings:
+	mRNAs:                        /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/coding_large.fasta
+	lncRNAs:                      /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/noncoding_large.fasta
+	Minimal sequence length (nt): 200
+	Thread count:                 12
+	n-fold cross validation:      10
+	log2c (from, to, by):         0,5,1
+	log2g (from, to, by):         0,-5,-1
+	k-mer:                        5
+	Prefix of output files:       plek_mdl_
+	Model (output):               plek_mdl_.model
+	Range (output):               plek_mdl_.range
+2026-04-10 22:13:39, calculating k-mer usage frequencies.
+-------------
+	/home/menegidio/.miniforge3/envs/metalnc_plek/bin/PLEK \
+      -p /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/coding_large.fasta \
+      -n /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/noncoding_large.fasta \
+      -o plek_mdl_ \
+      -s 1 -d 5 -k 5 -l 200    -isoutmsg 0 -isrmtempfile 1
+-------------

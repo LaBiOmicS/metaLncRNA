@@ -1,0 +1,37 @@
+package:
+  name: metalncrna
+  version: "1.0.0"
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  entry_points:
+    - metalncrna = metalncrna.cli:main
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+    - setuptools >=61.0
+  run:
+    - python >=3.8
+    - mamba
+    - pandas
+    - biopython
+    - plotly
+    - pyyaml
+    - rich
+    - matplotlib-base
+    - matplotlib-venn
+
+test:
+  commands:
+    - metalncrna --help
+
+about:
+  home: https://github.com/your-repo/metaLncRNA
+  license: MIT
+  summary: 'A portable and modular meta-predictor for lncRNA identification.'

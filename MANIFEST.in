@@ -1,0 +1,6 @@
+# Inclui arquivos de dados e terceiros
+recursive-include src/metalncrna/third_party *
+include metaLncRNA_config.yaml
+include examples/sample.fasta
+include LICENSE
+include README.md

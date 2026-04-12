@@ -1,0 +1,16 @@
+# Ignore local environments and build files
+.git
+.venv
+.pixi
+__pycache__
+*.pyc
+*.pyo
+
+# Ignore data and logs
+/examples/analysis_results
+/examples/test_output
+/examples/*.fasta
+*.log
+
+# Ignore documentation build
+/docs/_build

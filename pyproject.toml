@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metalncrna"
+version = "1.1.0"
+description = "A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs)."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Fabiano Bezerra Menegidio", email = "suporte@metalncrna.org"}
+]
+keywords = ["lncRNA", "bioinformatics", "genomics", "ensemble"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+dependencies = [
+    "click",
+    "pandas",
+    "biopython",
+    "plotly",
+    "pyyaml",
+    "rich",
+    "matplotlib",
+    "matplotlib-venn"
+]
+
+[project.optional-dependencies]
+agent = ["ollama"]
+
+[project.scripts]
+metalncrna = "metalncrna.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]

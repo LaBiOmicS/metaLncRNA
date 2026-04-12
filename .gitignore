@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+.pixi/
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Logs and Data
+*.log
+*.sif
+*.tmp
+/examples/analysis_results/
+/examples/test_output/
+/examples/training_*
+/examples/results_*
+/examples/FinalValidationFinal/
+/src/metalncrna/third_party/CNCI/libsvm-3.0.zip
