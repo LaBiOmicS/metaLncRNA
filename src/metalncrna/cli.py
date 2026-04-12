@@ -296,4 +296,3 @@ def predict(input_fasta, output_base, project_name, config_file, tools, n_jobs, 
 
 if __name__ == "__main__":
     main()
-)
