@@ -78,5 +78,5 @@ Contributions are welcome! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-**Developed by [LaBiOmics](https://github.com/LaBiOmics)** - *Laboratory of Bioinformatics and Omics Sciences.*
+**Developed by [LaBiOmicS](https://github.com/LaBiOmicS)** - *Laboratory of Bioinformatics and Omics Sciences.*
 **Institution:** [Universidade de Mogi das Cruzes (UMC)](https://www.umc.br/)
