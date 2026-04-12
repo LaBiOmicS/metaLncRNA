@@ -22,13 +22,29 @@ build/
 .idea/
 .DS_Store
 
-# Logs and Data
-*.log
-*.sif
-*.tmp
-/examples/analysis_results/
-/examples/test_output/
-/examples/training_*
-/examples/results_*
-/examples/FinalValidationFinal/
-/src/metalncrna/third_party/CNCI/libsvm-3.0.zip
+# Bioinfo specific
+*.fasta
+*.fa
+*.fastq
+*.fq
+*.bam
+*.sam
+*.vcf
+*.gtf
+*.gff
+*.bed
+*.hdf5
+*.tsv
+*.csv
+!examples/sample.fasta
+!src/metalncrna/data/**/*.tsv
+!src/metalncrna/data/**/*.hdf5
+
+# Tools specific
+plek_mdl__*
+*.model
+*.range
+*.scale
+*.matrix
+!src/metalncrna/third_party/CNCI/CNCI_Parameters/*
+!src/metalncrna/third_party/CPPred/Human_Model/*
