@@ -13,8 +13,13 @@ metaLncRNA automates environment creation via `mamba`.
 
 ## Development Workflow (using Pixi)
 ```bash
+# Setup development environment (including pre-commit hooks)
+pixi run install
+pixi run pre-commit
+
 # Run consensus tests
 pixi run test
+```
 
 # Run mock tests (faster, doesn't require tools installed)
 pixi run test-mock
