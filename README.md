@@ -11,6 +11,7 @@
 [![Open Data](https://img.shields.io/badge/Open-Data-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![JOSS Status](https://img.shields.io/badge/JOSS-Pre--submission-brightgreen.svg)](https://joss.theoj.org/)
+[![CI Status](https://github.com/LaBiOmicS/metaLncRNA/actions/workflows/ci.yml/badge.svg)](https://github.com/LaBiOmicS/metaLncRNA/actions/workflows/ci.yml)
 
 <!-- Tech & Method Badges -->
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
@@ -20,6 +21,17 @@
 ---
 
 `metaLncRNA` is a modular, high-performance Python framework designed to identify Long Non-coding RNAs (lncRNAs) by orchestrating an ensemble of seven diverse computational tools. It resolves the "reproducibility gap" by automating environment management and providing a robust consensus prediction through weighted soft-voting.
+
+---
+
+## 📂 Repository Structure
+
+- `src/`: Core Python package source code.
+- `scripts/`: Production-ready Bash scripts for serial or long-running analyses.
+- `tests/`: Automated test suite (Mock and Consensus validation).
+- `docs/`: Technical and user documentation.
+- `deploy/`: Container definitions (Docker/Singularity).
+- `paper/`: JOSS submission source files.
 
 ---
 
