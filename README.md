@@ -1,12 +1,12 @@
 # metaLncRNA v1.1.6 🧬🤖
 
 <!-- Institutional Badges -->
+[![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
 [![Laboratory: LaBiOmicS](https://img.shields.io/badge/Laboratory-LaBiOmicS-7B1FA2.svg)](https://github.com/LaBiOmicS)
 [![Bioinformatics](https://img.shields.io/badge/Bioinformatics-lncRNA-green.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 
 <!-- Open Science Badges -->
-[![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
 [![PyPI Version](https://img.shields.io/pypi/v/metalncrna.svg)](https://pypi.org/project/metalncrna/)
 [![Open Source](https://img.shields.io/badge/Open-Source-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![Open Science](https://img.shields.io/badge/Open-Science-blue.svg)](https://github.com/LaBiOmicS/metaLncRNA)
