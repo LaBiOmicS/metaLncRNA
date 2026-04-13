@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "metalncrna"
-version = "1.1.4"
+version = "1.1.5"
 description = "A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs)."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -26,8 +26,7 @@ dependencies = [
     "plotly",
     "pyyaml",
     "rich",
-    "matplotlib",
-    "matplotlib-venn"
+    "matplotlib"
 ]
 
 [project.optional-dependencies]
