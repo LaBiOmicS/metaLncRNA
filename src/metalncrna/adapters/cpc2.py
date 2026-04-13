@@ -1,8 +1,9 @@
-import pandas as pd
-import os
-import subprocess
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class CPC2Adapter(BaseAdapter):
     def __init__(self, tool_path="CPC2.py", env_name="metalnc_cpc2", use_mamba=True):
@@ -13,7 +14,7 @@ class CPC2Adapter(BaseAdapter):
         output_dir.mkdir(parents=True, exist_ok=True)
         raw_output = output_dir / "cpc2_raw.txt"
         abs_input = Path(input_fasta).absolute()
-        
+
         # CPC2.py -i input.fasta -o output.txt
         cmd = ["python", self.tool_path, "-i", str(abs_input), "-o", str(raw_output)]
         self.run_command(cmd, log_file=log_file)
@@ -24,7 +25,7 @@ class CPC2Adapter(BaseAdapter):
             return pd.DataFrame()
         df = pd.read_csv(raw_output_path, sep="\t")
         df["sequence_id"] = df.iloc[:, 0].astype(str).str.lower().str.split().str[0]
-        
+
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
             "coding_probability": df.iloc[:, 7],

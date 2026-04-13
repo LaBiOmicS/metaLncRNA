@@ -1,8 +1,9 @@
-import pandas as pd
-import os
-import subprocess
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class CPPredAdapter(BaseAdapter):
     def __init__(self, tool_name="CPPred_fixed.py", env_name="metalnc_legacy"):
@@ -18,7 +19,7 @@ class CPPredAdapter(BaseAdapter):
         output_dir.mkdir(parents=True, exist_ok=True)
         raw_output = output_dir / "cppred_raw.txt"
         abs_input = Path(input_fasta).absolute()
-        
+
         cmd = [
             "python", str(self.script),
             "-i", str(abs_input),
@@ -28,7 +29,7 @@ class CPPredAdapter(BaseAdapter):
             "-hex", str(self.hexamer),
             "-s", "Human"
         ]
-        
+
         self.run_command(cmd, log_file=log_file, cwd=self.root / "bin")
         return raw_output
 
@@ -38,7 +39,7 @@ class CPPredAdapter(BaseAdapter):
         df = pd.read_csv(raw_output_path, sep="\t")
         # FIX: Added .str before .lower()
         df["sequence_id"] = df.iloc[:, 0].astype(str).str.lower().str.split().str[0]
-        
+
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
             "coding_probability": df["coding_potential"],

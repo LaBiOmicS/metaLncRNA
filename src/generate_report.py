@@ -1,8 +1,8 @@
-from metalncrna.engine.consensus import ConsensusEngine
-from metalncrna.utils.fasta import get_sequence_stats, extract_lncrnas
-from metalncrna.utils.reports import generate_html_report
-import pandas as pd
 from pathlib import Path
+
+from metalncrna.engine.consensus import ConsensusEngine
+from metalncrna.utils.fasta import extract_lncrnas, get_sequence_stats
+from metalncrna.utils.reports import generate_html_report
 
 # Carrega os resultados
 res_dir = Path("../examples/analysis_results/RealDataGDRF01/")

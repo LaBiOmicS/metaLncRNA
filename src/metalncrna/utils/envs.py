@@ -1,7 +1,7 @@
-import subprocess
 import json
-import os
+import subprocess
 from pathlib import Path
+
 
 def get_env_prefix(env_name):
     """
@@ -11,7 +11,7 @@ def get_env_prefix(env_name):
         # Try to get the prefix directly via mamba
         result = subprocess.run(["mamba", "env", "list", "--json"], capture_output=True, text=True, check=True)
         data = json.loads(result.stdout)
-        
+
         for env_path in data.get("envs", []):
             p = Path(env_path)
             if p.name == env_name:
@@ -30,13 +30,13 @@ def get_env_bin_path(env_name, tool_name):
         bin_path = prefix / "bin" / tool_name
         if bin_path.exists():
             return str(bin_path)
-        
+
         # Check if it exists without .py extension
         if tool_name.endswith(".py"):
             alt_path = prefix / "bin" / tool_name[:-3]
             if alt_path.exists():
                 return str(alt_path)
-                
+
     return tool_name
 
 def get_python_path(env_name):

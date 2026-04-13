@@ -41,3 +41,17 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = [
+    "src/metalncrna/third_party",
+    "build",
+    "dist",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E722", "E701"] # Ignorando bare except e múltiplas declarações por agora para evitar quebras de lógica legada

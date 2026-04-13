@@ -33,7 +33,7 @@ def download_file(url, destination_path):
 def download_all_resources(data_dir, tools=None):
     data_dir = Path(data_dir)
     requested_tools = tools if tools else list(DATA_URLS.keys())
-    
+
     for tool, urls in DATA_URLS.items():
         # Only download if tool is in requested list
         if tool in requested_tools:

@@ -1,7 +1,7 @@
+
 from Bio import SeqIO
 from Bio.SeqUtils import gc_fraction
-import pandas as pd
-from pathlib import Path
+
 
 def get_sequence_stats(fasta_path):
     """
@@ -23,13 +23,13 @@ def extract_lncrnas(input_fasta, output_fasta, predicted_ids):
     """
     # Normalize IDs to lowercase for comparison
     target_ids = {str(i).lower() for i in predicted_ids}
-    
+
     lncrnas = []
     for record in SeqIO.parse(input_fasta, "fasta"):
         norm_id = str(record.id).lower().split()[0]
         if norm_id in target_ids:
             lncrnas.append(record)
-            
+
     if lncrnas:
         SeqIO.write(lncrnas, output_fasta, "fasta")
         return len(lncrnas)

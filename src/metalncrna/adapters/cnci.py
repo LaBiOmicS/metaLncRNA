@@ -1,9 +1,10 @@
-import pandas as pd
-import os
-import subprocess
 import multiprocessing
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class CNCIAdapter(BaseAdapter):
     def __init__(self, mode="ve", tool_name="CNCI.py", env_name="metalnc_legacy"):
@@ -18,7 +19,7 @@ class CNCIAdapter(BaseAdapter):
         output_dir.mkdir(parents=True, exist_ok=True)
         cnci_out_dir = output_dir / "cnci_run"
         abs_input = Path(input_fasta).absolute()
-        
+
         # Ensure mode is lowercase 've' or 'pl'
         run_mode = str(self.mode).lower()
         if run_mode not in ["ve", "pl"]:
@@ -31,7 +32,7 @@ class CNCIAdapter(BaseAdapter):
             "-p", str(self.cores),
             "-m", run_mode
         ]
-        
+
         self.run_command(cmd, log_file=log_file, cwd=self.root)
         actual_output = cnci_out_dir / "CNCI.index"
         return actual_output
@@ -41,7 +42,7 @@ class CNCIAdapter(BaseAdapter):
             return pd.DataFrame()
         df = pd.read_csv(raw_output_path, sep="\t")
         df["sequence_id"] = df.iloc[:, 0].astype(str).str.lower().str.split().str[0]
-        
+
         def to_prob(s):
             try:
                 s = float(s)

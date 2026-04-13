@@ -1,8 +1,11 @@
-import pandas as pd
-import os
 import glob
+import os
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class CPATAdapter(BaseAdapter):
     def __init__(self, logit_model, hexamer_table, tool_name="cpat.py", env_name="metalnc_cpat"):
@@ -14,11 +17,11 @@ class CPATAdapter(BaseAdapter):
         output_dir = Path(output_dir).absolute()
         output_dir.mkdir(parents=True, exist_ok=True)
         raw_output_base = output_dir / "cpat_raw.txt"
-        
+
         for f in glob.glob(str(raw_output_base) + "*"):
             try: os.remove(f)
             except: pass
-            
+
         # Call the script directly using absolute path
         cmd = [
             self.tool_path,
@@ -27,9 +30,9 @@ class CPATAdapter(BaseAdapter):
             "-x", str(self.hexamer_table),
             "-o", str(raw_output_base)
         ]
-        
+
         self.run_command(cmd, log_file=log_file)
-        
+
         if os.path.exists("CPAT_run_info.log"):
             try: os.remove("CPAT_run_info.log")
             except: pass
@@ -45,9 +48,9 @@ class CPATAdapter(BaseAdapter):
             df["sequence_id"] = df["seq_ID"]
         else:
             df["sequence_id"] = df["ID"].astype(str).str.replace(r"_ORF_\d+$", "", regex=True)
-        
+
         df["sequence_id"] = df["sequence_id"].astype(str).str.lower().str.split().str[0]
-        
+
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
             "coding_probability": df["Coding_prob"],

@@ -1,6 +1,9 @@
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class RNAsambaAdapter(BaseAdapter):
     def __init__(self, weights_path, tool_path="rnasamba", env_name="metalnc_rnasamba"):

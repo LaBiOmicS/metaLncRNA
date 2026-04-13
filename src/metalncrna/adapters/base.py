@@ -1,13 +1,14 @@
-from abc import ABC, abstractmethod
-import pandas as pd
-import subprocess
-import sys
-import click
 import os
+import subprocess
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, Optional, Any
+from typing import Any, List, Optional
+
+import pandas as pd
+
 from ..utils.envs import get_env_bin_path, get_python_path
 from ..utils.logger import logger
+
 
 class BaseAdapter(ABC):
     """
@@ -38,19 +39,19 @@ class BaseAdapter(ABC):
             full_cmd = ["mamba", "run", "-n", self.env_name] + cmd
         else:
             full_cmd = cmd
-            
+
         logger.debug(f"Executing in {cwd or 'CWD'}: {' '.join(full_cmd)}")
-        
+
         process = subprocess.Popen(
-            full_cmd, 
-            stdout=subprocess.PIPE, 
+            full_cmd,
+            stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
             cwd=str(cwd) if cwd else None,
             env=env
         )
         stdout, _ = process.communicate()
-        
+
         if log_file:
             with open(log_file, "a") as f:
                 f.write(f"\n--- TOOL START: {self.tool_name} ---\n")
@@ -59,13 +60,13 @@ class BaseAdapter(ABC):
                 f.write(f"EXIT CODE: {process.returncode}\n")
                 f.write(f"OUTPUT:\n{stdout}\n")
                 f.write(f"\n--- TOOL END: {self.tool_name} ---\n")
-        
+
         if process.returncode != 0:
             if process.returncode == 1 and "plek" in self.tool_name.lower():
-                logger.warning(f"PLEK exited with 1 but may have finished. Check log.")
+                logger.warning("PLEK exited with 1 but may have finished. Check log.")
             else:
                 raise subprocess.CalledProcessError(process.returncode, full_cmd, output=stdout)
-            
+
         return stdout
 
     @abstractmethod
@@ -76,7 +77,9 @@ class BaseAdapter(ABC):
     def parse_results(self, raw_output_path: Path) -> pd.DataFrame:
         pass
 
-    def get_standardized_results(self, input_fasta: str, output_dir: str, log_file: Optional[Path] = None) -> pd.DataFrame:
+    def get_standardized_results(
+        self, input_fasta: str, output_dir: str, log_file: Optional[Path] = None
+    ) -> pd.DataFrame:
         """Standard high-level entry point for prediction."""
         raw_output = self.run(input_fasta, output_dir, log_file=log_file)
         return self.parse_results(raw_output)

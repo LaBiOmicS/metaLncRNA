@@ -1,6 +1,5 @@
+
 import pandas as pd
-from pathlib import Path
-from typing import Optional, Dict, Any, List
 from rich.console import Console
 from rich.markdown import Markdown
 
@@ -36,15 +35,15 @@ class LncRNAAgent:
     def summarize_results(self, df: pd.DataFrame) -> str:
         """Generates a high-level executive summary of the findings."""
         self._lazy_init()
-        
+
         total = len(df)
         lncrnas = df[df["consensus_label"] == "noncoding"]
         coding = df[df["consensus_label"] == "coding"]
-        
+
         # Calculate agreement stats
         unanimous_lnc = len(lncrnas[lncrnas["consensus_support_count"] >= 6])
         tools_used = [c.replace('_prob', '').upper() for c in df.columns if c.endswith('_prob')]
-        
+
         context = f"""
         ### Data Summary:
         - Total sequences: {total}
@@ -52,20 +51,20 @@ class LncRNAAgent:
         - Protein-coding found: {len(coding)} ({len(coding)/total:.1%})
         - Highly confident lncRNAs (>= 6 tools agreeing): {unanimous_lnc}
         - Tools in this run: {', '.join(tools_used)}
-        
+
         ### Top 3 Most Confident lncRNA Candidates:
         {lncrnas.nsmallest(3, 'meta_score')[['sequence_id', 'meta_score', 'consensus_support']].to_string(index=False)}
         """
-        
+
         prompt = f"""
         {self.system_prompt}
-        Based on the following data, write a professional executive summary for a scientific report. 
-        Focus on the prevalence of lncRNAs and the overall tool agreement. 
+        Based on the following data, write a professional executive summary for a scientific report.
+        Focus on the prevalence of lncRNAs and the overall tool agreement.
         Keep it under 150 words and use Markdown.
-        
+
         {context}
         """
-        
+
         try:
             response = self._client.generate(model=self.model, prompt=prompt)
             return response['response']
@@ -75,13 +74,13 @@ class LncRNAAgent:
     def explain_sequence(self, sequence_id: str, df: pd.DataFrame) -> str:
         """Detailed technical explanation of a specific classification."""
         self._lazy_init()
-        
+
         row = df[df["sequence_id"].str.lower() == sequence_id.lower()]
         if row.empty: return f"Sequence {sequence_id} not found."
-        
+
         data = row.to_dict(orient='records')[0]
         probs = {k.replace('_prob', '').upper(): v for k, v in data.items() if k.endswith('_prob')}
-        
+
         # Identify "dissenting" tools
         label = data['consensus_label']
         dissenters = []
@@ -97,17 +96,17 @@ class LncRNAAgent:
         - Individual Tool Probabilities: {probs}
         - Tools that disagreed with consensus: {', '.join(dissenters) if dissenters else 'None (Unanimous)'}
         """
-        
+
         prompt = f"""
         {self.system_prompt}
-        Explain the classification of '{sequence_id}'. 
-        If there was disagreement, explain why the meta-consensus still chose {label}. 
-        Briefly mention what the dissenting tools might have seen (e.g., a high score in CPAT suggests some coding features like ORF size).
+        Explain the classification of '{sequence_id}'.
+        If there was disagreement, explain why the meta-consensus still chose {label}.
+        Briefly mention what the dissenting tools might have seen.
         Be technical but concise. Use Markdown.
-        
+
         {context}
         """
-        
+
         try:
             response = self._client.generate(model=self.model, prompt=prompt)
             return response['response']
@@ -119,19 +118,19 @@ class LncRNAAgent:
         self._lazy_init()
         console.print(f"[bold green]─── metaLncRNA AI Chat (Model: {self.model}) ───[/bold green]")
         console.print("[italic]Expert persona active. Ask about your results or lncRNA biology.[/italic]\n")
-        
+
         while True:
             query = console.input("[bold cyan]You > [/bold cyan]")
             if query.lower() in ["exit", "quit", "sair"]: break
-            
+
             # Simple context injection
             lnc_count = len(df[df['consensus_label'] == 'noncoding'])
             prompt = f"{self.system_prompt}\nContext: {len(df)} sequences, {lnc_count} lncRNAs found.\nUser: {query}"
-            
+
             try:
                 with console.status("[italic]Analyzing...[/italic]"):
                     response = self._client.generate(model=self.model, prompt=prompt)
-                console.print(f"\n[bold green]AI Agent:[/bold green]")
+                console.print("\n[bold green]AI Agent:[/bold green]")
                 console.print(Markdown(response['response']))
                 console.print(f"[bold cyan]{'─' * 40}[/bold cyan]\n")
             except Exception as e:

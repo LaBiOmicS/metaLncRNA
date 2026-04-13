@@ -1,6 +1,6 @@
-import os
 import subprocess
 from pathlib import Path
+
 from rich.console import Console
 
 console = Console()
@@ -21,8 +21,8 @@ class Trainer:
         console.print("[cyan][*] Training RNAsamba (Deep Learning)...[/cyan]")
         out_weights = self.output_dir / "rnasamba_custom.hdf5"
         cmd = [
-            "mamba", "run", "-n", "metalnc_rnasamba", 
-            "rnasamba", "train", 
+            "mamba", "run", "-n", "metalnc_rnasamba",
+            "rnasamba", "train",
             "--epochs", str(epochs),
             "--batch_size", str(batch_size),
             str(out_weights), str(self.coding), str(self.noncoding)
@@ -35,24 +35,27 @@ class Trainer:
         console.print("[cyan][*] Training CPAT (Logistic Regression)...[/cyan]")
         hex_table = self.output_dir / "cpat_custom_hexamer.tsv"
         logit_model = self.output_dir / "cpat_custom_model.RData"
-        
+
         # 1. Make hexamer table
-        cmd1 = ["mamba", "run", "-n", "metalnc_cpat", "make_hexamer_tab.py", "-c", str(self.coding), "-n", str(self.noncoding)]
-        console.print(f"   > Generating species-specific hexamer table...")
+        cmd1 = [
+            "mamba", "run", "-n", "metalnc_cpat", "make_hexamer_tab.py",
+            "-c", str(self.coding), "-n", str(self.noncoding)
+        ]
+        console.print("   > Generating species-specific hexamer table...")
         with open(hex_table, "w") as f:
             subprocess.run(cmd1, check=True, stdout=f)
-            
+
         # 2. Make logit model
         out_prefix = str(self.output_dir / "cpat_custom")
         cmd2 = [
-            "mamba", "run", "-n", "metalnc_cpat", 
-            "make_logitModel.py", 
-            "-c", str(self.coding), 
-            "-n", str(self.noncoding), 
-            "-x", str(hex_table), 
+            "mamba", "run", "-n", "metalnc_cpat",
+            "make_logitModel.py",
+            "-c", str(self.coding),
+            "-n", str(self.noncoding),
+            "-x", str(hex_table),
             "-o", out_prefix
         ]
-        console.print(f"   > Generating logistic regression model...")
+        console.print("   > Generating logistic regression model...")
         subprocess.run(cmd2, check=True)
         return logit_model, hex_table
 

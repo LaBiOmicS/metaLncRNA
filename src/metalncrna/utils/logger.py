@@ -1,7 +1,8 @@
 import logging
-import sys
 from pathlib import Path
+
 from rich.logging import RichHandler
+
 
 def setup_logger(output_dir=None, silent_console=False):
     """
@@ -9,7 +10,7 @@ def setup_logger(output_dir=None, silent_console=False):
     """
     logger = logging.getLogger("metalncrna")
     logger.setLevel(logging.DEBUG)
-    
+
     # Clear all existing handlers to prevent duplication
     while logger.handlers:
         logger.removeHandler(logger.handlers[0])

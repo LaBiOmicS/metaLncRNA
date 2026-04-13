@@ -1,8 +1,10 @@
-import pandas as pd
-import os
 import multiprocessing
 from pathlib import Path
+
+import pandas as pd
+
 from .base import BaseAdapter
+
 
 class LncADeepAdapter(BaseAdapter):
     def __init__(self, model_dir=None, tool_name="LncADeep.py", env_name="metalnc_lncadeep"):
@@ -14,7 +16,7 @@ class LncADeepAdapter(BaseAdapter):
         output_dir = Path(output_dir).absolute()
         output_dir.mkdir(parents=True, exist_ok=True)
         # LncADeep generates output in a specific directory
-        
+
         # LncADeep.py -i <fasta> -o <out_dir> -m <model_dir> -t <threads>
         cmd = [
             "python", self.tool_path,
@@ -23,9 +25,9 @@ class LncADeepAdapter(BaseAdapter):
             "-m", str(self.model_dir),
             "-t", str(self.cores)
         ]
-        
+
         self.run_command(cmd, log_file=log_file)
-        
+
         # LncADeep output name is usually based on input fasta name
         input_stem = Path(input_fasta).stem
         actual_output = output_dir / f"{input_stem}_LncADeep.txt"
@@ -35,7 +37,7 @@ class LncADeepAdapter(BaseAdapter):
         # LncADeep format: ID  Coding_prob  Label
         df = pd.read_csv(raw_output_path, sep="\t")
         df["sequence_id"] = df.iloc[:, 0].astype(str).lower().str.split().str[0]
-        
+
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
             "coding_probability": df.iloc[:, 1],
