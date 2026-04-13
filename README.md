@@ -1,4 +1,4 @@
-# metaLncRNA v1.1.2 🧬🤖
+# metaLncRNA v1.1.3 🧬🤖
 
 <!-- Institutional Badges -->
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
