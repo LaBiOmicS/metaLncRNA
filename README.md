@@ -1,5 +1,8 @@
 # metaLncRNA v1.1.6 🧬🤖
 
+
+![metaLncRNA](logo.png)
+
 <!-- Institutional Badges -->
 [![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
