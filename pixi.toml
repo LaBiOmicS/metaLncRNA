@@ -1,6 +1,6 @@
 [workspace]
 name = "metalncrna"
-version = "1.1.0"
+version = "1.1.1"
 description = "A portable and modular meta-predictor for lncRNA identification."
 authors = ["metaLncRNA Team <support@metalncrna.org>"]
 channels = ["conda-forge", "bioconda"]
