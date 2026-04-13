@@ -1,4 +1,4 @@
-# metaLncRNA v1.1 🧬🤖
+# metaLncRNA v1.1.2 🧬🤖
 
 <!-- Institutional Badges -->
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
@@ -6,6 +6,7 @@
 [![Bioinformatics](https://img.shields.io/badge/Bioinformatics-lncRNA-green.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 
 <!-- Open Science Badges -->
+[![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
 [![Open Source](https://img.shields.io/badge/Open-Source-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![Open Science](https://img.shields.io/badge/Open-Science-blue.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![Open Data](https://img.shields.io/badge/Open-Data-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)

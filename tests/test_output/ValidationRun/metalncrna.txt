@@ -1,0 +1,25 @@
+--- metaLncRNA Project Analysis ---
+Project: ValidationRun
+Started at: 2026-04-12 19:06:40.758068
+
+2026-04-12 19:06:40,809 - metalncrna - DEBUG - Executing in CWD: python CPC2.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
+
+--- TOOL START: CPC2.py ---
+COMMAND: python CPC2.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
+CWD: None
+EXIT CODE: 2
+OUTPUT:
+python: can't open file '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/CPC2.py': [Errno 2] No such file or directory
+
+
+--- TOOL END: CPC2.py ---
+
+CRITICAL EXCEPTION in cpc2: Command '['python', 'CPC2.py', '-i', '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/examples/sample.fasta', '-o', '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt']' returned non-zero exit status 2.
+Traceback (most recent call last):
+  File "/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/engine/dispatcher.py", line 66, in run_tool_safe
+    raw_output = adapter.run(input_fasta, intermediate_dir, log_file=log_file)
+  File "/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/adapters/cpc2.py", line 19, in run
+    self.run_command(cmd, log_file=log_file)
+  File "/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/adapters/base.py", line 67, in run_command
+    raise subprocess.CalledProcessError(process.returncode, full_cmd, output=stdout)
+subprocess.CalledProcessError: Command '['python', 'CPC2.py', '-i', '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/examples/sample.fasta', '-o', '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt']' returned non-zero exit status 2.

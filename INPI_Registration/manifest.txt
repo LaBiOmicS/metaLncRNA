@@ -1,7 +1,7 @@
 Archive:  INPI_Registration/source_code.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-        0  2026-04-12 22:10   src/
+        0  2026-04-12 22:43   src/
       982  2026-04-12 22:21   src/generate_report.py
         0  2026-04-12 21:22   src/metalncrna/
         0  2026-04-11 01:19   src/metalncrna/__init__.py
@@ -74,13 +74,13 @@ Archive:  INPI_Registration/source_code.zip
         0  2026-04-10 14:15   src/data/rnasamba/
   8894920  2026-04-10 14:15   src/data/rnasamba/full_length_weights.hdf5
   8894008  2026-04-10 14:15   src/data/rnasamba/partial_length_weights.hdf5
-        0  2026-04-12 22:29   src/metalncrna.egg-info/
-       85  2026-04-12 22:29   src/metalncrna.egg-info/requires.txt
-     5611  2026-04-12 22:29   src/metalncrna.egg-info/PKG-INFO
-       51  2026-04-12 22:29   src/metalncrna.egg-info/entry_points.txt
-       16  2026-04-12 22:29   src/metalncrna.egg-info/top_level.txt
-     2871  2026-04-12 22:29   src/metalncrna.egg-info/SOURCES.txt
-        1  2026-04-12 22:29   src/metalncrna.egg-info/dependency_links.txt
+        0  2026-04-12 22:43   src/metalncrna.egg-info/
+       85  2026-04-12 22:43   src/metalncrna.egg-info/requires.txt
+     5611  2026-04-12 22:43   src/metalncrna.egg-info/PKG-INFO
+       51  2026-04-12 22:43   src/metalncrna.egg-info/entry_points.txt
+       16  2026-04-12 22:43   src/metalncrna.egg-info/top_level.txt
+     2871  2026-04-12 22:43   src/metalncrna.egg-info/SOURCES.txt
+        1  2026-04-12 22:43   src/metalncrna.egg-info/dependency_links.txt
         0  2026-04-12 18:04   scripts/
       838  2026-04-11 02:29   scripts/run_serial.sh
       717  2026-04-11 02:13   scripts/run_long_analysis.sh
@@ -103,5 +103,35 @@ Archive:  INPI_Registration/source_code.zip
       246  2026-04-12 21:24   MANIFEST.in
      1072  2026-04-10 21:48   LICENSE
      4766  2026-04-12 21:53   README.md
+        0  2026-04-12 22:29   src/metalncrna/engine/__pycache__/
+     3987  2026-04-12 22:29   src/metalncrna/engine/__pycache__/dispatcher.cpython-310.pyc
+     2680  2026-04-11 00:40   src/metalncrna/engine/__pycache__/trainer.cpython-310.pyc
+     3637  2026-04-12 22:29   src/metalncrna/engine/__pycache__/consensus.cpython-310.pyc
+        0  2026-04-12 22:29   src/metalncrna/utils/__pycache__/
+     1056  2026-04-12 22:29   src/metalncrna/utils/__pycache__/logger.cpython-310.pyc
+     2915  2026-04-11 02:41   src/metalncrna/utils/__pycache__/reports.cpython-310.pyc
+     1382  2026-04-12 22:29   src/metalncrna/utils/__pycache__/envs.cpython-310.pyc
+     4227  2026-04-11 00:40   src/metalncrna/utils/__pycache__/setup_envs.cpython-310.pyc
+     1421  2026-04-11 00:40   src/metalncrna/utils/__pycache__/fasta.cpython-310.pyc
+     1930  2026-04-11 00:40   src/metalncrna/utils/__pycache__/downloader.cpython-310.pyc
+     1840  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/FrameKmer.pyc
+     2053  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/ProtParam.pyc
+     1618  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/ORF_length.pyc
+     4253  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/CTD.pyc
+     3012  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/ORF.pyc
+      235  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/__init__.pyc
+     4083  2026-04-11 00:40   src/metalncrna/third_party/CPPred/bin/feamodule/fickett.pyc
+        0  2026-04-12 19:06   src/metalncrna/__pycache__/
+    12162  2026-04-12 19:06   src/metalncrna/__pycache__/cli.cpython-310.pyc
+      208  2026-04-11 01:40   src/metalncrna/__pycache__/__init__.cpython-310.pyc
+        0  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/
+     2165  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/cpat.cpython-310.pyc
+     3100  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/base.cpython-310.pyc
+     2154  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/cnci.cpython-310.pyc
+     1939  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/cppred.cpython-310.pyc
+     1568  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/rnasamba.cpython-310.pyc
+     2158  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/lgc.cpython-310.pyc
+     1926  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/plek.cpython-310.pyc
+     1577  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/cpc2.cpython-310.pyc
 ---------                     -------
- 29310623                     102 files
+ 29379909                     132 files
