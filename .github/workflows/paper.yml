@@ -18,9 +18,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Prepare Paper
+        run: cp paper/paper.md . && cp paper/paper.bib .
       - name: Build Paper
         uses: openjournals/openjournals-draft-action@master
         with:
-          paper_path: paper/paper.md
+          paper_path: paper.md
           journal: joss
           # JOSS uses its own bib file found in paper/ by default
