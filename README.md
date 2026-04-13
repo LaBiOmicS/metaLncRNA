@@ -1,4 +1,4 @@
-# metaLncRNA v1.1.3 🧬🤖
+# metaLncRNA v1.1.4 🧬🤖
 
 <!-- Institutional Badges -->
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
@@ -7,6 +7,7 @@
 
 <!-- Open Science Badges -->
 [![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
+[![PyPI Version](https://img.shields.io/pypi/v/metalncrna.svg)](https://pypi.org/project/metalncrna/)
 [![Open Source](https://img.shields.io/badge/Open-Source-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![Open Science](https://img.shields.io/badge/Open-Science-blue.svg)](https://github.com/LaBiOmicS/metaLncRNA)
 [![Open Data](https://img.shields.io/badge/Open-Data-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
@@ -72,12 +73,21 @@ For detailed instructions, please refer to our **[Documentation Hub](docs/README
 
 ### 1. Installation
 
+The easiest way to install **metaLncRNA** is via `pip`. We recommend using a virtual environment:
+
 ```bash
+# Create and activate a virtual environment (optional but recommended)
+python3 -m venv venv
+source venv/bin/activate
+
+# Install the core package
+pip install metalncrna
+
 # Recommended: Install with AI Agent support
 pip install "metalncrna[agent]"
 
-# Pull the lightweight default model
-ollama pull llama3.2
+# Finalize setup (downloads models and creates isolated tool environments)
+metalncrna setup
 ```
 
 ### 2. Run Integrated Pipeline

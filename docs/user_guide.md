@@ -3,10 +3,26 @@
 `metaLncRNA` provides a modular CLI interface for transcriptome analysis.
 
 ## Installation
-The recommended way to install `metaLncRNA` is via PyPI:
+The recommended way to install `metaLncRNA` is via `pip`. We highly recommend using a virtual environment to manage dependencies:
 
 ```bash
+# 1. Create a virtual environment
+python3 -m venv metalnc_env
+
+# 2. Activate the environment
+# On Linux/macOS:
+source metalnc_env/bin/activate
+# On Windows:
+# metalnc_env\Scripts\activate
+
+# 3. Install metaLncRNA
 pip install metalncrna
+
+# 4. (Optional) Install with AI Agent support
+pip install "metalncrna[agent]"
+
+# 5. Initialize the system
+# This will download required models and create isolated environments for legacy tools
 metalncrna setup
 ```
 

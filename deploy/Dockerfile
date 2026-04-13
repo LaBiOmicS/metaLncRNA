@@ -2,7 +2,7 @@
 FROM condaforge/mambaforge:latest
 
 LABEL maintainer="metaLncRNA Team <fabianomenegidio@umc.br>"
-LABEL version="1.1.3"
+LABEL version="1.1.4"
 LABEL description="Docker image for metaLncRNA: A modular meta-predictor for lncRNA identification."
 
 # Set workdir
