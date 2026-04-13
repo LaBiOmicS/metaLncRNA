@@ -1,7 +1,8 @@
 # metaLncRNA v1.1.6 🧬🤖
 
-
-![metaLncRNA](logo.png)
+<p align="center">
+  <img src="logo.png" alt="metaLncRNA Logo" width="50%">
+</p>
 
 <!-- Institutional Badges -->
 [![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
