@@ -26,12 +26,24 @@
 
 ## 📂 Repository Structure
 
-- `src/`: Core Python package source code.
-- `scripts/`: Production-ready Bash scripts for serial or long-running analyses.
-- `tests/`: Automated test suite (Mock and Consensus validation).
-- `docs/`: Technical and user documentation.
-- `deploy/`: Container definitions (Docker/Singularity).
-- `paper/`: JOSS submission source files.
+- `src/metalncrna/`: Core package logic and adapters.
+  - `data/`: Internal default configurations and pre-packaged models.
+  - `third_party/`: Integrated source code for legacy predictors (LGC, CPPred, CNCI).
+- `scripts/`: Production Bash utilities for HPC and long-running jobs.
+- `tests/`: Automated unit and integration test suite.
+- `docs/`: Technical guides and architecture details.
+- `deploy/`: Docker and Singularity definitions.
+- `INPI_Registration/`: Legal software registration assets.
+
+---
+
+## ⚙️ Configuration
+
+`metaLncRNA` follows a robust configuration loading order:
+1. **Internal Defaults:** Built-in weights and paths in `src/metalncrna/data/default_config.yaml`.
+2. **Local Config:** `metaLncRNA_config.yaml` in your current working directory.
+3. **User Home:** `~/.metalncrna/config.yaml`.
+4. **Explicit Path:** Provided via the `-c` or `--config` flag.
 
 ---
 
