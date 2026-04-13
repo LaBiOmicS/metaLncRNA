@@ -30,6 +30,12 @@
 
 ---
 
+<p align="center">
+  <img src="infografico.png" alt="metaLncRNA Infographic" width="70%">
+</p>
+
+---
+
 ## 📂 Repository Structure
 
 - `src/metalncrna/`: Core package logic and adapters.
