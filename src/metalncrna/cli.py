@@ -20,12 +20,24 @@ from .utils.logger import setup_logger, logger
 console = Console()
 
 def load_config(config_path=None):
+    # Internal default config
+    pkg_default = Path(__file__).parent / "data" / "default_config.yaml"
+    
+    # User paths
     default_paths = [config_path, Path.cwd() / "metaLncRNA_config.yaml", Path.home() / ".metalncrna" / "config.yaml"]
+    
     config = {}
+    # 1. Load internal package defaults first
+    if pkg_default.exists():
+        with open(pkg_default, "r") as f:
+            config = yaml.safe_load(f) or {}
+            
+    # 2. Override with user configuration if available
     for p in default_paths:
         if p and Path(p).exists():
             with open(p, "r") as f:
-                config = yaml.safe_load(f)
+                user_config = yaml.safe_load(f) or {}
+                config.update(user_config)
             break
     return config
 
@@ -48,8 +60,12 @@ def setup(data_dir, tools, config_file):
     config = load_config(config_file)
     final_data_dir = get_data_dir(config) if not data_dir else Path(data_dir).expanduser().absolute()
     final_data_dir.mkdir(parents=True, exist_ok=True)
-    download_all_resources(final_data_dir)
+    
+    # FIX: Pass requested tools to downloader to avoid redundant/broken downloads
     tool_list = (tools or config.get("tools", "rnasamba,cpc2,cpat,plek,cnci,cppred,lgc")).split(",")
+    tool_list = [t.strip() for t in tool_list]
+    download_all_resources(final_data_dir, tools=tool_list)
+    
     create_environments(tool_list)
     logger.info(f"Setup completed! Data stored in {final_data_dir}.")
 

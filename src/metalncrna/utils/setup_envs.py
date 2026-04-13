@@ -97,7 +97,14 @@ def create_environments(tools=None):
         elif t in legacy_list: envs_needed.add("legacy")
     
     for env in envs_needed:
-        print(f"[*] Setting up environment: {env}...")
-        subprocess.run(ENVS[env], check=True)
+        # Check if env already exists to avoid redundant setup
+        env_name = f"metalnc_{env}"
+        if get_env_path(env_name):
+            print(f"[*] Environment '{env_name}' already exists. Skipping creation.")
+        else:
+            print(f"[*] Setting up environment: {env}...")
+            subprocess.run(ENVS[env], check=True)
+            
+        # Re-apply patches to be safe
         if env == "cpc2": patch_cpc2()
         if env == "plek": patch_plek()
