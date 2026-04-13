@@ -1,7 +1,7 @@
 # metaLncRNA v1.1.6 🧬🤖
 
 <p align="center">
-  <img src="logo.png" alt="metaLncRNA Logo" width="80%">
+  <img src="logo.png" alt="metaLncRNA Logo" width="70%">
 </p>
 
 <!-- Institutional Badges -->
