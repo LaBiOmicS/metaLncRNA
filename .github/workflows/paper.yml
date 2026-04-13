@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build Paper
-        uses: openjournals/paper-action@v2
+        uses: openjournals/openjournals-paper-action@master
         with:
           paper_path: paper/paper.md
           # JOSS uses its own bib file found in paper/ by default
