@@ -15,5 +15,5 @@ dependencies:
   - rich
   - matplotlib-base
   - pip:
-      - metalncrna==1.1.5
+      - metalncrna==1.1.6
       - ollama  # AI Agent support

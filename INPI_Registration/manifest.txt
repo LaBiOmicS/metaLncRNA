@@ -74,13 +74,13 @@ Archive:  INPI_Registration/source_code.zip
         0  2026-04-10 14:15   src/data/rnasamba/
   8894920  2026-04-10 14:15   src/data/rnasamba/full_length_weights.hdf5
   8894008  2026-04-10 14:15   src/data/rnasamba/partial_length_weights.hdf5
-        0  2026-04-12 23:39   src/metalncrna.egg-info/
-       85  2026-04-12 23:39   src/metalncrna.egg-info/requires.txt
-     6109  2026-04-12 23:39   src/metalncrna.egg-info/PKG-INFO
-       51  2026-04-12 23:39   src/metalncrna.egg-info/entry_points.txt
-       16  2026-04-12 23:39   src/metalncrna.egg-info/top_level.txt
-     2871  2026-04-12 23:39   src/metalncrna.egg-info/SOURCES.txt
-        1  2026-04-12 23:39   src/metalncrna.egg-info/dependency_links.txt
+        0  2026-04-13 00:02   src/metalncrna.egg-info/
+       69  2026-04-13 00:02   src/metalncrna.egg-info/requires.txt
+     6051  2026-04-13 00:02   src/metalncrna.egg-info/PKG-INFO
+       51  2026-04-13 00:02   src/metalncrna.egg-info/entry_points.txt
+       16  2026-04-13 00:02   src/metalncrna.egg-info/top_level.txt
+     2871  2026-04-13 00:02   src/metalncrna.egg-info/SOURCES.txt
+        1  2026-04-13 00:02   src/metalncrna.egg-info/dependency_links.txt
         0  2026-04-12 18:04   scripts/
       838  2026-04-11 02:29   scripts/run_serial.sh
       717  2026-04-11 02:13   scripts/run_long_analysis.sh
@@ -134,4 +134,4 @@ Archive:  INPI_Registration/source_code.zip
      1926  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/plek.cpython-310.pyc
      1577  2026-04-12 22:29   src/metalncrna/adapters/__pycache__/cpc2.cpython-310.pyc
 ---------                     -------
- 29380407                     132 files
+ 29380333                     132 files
