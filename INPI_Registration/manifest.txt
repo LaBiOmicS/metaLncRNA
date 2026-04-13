@@ -1,25 +1,25 @@
 Archive:  INPI_Registration/source_code.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
-        0  2026-04-12 18:05   src/
-     1001  2026-04-11 01:41   src/generate_report.py
+        0  2026-04-12 22:10   src/
+      982  2026-04-12 22:21   src/generate_report.py
         0  2026-04-12 21:22   src/metalncrna/
         0  2026-04-11 01:19   src/metalncrna/__init__.py
         0  2026-04-12 21:22   src/metalncrna/data/
      1396  2026-04-12 21:22   src/metalncrna/data/default_config.yaml
         0  2026-04-10 22:30   src/metalncrna/engine/
-     3502  2026-04-11 02:57   src/metalncrna/engine/consensus.py
-     2665  2026-04-10 22:15   src/metalncrna/engine/trainer.py
-     4606  2026-04-12 19:03   src/metalncrna/engine/dispatcher.py
-    15368  2026-04-12 21:22   src/metalncrna/cli.py
+     3455  2026-04-12 22:23   src/metalncrna/engine/consensus.py
+     2661  2026-04-12 22:26   src/metalncrna/engine/trainer.py
+     4889  2026-04-12 22:26   src/metalncrna/engine/dispatcher.py
+    15226  2026-04-12 22:25   src/metalncrna/cli.py
         0  2026-04-12 17:29   src/metalncrna/utils/
-     1860  2026-04-12 19:14   src/metalncrna/utils/downloader.py
-     5093  2026-04-12 19:20   src/metalncrna/utils/setup_envs.py
-     6093  2026-04-12 17:34   src/metalncrna/utils/agent.py
-     1174  2026-04-10 19:44   src/metalncrna/utils/logger.py
-     1484  2026-04-10 18:42   src/metalncrna/utils/envs.py
-     1144  2026-04-10 18:59   src/metalncrna/utils/fasta.py
-     2781  2026-04-11 02:40   src/metalncrna/utils/reports.py
+     1856  2026-04-12 22:21   src/metalncrna/utils/downloader.py
+     5222  2026-04-12 22:28   src/metalncrna/utils/setup_envs.py
+     5810  2026-04-12 22:25   src/metalncrna/utils/agent.py
+     1161  2026-04-12 22:21   src/metalncrna/utils/logger.py
+     1443  2026-04-12 22:21   src/metalncrna/utils/envs.py
+     1085  2026-04-12 22:21   src/metalncrna/utils/fasta.py
+     2769  2026-04-12 22:27   src/metalncrna/utils/reports.py
         0  2026-04-10 21:53   src/metalncrna/third_party/
         0  2026-04-10 20:51   src/metalncrna/third_party/__init__.py
         0  2026-04-10 21:56   src/metalncrna/third_party/CPPred/
@@ -55,16 +55,16 @@ Archive:  INPI_Registration/source_code.zip
    103577  2026-04-10 21:09   src/metalncrna/third_party/CNCI/CNCI_Parameters/plant.matrix
     17307  2026-04-10 21:09   src/metalncrna/third_party/CNCI/Gtf.py
         0  2026-04-10 22:33   src/metalncrna/adapters/
-     3131  2026-04-10 22:34   src/metalncrna/adapters/base.py
-     2103  2026-04-10 19:07   src/metalncrna/adapters/plek.py
-     1806  2026-04-10 21:17   src/metalncrna/adapters/cppred.py
-     1999  2026-04-10 21:58   src/metalncrna/adapters/cnci.py
-     1961  2026-04-10 21:17   src/metalncrna/adapters/lgc.py
-     2065  2026-04-10 18:45   src/metalncrna/adapters/cpat.py
-     1282  2026-04-10 22:34   src/metalncrna/adapters/cpc2.py
-     1112  2026-04-10 18:29   src/metalncrna/adapters/rnasamba.py
-     1672  2026-04-10 20:47   src/metalncrna/adapters/lncadeep.py
-     2158  2026-04-10 20:18   src/metalncrna/adapters/lncfinder.py
+     3073  2026-04-12 22:22   src/metalncrna/adapters/base.py
+     2015  2026-04-12 22:21   src/metalncrna/adapters/plek.py
+     1757  2026-04-12 22:21   src/metalncrna/adapters/cppred.py
+     1950  2026-04-12 22:21   src/metalncrna/adapters/cnci.py
+     1892  2026-04-12 22:21   src/metalncrna/adapters/lgc.py
+     2016  2026-04-12 22:21   src/metalncrna/adapters/cpat.py
+     1241  2026-04-12 22:21   src/metalncrna/adapters/cpc2.py
+     1115  2026-04-12 22:21   src/metalncrna/adapters/rnasamba.py
+     1633  2026-04-12 22:21   src/metalncrna/adapters/lncadeep.py
+     2081  2026-04-12 22:21   src/metalncrna/adapters/lncfinder.py
         0  2026-04-10 14:15   src/data/
         0  2026-04-10 14:18   src/data/cpat/
   3650495  2026-04-10 14:18   src/data/cpat/Human_logitModel.RData
@@ -74,13 +74,13 @@ Archive:  INPI_Registration/source_code.zip
         0  2026-04-10 14:15   src/data/rnasamba/
   8894920  2026-04-10 14:15   src/data/rnasamba/full_length_weights.hdf5
   8894008  2026-04-10 14:15   src/data/rnasamba/partial_length_weights.hdf5
-        0  2026-04-12 19:02   src/metalncrna.egg-info/
-       85  2026-04-12 19:02   src/metalncrna.egg-info/requires.txt
-     5065  2026-04-12 19:02   src/metalncrna.egg-info/PKG-INFO
-       51  2026-04-12 19:02   src/metalncrna.egg-info/entry_points.txt
-       16  2026-04-12 19:02   src/metalncrna.egg-info/top_level.txt
-     2831  2026-04-12 19:02   src/metalncrna.egg-info/SOURCES.txt
-        1  2026-04-12 19:02   src/metalncrna.egg-info/dependency_links.txt
+        0  2026-04-12 22:29   src/metalncrna.egg-info/
+       85  2026-04-12 22:29   src/metalncrna.egg-info/requires.txt
+     5611  2026-04-12 22:29   src/metalncrna.egg-info/PKG-INFO
+       51  2026-04-12 22:29   src/metalncrna.egg-info/entry_points.txt
+       16  2026-04-12 22:29   src/metalncrna.egg-info/top_level.txt
+     2871  2026-04-12 22:29   src/metalncrna.egg-info/SOURCES.txt
+        1  2026-04-12 22:29   src/metalncrna.egg-info/dependency_links.txt
         0  2026-04-12 18:04   scripts/
       838  2026-04-11 02:29   scripts/run_serial.sh
       717  2026-04-11 02:13   scripts/run_long_analysis.sh
@@ -97,11 +97,11 @@ Archive:  INPI_Registration/source_code.zip
       386  2026-04-11 00:39   examples/config_template.yaml
       419  2026-04-11 00:39   examples/run_example.sh
      2700  2026-04-11 02:31   examples/sample.fasta
-     1023  2026-04-12 17:30   pyproject.toml
-      966  2026-04-12 19:01   pixi.toml
+     1344  2026-04-12 22:34   pyproject.toml
+     1029  2026-04-12 22:05   pixi.toml
      1396  2026-04-10 21:59   metaLncRNA_config.yaml
       246  2026-04-12 21:24   MANIFEST.in
      1072  2026-04-10 21:48   LICENSE
-     4220  2026-04-12 18:14   README.md
+     4766  2026-04-12 21:53   README.md
 ---------                     -------
- 29309835                     102 files
+ 29310623                     102 files
