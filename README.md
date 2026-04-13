@@ -31,7 +31,7 @@
 ---
 
 <p align="center">
-  <img src="infografico.png" alt="metaLncRNA Infographic" width="70%">
+  <img src="infografico.png" alt="metaLncRNA Infographic" width="100%">
 </p>
 
 ---
