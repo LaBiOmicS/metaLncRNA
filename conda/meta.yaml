@@ -32,6 +32,13 @@ test:
     - metalncrna --help
 
 about:
-  home: https://github.com/your-repo/metaLncRNA
+  home: https://github.com/LaBiOmicS/metaLncRNA
   license: MIT
-  summary: 'A portable and modular meta-predictor for lncRNA identification.'
+  license_file: LICENSE
+  summary: 'A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs).'
+  dev_url: https://github.com/LaBiOmicS/metaLncRNA
+  doc_url: https://github.com/LaBiOmicS/metaLncRNA/blob/main/README.md
+
+extra:
+  recipe-maintainers:
+    - FabianoMenegidio

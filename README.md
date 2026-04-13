@@ -73,20 +73,25 @@ For detailed instructions, please refer to our **[Documentation Hub](docs/README
 
 ### 1. Installation
 
-The easiest way to install **metaLncRNA** is via `pip`. We recommend using a virtual environment:
+#### Option A: via `pip` (Fastest)
+We recommend using a virtual environment:
 
 ```bash
-# Create and activate a virtual environment (optional but recommended)
 python3 -m venv venv
 source venv/bin/activate
-
-# Install the core package
-pip install metalncrna
-
-# Recommended: Install with AI Agent support
 pip install "metalncrna[agent]"
+metalncrna setup
+```
 
-# Finalize setup (downloads models and creates isolated tool environments)
+#### Option B: via `Conda` / `Mamba`
+Perfect for bioinformaticians using Bioconda:
+
+```bash
+# Create environment from the provided file
+mamba env create -f environment.yml
+conda activate metalncrna
+
+# Finalize setup
 metalncrna setup
 ```
 
