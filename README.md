@@ -1,4 +1,4 @@
-# metaLncRNA v1.1.6 🧬🤖
+# metaLncRNA v1.1.7 🧬🤖
 
 <!-- Institutional Badges -->
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
@@ -28,14 +28,37 @@
 
 ## 📂 Repository Structure
 
-- `src/metalncrna/`: Core package logic and adapters.
-  - `data/`: Internal default configurations and pre-packaged models.
-  - `third_party/`: Integrated source code for legacy predictors (LGC, CPPred, CNCI).
-- `scripts/`: Production Bash utilities for HPC and long-running jobs.
-- `tests/`: Automated unit and integration test suite.
-- `docs/`: Technical guides and architecture details.
-- `deploy/`: Docker and Singularity definitions.
-- `INPI_Registration/`: Legal software registration assets.
+```text
+.
+├── conda/                   # Bioconda recipe and metadata
+├── deploy/                  # Containerization (Dockerfile, Singularity.def)
+├── docs/                    # Technical documentation and user guides
+├── examples/                # Quick-start samples (FASTA, config templates)
+├── galaxy/                  # Galaxy Tool wrapper and test data
+├── INPI_Registration/       # Legal software registration assets
+├── paper/                   # JOSS publication manuscript and bibliography
+├── scripts/                 # Bash scripts for HPC/Batch processing
+├── src/
+│   └── metalncrna/          # Main Python Package
+│       ├── cli.py           # Command-line interface entry point
+│       ├── adapters/        # Wrappers for 7+ lncRNA predictors
+│       ├── engine/          # Core logic (Consensus, Dispatcher, Trainer)
+│       ├── utils/           # AI Agent, Env management, Reports, FASTA handling
+│       ├── data/            # Built-in weights and default configurations
+│       └── third_party/     # Bundled legacy tools (CNCI, CPPred, LGC)
+├── tests/                   # Comprehensive Unit and Integration tests
+├── pyproject.toml           # Build system and dependency definitions
+└── pixi.toml                # Environment management configuration
+```
+
+### 🧩 Core Components Detail
+
+- **`src/metalncrna/adapters/`**: Orchestrates external tools like RNAsamba, CPAT, CPC2, etc., providing a unified interface for prediction.
+- **`src/metalncrna/engine/`**: 
+    - `consensus.py`: Implements the weighted soft-voting algorithm.
+    - `dispatcher.py`: Manages parallel execution of the ensemble.
+- **`src/metalncrna/utils/agent.py`**: Integrates with local LLMs (Ollama) for automated biological interpretation of results.
+- **`galaxy/`**: Allows `metaLncRNA` to be integrated into Galaxy instances, supporting reproducible web-based workflows.
 
 ---
 

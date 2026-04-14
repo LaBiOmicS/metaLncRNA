@@ -3,7 +3,7 @@ From: condaforge/mambaforge:latest
 
 %labels
     Maintainer "metaLncRNA Team <fabianomenegidio@umc.br>"
-    Version "1.1.6"
+    Version "1.1.7"
     Description "Singularity container for metaLncRNA: A modular meta-predictor for lncRNA identification."
 
 %post
