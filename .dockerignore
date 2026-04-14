@@ -1,16 +1,52 @@
-# Ignore local environments and build files
-.git
-.venv
-.pixi
-__pycache__
+# Python
+__pycache__/
 *.pyc
 *.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
 
-# Ignore data and logs
-/examples/analysis_results
-/examples/test_output
-/examples/*.fasta
-*.log
+# Environments
+.venv/
+.pixi/
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
 
-# Ignore documentation build
-/docs/_build
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Bioinfo specific
+output/
+out_dir/
+*.fasta
+*.fa
+*.fastq
+*.fq
+*.bam
+*.sam
+*.vcf
+*.gtf
+*.gff
+*.bed
+*.hdf5
+*.tsv
+*.csv
+!examples/sample.fasta
+!src/metalncrna/data/**/*.tsv
+!src/metalncrna/data/**/*.hdf5
+
+# Tools specific
+plek_mdl__*
+*.model
+*.range
+*.scale
+*.matrix
+!src/metalncrna/third_party/CNCI/CNCI_Parameters/*
+!src/metalncrna/third_party/CPPred/Human_Model/*
