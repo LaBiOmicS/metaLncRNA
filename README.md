@@ -5,7 +5,7 @@
 </p>
 
 <!-- Institutional Badges -->
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19571843.svg)](https://doi.org/10.5281/zenodo.19571843)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19547230.svg)](https://doi.org/10.5281/zenodo.19547230)
 [![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
 [![Laboratory: LaBiOmicS](https://img.shields.io/badge/Laboratory-LaBiOmicS-7B1FA2.svg)](https://github.com/LaBiOmicS)
 [![Bioinformatics](https://img.shields.io/badge/Bioinformatics-lncRNA-green.svg)](https://github.com/LaBiOmicS/metaLncRNA)
