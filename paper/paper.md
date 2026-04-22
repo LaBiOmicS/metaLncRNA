@@ -5,7 +5,7 @@ authors:
     orcid: 0000-0003-2415-0819
     affiliation: 1
 affiliations:
- - name: Universidade de Mogi das Cruzes, Núcleo de Pesquisas Tecnológicas (NPT) e Núcleo Integrado de Biotecnologia (NIB), Mogi das Cruzes, SP, Brasil
+ - name: Universidade de Mogi das Cruzes, Mogi das Cruzes, SP, Brasil
    index: 1
 date: 12 de abril de 2026
 year: 2026
