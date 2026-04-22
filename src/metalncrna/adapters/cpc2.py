@@ -28,7 +28,7 @@ class CPC2Adapter(BaseAdapter):
 
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
-            "coding_probability": df.iloc[:, 7],
-            "coding_label": df.iloc[:, 8].str.lower()
+            "coding_probability": df.iloc[:, 6],
+            "coding_label": df.iloc[:, 7].str.lower()
         })
         return standard_df

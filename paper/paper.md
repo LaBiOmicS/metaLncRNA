@@ -30,7 +30,7 @@ Long non-coding RNAs (lncRNAs) are fundamental regulators of gene expression, in
 3. **Deep Learning:** RNAsamba [@RNAsamba2020].
 4. **Integrative Feature Analysis:** CPPred [@CPPred2019].
 
-By leveraging isolated Mamba environments [@Mamba2022], `metaLncRNA` provides a unified, high-performance interface that manages disparate software dependencies transparently, delivering a robust consensus prediction and interactive scientific reports.
+By leveraging isolated Mamba environments [@Mamba2022], `metaLncRNA` provides a unified, high-performance interface that manages disparate software dependencies transparently, delivering a robust consensus prediction through a standardized tabular report.
 
 # Statement of Need
 

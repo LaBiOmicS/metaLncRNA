@@ -1,4 +1,4 @@
-# metaLncRNA v1.1.7 🧬🤖
+# metaLncRNA v1.1.8 🧬🤖
 
 <p align="center">
   <img src="logo.png" alt="metaLncRNA Logo" width="70%">
@@ -51,7 +51,7 @@
 ├── src/
 │   └── metalncrna/          # Main Python Package
 │       ├── cli.py           # Command-line interface entry point
-│       ├── adapters/        # Wrappers for 7+ lncRNA predictors
+│       ├── adapters/        # Wrappers for 7 lncRNA predictors
 │       ├── engine/          # Core logic (Consensus, Dispatcher, Trainer)
 │       ├── utils/           # AI Agent, Env management, Reports, FASTA handling
 │       ├── data/            # Built-in weights and default configurations
@@ -72,6 +72,13 @@
 
 ---
 
+## 🔧 Recent Fixes (v1.1.8)
+- **CPC2 Integration:** Fixed a critical parsing error where coding probability and label columns were mismatched in the final report.
+- **Consensus Accuracy:** Improved consensus support calculation by ensuring all functional tools are correctly accounted for.
+- **Cleanup:** Removed unimplemented/experimental adapters to ensure stability.
+
+---
+
 ## ⚙️ Configuration
 
 `metaLncRNA` follows a robust configuration loading order:
@@ -87,7 +94,7 @@
 - **Ensemble Prediction:** Combines 7 tools (RNAsamba, CPAT, CPC2, PLEK, CNCI, CPPred, LGC).
 - **Interactive AI Agent:** Integrated local LLM assistant (**Llama-3.2** or **OpenBioLLM**) to interpret results and explain classification decisions.
 - **Reproducibility First:** Built-in environment isolation via **Mamba** and **Pixi**.
-- **Scientific Dashboard:** Interactive HTML reports with tool congruence matrices.
+- **Standardized Reports:** Comprehensive TSV reports with tool congruence metrics.
 - **Publication Ready:** Formatted according to JOSS standards for scientific software.
 
 ---

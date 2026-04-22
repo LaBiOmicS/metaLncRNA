@@ -1,5 +1,5 @@
 #!/bin/bash
-# metaLncRNA v1.1.6 Quick Start Script
+# metaLncRNA v1.1.8 Quick Start Script
 
 echo "[*] Starting metaLncRNA ensemble analysis..."
 

@@ -3,7 +3,7 @@
 metaLncRNA employs a sophisticated orchestration layer to manage biological predictors, ensuring reproducibility across heterogeneous computational environments.
 
 ## Scope
-The scope of `metaLncRNA` covers the identification of Long Non-coding RNAs (lncRNAs) from transcriptomic FASTA sequences. It integrates 7 state-of-the-art predictors, offering weighted consensus scores, interactive visualization, and species-specific model retraining.
+The scope of `metaLncRNA` covers the identification of Long Non-coding RNAs (lncRNAs) from transcriptomic FASTA sequences. It integrates 7 state-of-the-art predictors, offering weighted consensus scores and species-specific model retraining.
 
 ## Requirements
 

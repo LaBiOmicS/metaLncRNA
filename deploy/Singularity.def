@@ -3,8 +3,11 @@ From: condaforge/mambaforge:latest
 
 %labels
     Maintainer "metaLncRNA Team <fabianomenegidio@umc.br>"
-    Version "1.1.7"
+    Version "1.1.8"
     Description "Singularity container for metaLncRNA: A modular meta-predictor for lncRNA identification."
+
+%files
+    . /app
 
 %post
     # Update system and install required build-essential libraries
@@ -14,8 +17,14 @@ From: condaforge/mambaforge:latest
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-    # Install metaLncRNA package
-    pip install metalncrna
+    # We need to copy environment.yml or have access to it. 
+    # In Singularity, %post runs after files are copied if using %files
+    
+    # Update base environment using the environment.yml
+    mamba env update -n base -f /app/environment.yml
+
+    # Install metaLncRNA package from local source
+    cd /app && pip install .
 
     # Run automated setup to bake tool environments and models into the image
     # This ensures offline usability and instant startup in HPC environments
@@ -30,5 +39,5 @@ From: condaforge/mambaforge:latest
     exec metalncrna "$@"
 
 %help
-    This container includes metaLncRNA v1.1.6 with all required Mamba environments pre-configured.
+    This container includes metaLncRNA v1.1.8 with all required Mamba environments pre-configured.
     Usage: singularity run metaLncRNA.sif predict -i input.fasta -o output_dir/
