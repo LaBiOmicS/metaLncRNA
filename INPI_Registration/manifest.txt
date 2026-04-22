@@ -17,13 +17,13 @@ Archive:  INPI_Registration/source_code.zip
  22257416  2026-04-14 07:33   INPI_Registration/source_code.zip
      1072  2026-04-22 17:02   LICENSE
       246  2026-04-22 17:02   MANIFEST.in
-     7317  2026-04-22 17:33   README.md
+     7339  2026-04-22 18:29   README.md
      2236  2026-04-22 17:02   README_DEVELOPER.md
-        0  2026-04-22 17:02   conda/
-     1016  2026-04-22 17:33   conda/meta.yaml
-        0  2026-04-22 17:02   deploy/
-      842  2026-04-22 17:38   deploy/Dockerfile
-     1381  2026-04-22 17:38   deploy/Singularity.def
+        0  2026-04-22 18:28   conda/
+     1016  2026-04-22 18:28   conda/meta.yaml
+        0  2026-04-22 18:28   deploy/
+      842  2026-04-22 18:28   deploy/Dockerfile
+     1381  2026-04-22 18:28   deploy/Singularity.def
         0  2026-04-22 17:02   docs/
       693  2026-04-22 17:02   docs/README.md
      2797  2026-04-22 17:29   docs/technical_architecture.md
@@ -35,19 +35,19 @@ Archive:  INPI_Registration/source_code.zip
       386  2026-04-22 17:02   examples/config_template.yaml
       421  2026-04-22 17:40   examples/run_example.sh
      2700  2026-04-22 17:02   examples/sample.fasta
-        0  2026-04-22 17:02   galaxy/
-     6307  2026-04-22 17:33   galaxy/metalncrna.xml
+        0  2026-04-22 18:28   galaxy/
+     6307  2026-04-22 18:28   galaxy/metalncrna.xml
         0  2026-04-22 17:02   galaxy/test-data/
      5096  2026-04-22 17:02   galaxy/test-data/sample.fasta
    351302  2026-04-22 17:02   galaxy/tool_test_output.html
      7774  2026-04-22 17:02   galaxy/tool_test_output.json
      1396  2026-04-22 17:02   metaLncRNA_config.yaml
-        0  2026-04-22 17:02   paper/
+        0  2026-04-22 18:28   paper/
      4299  2026-04-22 17:02   paper/paper.bib
-     7927  2026-04-22 17:26   paper/paper.md
+     7927  2026-04-22 18:28   paper/paper.md
    167705  2026-04-22 17:02   pixi.lock
-     1003  2026-04-22 17:33   pixi.toml
-     1322  2026-04-22 17:33   pyproject.toml
+     1003  2026-04-22 18:28   pixi.toml
+     1322  2026-04-22 18:28   pyproject.toml
         0  2026-04-22 17:02   scripts/
       717  2026-04-22 17:02   scripts/run_long_analysis.sh
       838  2026-04-22 17:02   scripts/run_serial.sh
@@ -79,7 +79,7 @@ Archive:  INPI_Registration/source_code.zip
         0  2026-04-22 17:02   src/metalncrna/data/
      1396  2026-04-22 17:02   src/metalncrna/data/default_config.yaml
         0  2026-04-22 17:06   src/metalncrna/engine/
-     3455  2026-04-22 17:02   src/metalncrna/engine/consensus.py
+     4009  2026-04-22 18:11   src/metalncrna/engine/consensus.py
      4889  2026-04-22 17:02   src/metalncrna/engine/dispatcher.py
      2661  2026-04-22 17:02   src/metalncrna/engine/trainer.py
         0  2026-04-22 17:02   src/metalncrna/third_party/
@@ -101,7 +101,7 @@ Archive:  INPI_Registration/source_code.zip
   1839319  2026-04-22 17:02   src/metalncrna/third_party/CPPred/Human_Model/Human.model
       956  2026-04-22 17:02   src/metalncrna/third_party/CPPred/Human_Model/Human.range
         0  2026-04-22 17:02   src/metalncrna/third_party/CPPred/__init__.py
-        0  2026-04-22 17:42   src/metalncrna/third_party/CPPred/bin/
+        0  2026-04-22 18:12   src/metalncrna/third_party/CPPred/bin/
      4615  2026-04-22 17:02   src/metalncrna/third_party/CPPred/bin/CPPred_fixed.py
         0  2026-04-22 17:02   src/metalncrna/third_party/CPPred/bin/__init__.py
         0  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/
@@ -113,7 +113,7 @@ Archive:  INPI_Registration/source_code.zip
         0  2026-04-22 17:02   src/metalncrna/third_party/CPPred/bin/feamodule/__init__.py
      3398  2026-04-22 17:02   src/metalncrna/third_party/CPPred/bin/feamodule/fickett.py
         0  2026-04-22 17:02   src/metalncrna/third_party/LGC/
-        0  2026-04-22 17:42   src/metalncrna/third_party/LGC/scr/
+        0  2026-04-22 18:12   src/metalncrna/third_party/LGC/scr/
      7490  2026-04-22 17:02   src/metalncrna/third_party/LGC/scr/lgc-1.0.0.py
         0  2026-04-22 17:02   src/metalncrna/third_party/__init__.py
         0  2026-04-22 17:06   src/metalncrna/utils/
@@ -128,8 +128,8 @@ Archive:  INPI_Registration/source_code.zip
      1739  2026-04-22 17:02   tests/test_adapters_mock.py
      1820  2026-04-22 17:02   tests/test_agent.py
      1443  2026-04-22 17:02   tests/test_consensus.py
-        0  2026-04-22 17:41   tests/test_output/
-        0  2026-04-22 17:42   tests/test_output/ValidationRun/
+        0  2026-04-22 18:11   tests/test_output/
+        0  2026-04-22 18:12   tests/test_output/ValidationRun/
      2432  2026-04-22 17:02   tests/test_output/ValidationRun/metalncrna.txt
      1816  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/FrameKmer.pyc
      2021  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/ProtParam.pyc
@@ -138,13 +138,13 @@ Archive:  INPI_Registration/source_code.zip
      2964  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/ORF.pyc
       227  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/__init__.pyc
      4051  2026-04-22 17:07   src/metalncrna/third_party/CPPred/bin/feamodule/fickett.pyc
-        0  2026-04-22 17:03   src/metalncrna.egg-info/
-       69  2026-04-22 17:03   src/metalncrna.egg-info/requires.txt
-     7755  2026-04-22 17:03   src/metalncrna.egg-info/PKG-INFO
-       51  2026-04-22 17:03   src/metalncrna.egg-info/entry_points.txt
-       16  2026-04-22 17:03   src/metalncrna.egg-info/top_level.txt
-     2451  2026-04-22 17:03   src/metalncrna.egg-info/SOURCES.txt
-        1  2026-04-22 17:03   src/metalncrna.egg-info/dependency_links.txt
+        0  2026-04-22 17:53   src/metalncrna.egg-info/
+       69  2026-04-22 17:53   src/metalncrna.egg-info/requires.txt
+     8132  2026-04-22 17:53   src/metalncrna.egg-info/PKG-INFO
+       51  2026-04-22 17:53   src/metalncrna.egg-info/entry_points.txt
+       16  2026-04-22 17:53   src/metalncrna.egg-info/top_level.txt
+     2825  2026-04-22 17:53   src/metalncrna.egg-info/SOURCES.txt
+        1  2026-04-22 17:53   src/metalncrna.egg-info/dependency_links.txt
         0  2026-04-22 17:29   examples/results/
         0  2026-04-22 17:29   examples/results/ExampleAnalysis/
     12353  2026-04-22 17:29   examples/results/ExampleAnalysis/metalncrna.log
@@ -158,30 +158,30 @@ Archive:  INPI_Registration/source_code.zip
       241  2026-04-22 17:29   examples/results/ExampleAnalysis/lgc_standardized.tsv
       217  2026-04-22 17:29   examples/results/ExampleAnalysis/rnasamba_standardized.tsv
      1843  2026-04-22 17:32   tests/test_cpc2_parsing.py
-    12327  2026-04-22 17:42   tests/test_output/ValidationRun/metalncrna.log
-      278  2026-04-22 17:42   tests/test_output/ValidationRun/cnci_standardized.tsv
-      288  2026-04-22 17:42   tests/test_output/ValidationRun/plek_standardized.tsv
-      234  2026-04-22 17:41   tests/test_output/ValidationRun/cpc2_standardized.tsv
-      248  2026-04-22 17:42   tests/test_output/ValidationRun/cppred_standardized.tsv
-     1549  2026-04-22 17:42   tests/test_output/ValidationRun/predicted_lncrnas.fasta
-     1124  2026-04-22 17:42   tests/test_output/ValidationRun/metalncrna_results.tsv
-      271  2026-04-22 17:42   tests/test_output/ValidationRun/cpat_standardized.tsv
-      241  2026-04-22 17:42   tests/test_output/ValidationRun/lgc_standardized.tsv
-        0  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/
-     2912  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cppred_raw.txt
-      506  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/plek_raw.txt
-      516  2026-04-22 17:41   tests/test_output/ValidationRun/intermediates/rnasamba_raw.tsv
-        0  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.no_ORF.txt
-      443  2026-04-22 17:41   tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
-        0  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cnci_run.log
-     1149  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/lgc_raw.txt
-     2526  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_seqs.fa
-      563  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.r
-        0  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cnci_run/
-      577  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cnci_run/CNCI.index
-      619  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.best.tsv
-      783  2026-04-22 17:42   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.tsv
-      217  2026-04-22 17:41   tests/test_output/ValidationRun/rnasamba_standardized.tsv
+    12327  2026-04-22 18:12   tests/test_output/ValidationRun/metalncrna.log
+      278  2026-04-22 18:12   tests/test_output/ValidationRun/cnci_standardized.tsv
+      288  2026-04-22 18:12   tests/test_output/ValidationRun/plek_standardized.tsv
+      234  2026-04-22 18:12   tests/test_output/ValidationRun/cpc2_standardized.tsv
+      248  2026-04-22 18:12   tests/test_output/ValidationRun/cppred_standardized.tsv
+     1549  2026-04-22 18:12   tests/test_output/ValidationRun/predicted_lncrnas.fasta
+     1154  2026-04-22 18:12   tests/test_output/ValidationRun/metalncrna_results.tsv
+      271  2026-04-22 18:12   tests/test_output/ValidationRun/cpat_standardized.tsv
+      241  2026-04-22 18:12   tests/test_output/ValidationRun/lgc_standardized.tsv
+        0  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/
+     2912  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cppred_raw.txt
+      506  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/plek_raw.txt
+      516  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/rnasamba_raw.tsv
+        0  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.no_ORF.txt
+      443  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
+        0  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cnci_run.log
+     1149  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/lgc_raw.txt
+     2526  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_seqs.fa
+      563  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.r
+        0  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cnci_run/
+      577  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cnci_run/CNCI.index
+      619  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.best.tsv
+      783  2026-04-22 18:12   tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.tsv
+      217  2026-04-22 18:12   tests/test_output/ValidationRun/rnasamba_standardized.tsv
 ---------                     -------
- 52201696                     180 files
-cc003a0c608bfce8c3e512cc251aac152b05a763f5c0f35929214b87ba2aab65  INPI_Registration/source_code.zip
+ 52203053                     180 files
+eef940a5730bfc55e019be9e1fe8b1e939619de9a3f875c544b266c13974ed7b  INPI_Registration/source_code.zip

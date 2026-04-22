@@ -1,4 +1,4 @@
-# metaLncRNA v1.1.8 🧬🤖
+# metaLncRNA v1.1.9 🧬🤖
 
 <p align="center">
   <img src="logo.png" alt="metaLncRNA Logo" width="70%">
@@ -72,9 +72,9 @@
 
 ---
 
-## 🔧 Recent Fixes (v1.1.8)
-- **CPC2 Integration:** Fixed a critical parsing error where coding probability and label columns were mismatched in the final report.
-- **Consensus Accuracy:** Improved consensus support calculation by ensuring all functional tools are correctly accounted for.
+## 🔧 Recent Fixes (v1.1.9)
+- **Consensus Logic:** Updated `consensus_support` to reflect the number of tools that agree with the final consensus label, providing better interpretability.
+- **CPC2 Integration:** Fixed a critical parsing error where coding probability and label columns were mismatched (v1.1.8).
 - **Cleanup:** Removed unimplemented/experimental adapters to ensure stability.
 
 ---

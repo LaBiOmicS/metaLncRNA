@@ -64,8 +64,20 @@ class ConsensusEngine:
 
         res = merged_df.apply(calculate_weighted_prob, axis=1)
         merged_df["meta_score"] = res.apply(lambda x: x[0])
-        merged_df["consensus_support_count"] = res.apply(lambda x: x[1])
+        merged_df["consensus_run_count"] = res.apply(lambda x: x[1])
         merged_df["consensus_label"] = np.where(merged_df["meta_score"] > 0.5, "coding", "noncoding")
+
+        # Calculate agreement support (how many tools agree with the final label)
+        def calculate_agreement(row):
+            label = row["consensus_label"]
+            agreement_count = 0
+            label_cols = [c for c in merged_df.columns if c.endswith("_label") and c != "consensus_label"]
+            for col in label_cols:
+                if str(row[col]).lower() == label:
+                    agreement_count += 1
+            return agreement_count
+
+        merged_df["consensus_support_count"] = merged_df.apply(calculate_agreement, axis=1)
         merged_df["consensus_support"] = merged_df["consensus_support_count"].astype(str) + f"/{total_tools_count}"
 
         # Optimize memory usage for large genomic datasets
