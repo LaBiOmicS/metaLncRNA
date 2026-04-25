@@ -1,4 +1,4 @@
-<tool id="metalncrna" name="metaLncRNA" version="1.1.9" profile="21.01">
+<tool id="metalncrna" name="metaLncRNA" version="1.2.0" profile="21.01">
     <description>Integrated meta-predictor for lncRNA identification using 7 orchestrated tools</description>
     <requirements>
         <container type="docker">metalncrna:latest</container>
