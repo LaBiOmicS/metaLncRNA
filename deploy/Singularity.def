@@ -3,7 +3,7 @@ From: condaforge/mambaforge:latest
 
 %labels
     Maintainer "metaLncRNA Team <fabianomenegidio@umc.br>"
-    Version "1.2.0"
+    Version "1.2.1"
     Description "Singularity container for metaLncRNA: A modular meta-predictor for lncRNA identification."
 
 %files
@@ -39,5 +39,5 @@ From: condaforge/mambaforge:latest
     exec metalncrna "$@"
 
 %help
-    This container includes metaLncRNA v1.2.0 with all required Mamba environments pre-configured.
+    This container includes metaLncRNA v1.2.1 with all required Mamba environments pre-configured.
     Usage: singularity run metaLncRNA.sif predict -i input.fasta -o output_dir/

@@ -1,4 +1,4 @@
-# metaLncRNA v1.2.0 🧬🤖
+# metaLncRNA v1.2.1 🧬🤖
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/LaBiOmicS/metaLncRNA/main/logo.png" alt="metaLncRNA Logo" width="70%">
@@ -72,7 +72,7 @@
 
 ---
 
-## 🔧 Recent Fixes (v1.2.0)
+## 🔧 Recent Fixes (v1.2.1)
 - **Consensus Logic:** Updated `consensus_support` to reflect the number of tools that agree with the final consensus label, providing better interpretability.
 - **CPC2 Integration:** Fixed a critical parsing error where coding probability and label columns were mismatched (v1.1.8).
 - **Cleanup:** Removed unimplemented/experimental adapters to ensure stability.
