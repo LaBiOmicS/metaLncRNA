@@ -1,0 +1,15 @@
+# Template Configuration for metaLncRNA
+# Copy this to your analysis folder to customize weights or tool paths
+
+# Override default weights for your consensus
+weights:
+  rnasamba: 2.0  # Increase weight for high-confidence predictions
+  cpat: 1.0
+
+# Define specific paths if not using automated setup
+rnasamba:
+  env_name: "metalnc_rnasamba"
+  path: "rnasamba"
+
+cpat:
+  species: "human"
