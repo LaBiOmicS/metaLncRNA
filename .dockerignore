@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+.pixi/
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Bioinfo specific
+output/
+out_dir/
+*.fasta
+*.fa
+*.fastq
+*.fq
+*.bam
+*.sam
+*.vcf
+*.gtf
+*.gff
+*.bed
+*.hdf5
+*.tsv
+*.csv
+!examples/sample.fasta
+!src/metalncrna/data/**/*.tsv
+!src/metalncrna/data/**/*.hdf5
+
+# Tools specific
+plek_mdl__*
+*.model
+*.range
+*.scale
+*.matrix
+!src/metalncrna/third_party/CNCI/CNCI_Parameters/*
+!src/metalncrna/third_party/CPPred/Human_Model/*

@@ -1,0 +1,49 @@
+{% set name = "metalncrna" %}
+{% set version = "1.2.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/metalncrna-{{ version }}.tar.gz
+  sha256: 269d3a7c255cc88f6db7d2bbcdb99525c945ad05dafbd641b3351fba010cd426
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - metalncrna = metalncrna.cli:main
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+    - setuptools >=61.0
+  run:
+    - python >=3.8
+    - mamba
+    - pandas
+    - biopython
+    - plotly
+    - pyyaml
+    - rich
+    - matplotlib-base
+
+test:
+  imports:
+    - metalncrna
+  commands:
+    - metalncrna --help
+
+about:
+  home: https://github.com/LaBiOmicS/metaLncRNA
+  license: MIT
+  license_file: LICENSE
+  summary: 'A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs).'
+  dev_url: https://github.com/LaBiOmicS/metaLncRNA
+
+extra:
+  recipe-maintainers:
+    - FabianoMenegidio
