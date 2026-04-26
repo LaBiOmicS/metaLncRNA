@@ -1,4 +1,4 @@
-# metaLncRNA v1.2.4 🧬🤖
+# metaLncRNA v2.0.0 🧬🤖
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/LaBiOmicS/metaLncRNA/main/logo.png" alt="metaLncRNA Logo" width="70%">
@@ -72,7 +72,7 @@
 
 ---
 
-## 🔧 Recent Fixes (v1.2.4)
+## 🔧 Recent Fixes (v2.0.0)
 - **CNCI Stability:** Fixed a critical hang in the CNCI legacy tool caused by non-canonical nucleotides (e.g., K, V, M) and a multiprocessing deadlock in the original Python 2.7 implementation.
 - **Improved Filtering:** Implemented rigorous FASTA validation in the CNCI adapter to exclude sequences with ambiguous characters, preventing `KeyError` crashes.
 - **Resource Optimization:** Optimized tool dispatching by limiting CNCI threads to 4, reducing I/O overhead and improving performance for small-to-medium files.
