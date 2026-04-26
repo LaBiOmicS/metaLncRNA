@@ -42,8 +42,8 @@ To bridge the gap between numerical prediction and biological interpretation, `m
     - Standard (Llama-3.2): 4GB RAM.
     - Specialist (OpenBioLLM-8B): Minimum 8GB RAM (16GB recommended).
 
-## Robustness & Legacy Support (v1.2.2 Updates)
-Working with legacy bioinformatics tools requires active mitigation of technical debt in third-party code. In version 1.2.2, metaLncRNA introduced critical stability patches:
+## Robustness & Legacy Support (v1.2.3 Updates)
+Working with legacy bioinformatics tools requires active mitigation of technical debt in third-party code. In version 1.2.3, metaLncRNA introduced critical stability patches:
 
 ### CNCI Stability Patch
 - **Non-Canonical Filtering:** CNCI (Python 2.7 legacy) originally lacked robust handling of IUPAC ambiguous nucleotides beyond 'N'. metaLncRNA now implements a strict pre-filtering layer in the adapter that excludes sequences containing characters outside the [A, T, C, G, U] set, preventing `KeyError` crashes in the di-nucleotide hash table.

@@ -124,7 +124,7 @@ class Dispatcher:
         all_success = True
         for name, adapter in self.adapters.items():
             name, res = self.run_tool_safe(name, adapter, input_fasta, output_dir, log_file, intermediate_dir)
-            if not isinstance(res, Exception): 
+            if not isinstance(res, Exception):
                 results[name] = res
             else:
                 all_success = False
