@@ -1,0 +1,42 @@
+[workspace]
+name = "metalncrna"
+version = "1.2.0"
+description = "A portable and modular meta-predictor for lncRNA identification."
+authors = ["metaLncRNA Team <fabianomenegidio@umc.br>"]
+channels = ["conda-forge", "bioconda"]
+platforms = ["linux-64"]
+
+[dependencies]
+python = "3.10.*"
+mamba = ">=1.4.0"
+pandas = ">=2.0.0"
+biopython = ">=1.80"
+plotly = ">=5.10.0"
+pyyaml = ">=6.0"
+rich = ">=13.0.0"
+matplotlib = ">=3.7.0"
+pip = "*"
+setuptools = ">=61.0"
+
+[feature.dev.dependencies]
+pytest = "*"
+pytest-cov = "*"
+planemo = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+pre-commit = "*"
+
+[environments]
+default = ["dev"]
+
+[tasks]
+setup = "python -m metalncrna.cli setup"
+predict = "python -m metalncrna.cli predict"
+test = "pytest tests/test_consensus.py"
+test-mock = "pytest tests/test_adapters_mock.py"
+docs = "sphinx-build -b html docs/ docs/_build"
+install = "pip install -e ."
+pre-commit = "pre-commit install"
+postinstall = "pip install -e ."
+build-pkg = "python -m build"
+check-pkg = "twine check dist/*"
