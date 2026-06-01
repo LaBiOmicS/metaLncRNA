@@ -10,7 +10,7 @@ jobs:
   build-n-publish:
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
-    if: github.repository == 'LaBiOmics/metaLncRNA'
+    if: github.repository == 'LaBiOmicS/metaLncRNA'
 
     steps:
       - uses: actions/checkout@v4
