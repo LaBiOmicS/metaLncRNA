@@ -1,0 +1,161 @@
+<tool id="metalncrna" name="metaLncRNA" version="1.2.1" profile="21.01">
+    <description>Integrated meta-predictor for lncRNA identification using 7 orchestrated tools</description>
+    <requirements>
+        <container type="docker">metalncrna:latest</container>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+        #set $tool_list = []
+        #if $rnasamba.run:
+            $tool_list.append('rnasamba')
+        #end if
+        #if $cpc2.run:
+            $tool_list.append('cpc2')
+        #end if
+        #if $cpat.run:
+            $tool_list.append('cpat')
+        #end if
+        #if $plek.run:
+            $tool_list.append('plek')
+        #end if
+        #if $cnci.run:
+            $tool_list.append('cnci')
+        #end if
+        #if $cppred.run:
+            $tool_list.append('cppred')
+        #end if
+        #if $lgc.run:
+            $tool_list.append('lgc')
+        #end if
+        
+        metalncrna predict
+        --input '$input_fasta'
+        --output '.'
+        --project 'galaxy_analysis'
+        --tools '#echo ",".join($tool_list)#'
+        --n-jobs \${GALAXY_SLOTS:-4}
+        --config '$custom_config'
+
+        && mv galaxy_analysis/metalncrna_results.tsv '$output_tsv'
+        && mv galaxy_analysis/metalncrna_report.html '$output_html'
+        && mv galaxy_analysis/predicted_lncrnas.fasta '$output_fasta_lnc'
+    ]]></command>
+    
+    <configfiles>
+        <configfile name="custom_config"><![CDATA[
+weights:
+  rnasamba: $rnasamba.weight
+  cpat: $cpat.weight
+  cppred: $cppred.weight
+  cnci: $cnci.weight
+  cpc2: $cpc2.weight
+  lgc: $lgc.weight
+  plek: $plek.weight
+
+rnasamba:
+#if $rnasamba.custom_weights:
+  weights: "$rnasamba.custom_weights"
+#end if
+
+cpat:
+  species: "$cpat.species"
+#if $cpat.custom_logit:
+  logit_model: "$cpat.custom_logit"
+  hexamer_table: "$cpat.custom_hexamer"
+#end if
+
+cnci:
+  mode: "$cnci.mode"
+        ]]></configfile>
+    </configfiles>
+
+    <inputs>
+        <param name="input_fasta" type="data" format="fasta" label="Input Transcripts (FASTA)" help="Transcript sequences to identify lncRNAs."/>
+        
+        <section name="rnasamba" title="RNAsamba Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include RNAsamba in ensemble"/>
+            <param name="weight" type="float" value="1.5" label="Consensus Weight"/>
+            <param name="custom_weights" type="data" format="h5" optional="true" label="Custom Weights File (.h5)"/>
+        </section>
+
+        <section name="cpat" title="CPAT Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include CPAT in ensemble"/>
+            <param name="weight" type="float" value="1.2" label="Consensus Weight"/>
+            <param name="species" type="select" label="Species Model">
+                <option value="human" selected="true">Human</option>
+                <option value="mouse">Mouse</option>
+            </param>
+            <param name="custom_logit" type="data" format="rdata" optional="true" label="Custom Logit Model (.RData)"/>
+            <param name="custom_hexamer" type="data" format="tabular" optional="true" label="Custom Hexamer Table (.tsv)"/>
+        </section>
+
+        <section name="cnci" title="CNCI Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include CNCI in ensemble"/>
+            <param name="weight" type="float" value="1.0" label="Consensus Weight"/>
+            <param name="mode" type="select" label="CNCI Mode">
+                <option value="ve" selected="true">Vertebrate (Human)</option>
+                <option value="pl">Plant</option>
+            </param>
+        </section>
+
+        <section name="cppred" title="CPPred Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include CPPred in ensemble"/>
+            <param name="weight" type="float" value="1.1" label="Consensus Weight"/>
+        </section>
+
+        <section name="cpc2" title="CPC2 Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include CPC2 in ensemble"/>
+            <param name="weight" type="float" value="0.9" label="Consensus Weight"/>
+        </section>
+
+        <section name="lgc" title="LGC Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include LGC in ensemble"/>
+            <param name="weight" type="float" value="0.9" label="Consensus Weight"/>
+        </section>
+
+        <section name="plek" title="PLEK Configuration" expanded="false">
+            <param name="run" type="boolean" checked="true" label="Include PLEK in ensemble"/>
+            <param name="weight" type="float" value="0.8" label="Consensus Weight"/>
+        </section>
+    </inputs>
+
+    <outputs>
+        <data name="output_tsv" format="tabular" label="metaLncRNA Results (TSV)"/>
+        <data name="output_html" format="html" label="metaLncRNA Scientific Report"/>
+        <data name="output_fasta_lnc" format="fasta" label="metaLncRNA Predicted lncRNAs (FASTA)"/>
+    </outputs>
+
+    <tests>
+        <test expect_exit_code="0">
+            <param name="input_fasta" value="sample.fasta" ftype="fasta"/>
+            <section name="rnasamba">
+                <param name="run" value="true"/>
+            </section>
+            <section name="cpc2">
+                <param name="run" value="true"/>
+            </section>
+            <output name="output_tsv">
+                <assert_contents>
+                    <has_text text="sequence_id"/>
+                    <has_text text="consensus_label"/>
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+
+    <help><![CDATA[
+**metaLncRNA: Fully Configurable Ensemble Predictor**
+
+This tool allows you to run a consensus analysis using 7 different lncRNA identification tools. 
+You can enable/disable individual tools and adjust their influence on the final result by 
+changing their consensus weights.
+    ]]></help>
+    <citations>
+        <citation type="bibtex">
+@article{metaLncRNA2026,
+  title={metaLncRNA: A Portable and Modular Meta-Predictor for Long Non-coding RNA Identification},
+  author={metaLncRNA Team},
+  year={2026}
+}
+        </citation>
+    </citations>
+</tool>

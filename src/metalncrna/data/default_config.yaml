@@ -1,0 +1,57 @@
+# metaLncRNA Global Configuration v1.0
+# Parameters defined here can be overridden by CLI arguments.
+
+# Global settings
+data_dir: "~/.metalncrna/data"
+tools: "rnasamba,cpc2,cpat,plek,cnci,cppred,lgc" # Default tools to run
+
+# Consensus Weights (Scientifically grounded)
+# Higher values give more influence to the tool in the final meta_score.
+weights:
+  rnasamba: 1.5  # Modern Deep Learning approach
+  cpat: 1.2      # Robust Hexamer-based logic
+  cppred: 1.1    # Multiple sequence features
+  cnci: 1.0      # Adjoining nucleotide triplets
+  cpc2: 0.9      # Peptide-length and Fickett based
+  lgc: 0.9       # Feature relationship based
+  plek: 0.8      # SVM K-mer based
+
+# --- Tool Specific Configurations ---
+
+# RNAsamba settings
+rnasamba:
+  env_name: "metalnc_rnasamba"
+  path: "rnasamba"
+  # weights: "path/to/custom_weights.hdf5"
+
+# CPC2 settings
+cpc2:
+  env_name: "metalnc_cpc2"
+  path: "CPC2.py"
+
+# CPAT settings
+cpat:
+  env_name: "metalnc_cpat"
+  path: "cpat.py"
+  species: "human" # Options: human, mouse
+
+# PLEK settings
+plek:
+  env_name: "metalnc_plek"
+  path: "PLEK.py"
+
+# CPPred settings (Internal)
+cppred:
+  env_name: "metalnc_legacy"
+  path: "CPPred_fixed.py"
+
+# CNCI settings (Internal)
+cnci:
+  env_name: "metalnc_legacy"
+  path: "CNCI.py"
+  mode: "ve" # Options: ve (vertebrate), pl (plant)
+
+# LGC settings (Internal)
+lgc:
+  env_name: "metalnc_legacy"
+  path: "lgc-1.0.0.py"

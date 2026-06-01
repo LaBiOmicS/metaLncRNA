@@ -1,0 +1,124 @@
+--- metaLncRNA Project Analysis ---
+Project: ValidationRun
+Started at: 2026-04-22 18:11:56.818122
+
+2026-04-22 18:11:57,649 - metalncrna - DEBUG - Executing in CWD: mamba run -n metalnc_rnasamba /home/menegidio/.miniforge3/envs/metalnc_rnasamba/bin/rnasamba classify /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/rnasamba_raw.tsv /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta /home/menegidio/.metalncrna/data/rnasamba/full_length_weights.hdf5
+
+--- TOOL START: rnasamba ---
+COMMAND: mamba run -n metalnc_rnasamba /home/menegidio/.miniforge3/envs/metalnc_rnasamba/bin/rnasamba classify /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/rnasamba_raw.tsv /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta /home/menegidio/.metalncrna/data/rnasamba/full_length_weights.hdf5
+CWD: None
+EXIT CODE: 0
+OUTPUT:
+Using TensorFlow backend.
+
+
+--- TOOL END: rnasamba ---
+2026-04-22 18:12:20,846 - metalncrna - DEBUG - Executing in CWD: mamba run -n metalnc_cpc2 python /home/menegidio/.miniforge3/envs/metalnc_cpc2/bin/CPC2.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
+
+--- TOOL START: CPC2.py ---
+COMMAND: mamba run -n metalnc_cpc2 python /home/menegidio/.miniforge3/envs/metalnc_cpc2/bin/CPC2.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpc2_raw.txt
+CWD: None
+EXIT CODE: 0
+OUTPUT:
+[INFO] read file '/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta'
+[INFO] Predicting coding potential, please wait ...
+[INFO] Running Done!
+[INFO] cost time: 0s
+
+
+--- TOOL END: CPC2.py ---
+2026-04-22 18:12:21,863 - metalncrna - DEBUG - Executing in CWD: mamba run -n metalnc_cpat /home/menegidio/.miniforge3/envs/metalnc_cpat/bin/cpat.py -g /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -d /home/menegidio/.metalncrna/data/cpat/Human_logitModel.RData -x /home/menegidio/.metalncrna/data/cpat/Human_Hexamer.tsv -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt
+
+--- TOOL START: cpat.py ---
+COMMAND: mamba run -n metalnc_cpat /home/menegidio/.miniforge3/envs/metalnc_cpat/bin/cpat.py -g /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -d /home/menegidio/.metalncrna/data/cpat/Human_logitModel.RData -x /home/menegidio/.metalncrna/data/cpat/Human_Hexamer.tsv -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt
+CWD: None
+EXIT CODE: 0
+OUTPUT:
+2026-04-22 06:12:22 [INFO]  Running CPAT version 3.0.5...
+2026-04-22 06:12:22 [INFO]  Start codons used: [ATG]
+2026-04-22 06:12:22 [INFO]  Stop codons used: [TAG,TAA,TGA]
+2026-04-22 06:12:22 [INFO]  Reading /home/menegidio/.metalncrna/data/cpat/Human_Hexamer.tsv
+2026-04-22 06:12:22 [INFO]  Checking format of "/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta"
+2026-04-22 06:12:22 [INFO]  Input gene file is in FASTA format
+2026-04-22 06:12:22 [INFO]  Searching for ORFs ...
+1 sequences finished
+ 2 sequences finished
+ 3 sequences finished
+ 4 sequences finished
+ 5 sequences finished
+ 
+
+2026-04-22 06:12:22 [INFO]  Calculate coding probability ...
+2026-04-22 06:12:23 [INFO]  Removing file /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_info.tsv
+2026-04-22 06:12:23 [INFO]  Select ORF with the highest coding probability ...
+2026-04-22 06:12:23 [INFO]  Done!
+  Output files:
+	*/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_seqs.fa: The top 5 ORF sequences (at least 75 nucleotides long) in FASTA format.
+	*/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.tsv: ORF information (strand, frame, start, end, size, Fickett TESTCODE score, Hexamer score) and coding probability)
+	*/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.best.tsv: The information of the best ORF. This file is a subset of "/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.ORF_prob.tsv"
+	*/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.no_ORF.txt: Sequence IDs or BED entried with no ORF found.
+	*/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cpat_raw.txt.r: Rscript file.
+
+
+--- TOOL END: cpat.py ---
+2026-04-22 18:12:23,164 - metalncrna - DEBUG - Executing in CWD: mamba run -n metalnc_plek /home/menegidio/.miniforge3/envs/metalnc_plek/bin/PLEK.py -fasta /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -out /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/plek_raw.txt -thread 3
+
+--- TOOL START: PLEK.py ---
+COMMAND: mamba run -n metalnc_plek /home/menegidio/.miniforge3/envs/metalnc_plek/bin/PLEK.py -fasta /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -out /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/plek_raw.txt -thread 3
+CWD: None
+EXIT CODE: 1
+OUTPUT:
+	5 sequences.
+[2026-04-22 18:12:23] Beginning PLEK run (Version 1.2) 
+[2026-04-22 18:12:23] PLEK is running
+[2026-04-22 18:12:23] Calculating k-mer usage
+[2026-04-22 18:12:23] Scaling data
+[2026-04-22 18:12:23] Predicting
+[2026-04-22 18:12:29] Run complete
+	Result file: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/plek_raw.txt
+	Coding: 0/5=0.0%, Non-coding: 5/5=100.0%
+
+
+--- TOOL END: PLEK.py ---
+2026-04-22 18:12:29,898 - metalncrna - WARNING - PLEK exited with 1 but may have finished. Check log.
+2026-04-22 18:12:29,900 - metalncrna - DEBUG - Executing in /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/bin: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/bin/CPPred_fixed.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cppred_raw.txt -r /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Human_Model/Human.range -m /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Human_Model/Human.model -hex /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Hexamer/Human_Hexamer.tsv -s Human
+
+--- TOOL START: CPPred_fixed.py ---
+COMMAND: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/bin/CPPred_fixed.py -i /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cppred_raw.txt -r /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Human_Model/Human.range -m /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Human_Model/Human.model -hex /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/Hexamer/Human_Hexamer.tsv -s Human
+CWD: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CPPred/bin
+EXIT CODE: 0
+OUTPUT:
+
+
+--- TOOL END: CPPred_fixed.py ---
+2026-04-22 18:12:30,315 - metalncrna - DEBUG - Executing in /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CNCI: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CNCI/CNCI.py -f /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cnci_run -p 3 -m ve
+
+--- TOOL START: CNCI.py ---
+COMMAND: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CNCI/CNCI.py -f /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta -o /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/cnci_run -p 3 -m ve
+CWD: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CNCI
+EXIT CODE: 0
+OUTPUT:
+/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/CNCI
+CNCI classification were completely done!
+0.699521 second for 5 transcript's computation.
+
+
+--- TOOL END: CNCI.py ---
+2026-04-22 18:12:31,284 - metalncrna - DEBUG - Executing in /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/LGC/scr: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/LGC/scr/lgc-1.0.0.py /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/lgc_raw.txt
+
+--- TOOL START: lgc-1.0.0.py ---
+COMMAND: mamba run -n metalnc_legacy python /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/LGC/scr/lgc-1.0.0.py /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/lgc_raw.txt
+CWD: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/src/metalncrna/third_party/LGC/scr
+EXIT CODE: 0
+OUTPUT:
+Input: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/examples/sample.fasta
+Output: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun/intermediates/lgc_raw.txt
+Scan ORF ...
+Done
+Computation time 0.00367999076843 senconds
+
+
+--- TOOL END: lgc-1.0.0.py ---
+2026-04-22 18:12:31,782 - metalncrna - INFO - Computing consensus...
+2026-04-22 18:12:31,828 - metalncrna - INFO - Generating FASTA output...
+2026-04-22 18:12:31,833 - metalncrna - INFO - Execution finished! Project files saved in: /media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/at/tests/test_output/ValidationRun

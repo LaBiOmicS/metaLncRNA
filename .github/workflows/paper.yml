@@ -1,0 +1,28 @@
+name: JOSS Paper Check
+
+on:
+  push:
+    paths:
+      - 'paper/paper.md'
+      - 'paper/paper.bib'
+      - 'README.md'
+  pull_request:
+    paths:
+      - 'paper/paper.md'
+      - 'paper/paper.bib'
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    name: Paper Draft
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare Paper
+        run: cp paper/paper.md . && cp paper/paper.bib .
+      - name: Build Paper
+        uses: openjournals/openjournals-draft-action@master
+        with:
+          paper_path: paper.md
+          journal: joss
+          # JOSS uses its own bib file found in paper/ by default
