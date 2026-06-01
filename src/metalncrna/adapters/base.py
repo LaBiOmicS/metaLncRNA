@@ -2,40 +2,32 @@ import os
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Optional
 
 import pandas as pd
 
-from ..utils.envs import get_env_bin_path, get_python_path
 from ..utils.logger import logger
 
 
 class BaseAdapter(ABC):
-    """
-    Base class for all metaLncRNA tool adapters.
-    """
-    def __init__(self, tool_name: Optional[str] = None, env_name: Optional[str] = None, use_mamba: bool = True):
+    def __init__(self, tool_name, env_name, use_mamba=True):
         self.tool_name = tool_name
         self.env_name = env_name
         self.use_mamba = use_mamba
-        if self.use_mamba and self.env_name:
-            self.tool_path = get_env_bin_path(self.env_name, self.tool_name)
-            self.python_path = get_python_path(self.env_name)
-        else:
-            self.tool_path = tool_name
-            self.python_path = "python"
 
-    def run_command(self, cmd: List[str], log_file: Optional[Path] = None, cwd: Optional[Any] = None) -> str:
+    def run_command(self, cmd, log_file=None, cwd=None, env=None):
         """
-        Executes a command with optional working directory.
-        Captures stdout and stderr and logs them.
+        Executes a command using subprocess with mamba integration and logging.
         """
+        # Prepare environment
+        current_env = os.environ.copy()
         # Set environment variables to silence underlying tools (e.g. TensorFlow)
-        env = os.environ.copy()
-        env["TF_CPP_MIN_LOG_LEVEL"] = "3"
-        env["PYTHONWARNINGS"] = "ignore"
+        current_env["TF_CPP_MIN_LOG_LEVEL"] = "3"
+        current_env["PYTHONWARNINGS"] = "ignore"
+        if env:
+            current_env.update(env)
 
-        if self.use_mamba and self.env_name:
+        if self.use_mamba:
             full_cmd = ["mamba", "run", "-n", self.env_name] + cmd
         else:
             full_cmd = cmd
@@ -48,7 +40,7 @@ class BaseAdapter(ABC):
             stderr=subprocess.STDOUT,
             text=True,
             cwd=str(cwd) if cwd else None,
-            env=env
+            env=current_env
         )
         stdout, _ = process.communicate()
 
@@ -77,9 +69,6 @@ class BaseAdapter(ABC):
     def parse_results(self, raw_output_path: Path) -> pd.DataFrame:
         pass
 
-    def get_standardized_results(
-        self, input_fasta: str, output_dir: str, log_file: Optional[Path] = None
-    ) -> pd.DataFrame:
-        """Standard high-level entry point for prediction."""
+    def get_standardized_results(self, input_fasta, output_dir, log_file=None):
         raw_output = self.run(input_fasta, output_dir, log_file=log_file)
         return self.parse_results(raw_output)

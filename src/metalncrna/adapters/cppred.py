@@ -30,7 +30,10 @@ class CPPredAdapter(BaseAdapter):
             "-s", "Human"
         ]
 
-        self.run_command(cmd, log_file=log_file, cwd=self.root / "bin")
+        # Run in output_dir to avoid race conditions with temporary files like test.f_svm
+        # We must add tool root to PYTHONPATH so feamodule can be found
+        env = {"PYTHONPATH": str(self.root / "bin")}
+        self.run_command(cmd, log_file=log_file, cwd=output_dir, env=env)
         return raw_output
 
     def parse_results(self, raw_output_path):

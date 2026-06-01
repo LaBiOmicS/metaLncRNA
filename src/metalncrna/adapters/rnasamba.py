@@ -15,7 +15,8 @@ class RNAsambaAdapter(BaseAdapter):
         output_dir.mkdir(parents=True, exist_ok=True)
         raw_output = output_dir / "rnasamba_raw.tsv"
         cmd = [self.tool_path, "classify", str(raw_output), str(input_fasta), str(self.weights_path)]
-        self.run_command(cmd, log_file=log_file)
+        env = {"HDF5_USE_FILE_LOCKING": "FALSE"}
+        self.run_command(cmd, log_file=log_file, env=env)
         return raw_output
 
     def parse_results(self, raw_output_path):

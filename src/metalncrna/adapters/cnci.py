@@ -12,9 +12,9 @@ class CNCIAdapter(BaseAdapter):
         self.root = Path(__file__).parent.parent / "third_party" / "CNCI"
         self.script = self.root / "CNCI.py"
         self.mode = mode # 've' for vertebrate (human), 'pl' for plant
-        # Optimize: Limit CNCI to 4 threads max to avoid I/O overhead on small files
-        # and prevent potential multiprocessing instability in the legacy tool.
-        self.cores = min(4, max(1, multiprocessing.cpu_count() - 1))
+        # Optimize: Increased limit to 8 threads to better handle large files
+        # while still maintaining some safety against I/O overhead.
+        self.cores = min(8, max(1, multiprocessing.cpu_count() - 1))
 
     def run(self, input_fasta, output_dir, log_file=None):
         output_dir = Path(output_dir).absolute()
