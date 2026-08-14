@@ -112,9 +112,10 @@ where $w_i$ is a benchmarked reliability weight for each tool $i$, and $P_i$ is 
 
 # Key Features and Data Outputs
 
-`metaLncRNA` produces high-confidence, standardized tabular results for every analysis. The pipeline output includes:
-- **`metalncrna_results.tsv`**: A unified consensus table containing individual tool probabilities, the final meta-score ($S$), and consensus support metrics.
-- **`predicted_lncrnas.fasta`**: A filtered FASTA file containing only transcripts classified as lncRNAs, facilitating downstream functional genomic analysis.
+`metaLncRNA` produces high-confidence, standardized tabular and visual results for every analysis while preserving 100% case-sensitive sequence header fidelity from upstream transcriptome assembly software (such as Trinity, StringTie, or Cufflinks). The pipeline output includes:
+- **`metalncrna_results.tsv`**: A unified consensus table containing individual tool probabilities, exact original sequence IDs, the final meta-score ($S$), and consensus support metrics.
+- **`metalncrna_report.html`**: An interactive scientific report dashboard featuring Plotly visualizations of coding probability distributions, GC content, sequence length histograms, and inter-tool concordance heatmaps.
+- **`predicted_lncrnas.fasta`**: A filtered FASTA file containing only transcripts classified as lncRNAs with intact original headers, facilitating downstream functional genomic analysis.
 - **`metalncrna.log`**: A comprehensive execution log, ensuring auditability and traceability of the ensemble classification process.
 
 ### Extensibility and Custom Model Training

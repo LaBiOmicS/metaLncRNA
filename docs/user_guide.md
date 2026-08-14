@@ -48,6 +48,11 @@ Runs the full ensemble on your transcript dataset.
 ```bash
 metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis --tools rnasamba,cpc2,cpat,plek,cnci,cppred,lgc
 ```
+This automatically produces four primary output assets in your project directory:
+- **`metalncrna_results.tsv`**: Standardized tabular report with exact original sequence IDs, tool-specific probabilities, meta-scores, and consensus agreement.
+- **`metalncrna_report.html`**: Interactive scientific dashboard featuring score distributions, GC content, sequence length histograms, and tool agreement heatmaps.
+- **`predicted_lncrnas.fasta`**: Filtered FASTA file containing predicted lncRNA sequences with intact original headers.
+- **`metalncrna.log`**: Detailed execution log.
 
 ### 3. Manual Aggregation
 If tools were run individually, you can aggregate results manually.

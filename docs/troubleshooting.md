@@ -24,6 +24,15 @@ Ensure your working directory is correctly bound using the `--bind` flag:
 
 ---
 
+## Sequence IDs & Reports
+**Will my transcript names match Trinity or StringTie IDs?**
+Yes. `metaLncRNA` preserves exact case-sensitive sequence headers throughout all outputs (`metalncrna_results.tsv`, `metalncrna_report.html`, and `predicted_lncrnas.fasta`).
+
+**Where is the scientific report generated?**
+Running `metalncrna predict` automatically creates `metalncrna_report.html` in the output directory. Open this file in any web browser to explore interactive Plotly charts.
+
+---
+
 ## AI Agent & Ollama
 **Error: 'ollama' package not found**
 The AI features are optional. Install them with:

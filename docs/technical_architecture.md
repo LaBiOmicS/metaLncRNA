@@ -54,6 +54,17 @@ Working with legacy bioinformatics tools requires active mitigation of technical
 - **Thread Capping:** The `Dispatcher` now caps CNCI parallelism to 4 threads. This reduces disk I/O contention and prevents the legacy multiprocessing logic from overwhelming the system, especially when processing many small transcriptomic files.
 - **Failure-Resilient Cleanup:** To facilitate debugging, the cleanup of intermediate files is now conditional. If any tool in the ensemble fails, metaLncRNA preserves the `intermediates/` directory for that sample, regardless of the global `keep_intermediates` setting.
 
+## Sequence ID Integrity & Deduplication (v2.0.3 Updates)
+To ensure downstream compatibility with transcriptome assembly pipelines (e.g., Trinity, StringTie, Cufflinks), `metaLncRNA` guarantees 100% case-sensitive preservation of original FASTA sequence headers:
+
+- **Key Mapping Engine:** The `build_id_mapping` utility parses the input FASTA and establishes a dual-index mapping (`clean_sequence_key` for internal tool lookups and `norm_to_orig` for final output restoration).
+- **Cartesian Product Mitigation:** Before cross-tool voting, tool outputs are deduplicated per sequence ID by retaining the maximum coding probability for each transcript, preventing Cartesian product row multiplication.
+- **Order Preservation:** Final consensus tables and extracted FASTA files preserve the exact order of sequences from the original input file.
+
+## Interactive Scientific Reporting
+Integrated automatically into `metalncrna predict`:
+- Generates `metalncrna_report.html` featuring interactive Plotly visualizations for score distributions, sequence length vs. GC content, and tool agreement matrices.
+
 ## Scalability and HPC Performance
 - **Parallel Dispatch:** Utilizes `concurrent.futures`.
 - **Memory Optimization:** Implements data type downcasting for consensus aggregation.
