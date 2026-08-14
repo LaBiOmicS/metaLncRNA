@@ -1,4 +1,4 @@
-# metaLncRNA v2.0.2 🧬🤖
+# metaLncRNA v2.0.3 🧬🤖
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/LaBiOmicS/metaLncRNA/main/logo.png" alt="metaLncRNA Logo" width="70%">
@@ -72,12 +72,13 @@
 
 ---
 
-## 🔧 Recent Fixes (v2.0.2)
+## 🔧 Recent Fixes (v2.0.3)
 - **100% Original Sequence ID Preservation:** Implemented `build_id_mapping` and `map_df_sequence_ids` to ensure original transcript names from transcriptome assemblers (Trinity, StringTie, Cufflinks, etc.) remain intact throughout the entire consensus and reporting pipeline.
 - **Deduplication & Merge Safety:** Prevents Cartesian product row explosions by deduplicating predictions per transcript before cross-tool voting.
 - **Adapter Attribute Bugfix:** Fixed `AttributeError` caused by missing `self.tool_path` in `BaseAdapter`.
 - **Automatic HTML Dashboard:** Integrated HTML report generation directly into `metalncrna predict`.
 - **Enhanced AI Agent Feedback:** Clear installation guidance and connection diagnostics for Ollama (`pip install metalncrna[agent]`, `ollama serve`, `ollama pull`).
+- **PyPI Release Workflow:** Enabled `skip-existing: true` in GitHub Actions publishing pipeline.
 
 ## 🔧 Previous Fixes (v2.0.0)
 - **CNCI Stability:** Fixed a critical hang in the CNCI legacy tool caused by non-canonical nucleotides (e.g., K, V, M) and a multiprocessing deadlock in the original Python 2.7 implementation.
