@@ -1,0 +1,137 @@
+{
+    "summary": {
+        "num_errors": 0,
+        "num_failures": 1,
+        "num_skips": 0,
+        "num_tests": 1
+    },
+    "tests": [
+        {
+            "data": {
+                "inputs": {
+                    "cpc2|run": true,
+                    "input_fasta": {
+                        "id": "35b1045f41c8fa1b",
+                        "src": "hda"
+                    },
+                    "rnasamba|run": true
+                },
+                "job": {
+                    "command_line": "metalncrna predict --input '/tmp/tmphkr4jpby/files/5/c/9/dataset_5c90387e-a880-4c71-85e1-13466e4af059.dat' --output '.' --project 'galaxy_analysis' --tools 'rnasamba,cpc2,cpat,plek,cnci,cppred,lgc' --n-jobs ${GALAXY_SLOTS:-4} --config '/tmp/tmphkr4jpby/job_working_directory/000/2/configs/tmpiaszy59z'  && mv galaxy_analysis/metalncrna_results.tsv '/tmp/tmphkr4jpby/job_working_directory/000/2/outputs/dataset_01707e1b-2e5a-4177-ae99-93cb9aaaaea8.dat' && mv galaxy_analysis/metalncrna_report.html '/tmp/tmphkr4jpby/job_working_directory/000/2/outputs/dataset_caec7561-fe0f-4669-8d86-54e2bcc1cdaf.dat' && mv galaxy_analysis/predicted_lncrnas.fasta '/tmp/tmphkr4jpby/job_working_directory/000/2/outputs/dataset_c23b4b5c-8951-4868-87fc-0f5cea03ee8a.dat'",
+                    "command_version": "",
+                    "copied_from_job_id": null,
+                    "create_time": "2026-04-11T02:26:16.330849",
+                    "dependencies": [],
+                    "exit_code": 1,
+                    "external_id": "522123",
+                    "galaxy_version": "26.0",
+                    "handler": null,
+                    "history_id": "35b1045f41c8fa1b",
+                    "id": "f9e9c4e47eff2387",
+                    "inputs": {
+                        "input_fasta": {
+                            "id": "35b1045f41c8fa1b",
+                            "src": "hda",
+                            "uuid": "5c90387e-a880-4c71-85e1-13466e4af059"
+                        }
+                    },
+                    "job_messages": [
+                        {
+                            "code_desc": "",
+                            "desc": "Fatal error: Exit code 1 ()",
+                            "error_level": 3.0,
+                            "exit_code": 1,
+                            "type": "exit_code"
+                        }
+                    ],
+                    "job_metrics": [
+                        {
+                            "name": "galaxy_slots",
+                            "plugin": "core",
+                            "raw_value": "1.0000000",
+                            "title": "Cores Allocated",
+                            "value": "1"
+                        },
+                        {
+                            "name": "start_epoch",
+                            "plugin": "core",
+                            "raw_value": "1775874377.0000000",
+                            "title": "Job Start Time",
+                            "value": "2026-04-10 23:26:17"
+                        },
+                        {
+                            "name": "end_epoch",
+                            "plugin": "core",
+                            "raw_value": "1775874383.0000000",
+                            "title": "Job End Time",
+                            "value": "2026-04-10 23:26:23"
+                        },
+                        {
+                            "name": "runtime_seconds",
+                            "plugin": "core",
+                            "raw_value": "6.0000000",
+                            "title": "Job Runtime (Wall Clock)",
+                            "value": "6 seconds"
+                        }
+                    ],
+                    "job_runner_name": null,
+                    "job_stderr": "",
+                    "job_stdout": "",
+                    "model_class": "Job",
+                    "output_collections": {},
+                    "outputs": {
+                        "output_fasta_lnc": {
+                            "id": "7c926e40ec8a6d45",
+                            "src": "hda",
+                            "uuid": "c23b4b5c-8951-4868-87fc-0f5cea03ee8a"
+                        },
+                        "output_html": {
+                            "id": "766dc6e1a8c1cb41",
+                            "src": "hda",
+                            "uuid": "caec7561-fe0f-4669-8d86-54e2bcc1cdaf"
+                        },
+                        "output_tsv": {
+                            "id": "f9e9c4e47eff2387",
+                            "src": "hda",
+                            "uuid": "01707e1b-2e5a-4177-ae99-93cb9aaaaea8"
+                        }
+                    },
+                    "params": {
+                        "__input_ext": "\"input\"",
+                        "chromInfo": "\"/tmp/tmphkr4jpby/galaxy-dev/tool-data/shared/ucsc/chrom/?.len\"",
+                        "cnci": "{\"mode\": \"ve\", \"run\": true, \"weight\": \"1.0\"}",
+                        "cpat": "{\"custom_hexamer\": null, \"custom_logit\": null, \"run\": true, \"species\": \"human\", \"weight\": \"1.2\"}",
+                        "cpc2": "{\"run\": true, \"weight\": \"0.9\"}",
+                        "cppred": "{\"run\": true, \"weight\": \"1.1\"}",
+                        "dbkey": "\"?\"",
+                        "lgc": "{\"run\": true, \"weight\": \"0.9\"}",
+                        "plek": "{\"run\": true, \"weight\": \"0.8\"}",
+                        "rnasamba": "{\"custom_weights\": null, \"run\": true, \"weight\": \"1.5\"}"
+                    },
+                    "state": "error",
+                    "stderr": "Traceback (most recent call last):\n  File \"/home/menegidio/.miniforge3/envs/metalnc_dev/bin/metalncrna\", line 3, in <module>\n    from metalncrna.cli import main\n  File \"/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/cli.py\", line 1, in <module>\n    import click\nModuleNotFoundError: No module named 'click'\n",
+                    "stdout": "",
+                    "tool_id": "metalncrna",
+                    "tool_stderr": "Traceback (most recent call last):\n  File \"/home/menegidio/.miniforge3/envs/metalnc_dev/bin/metalncrna\", line 3, in <module>\n    from metalncrna.cli import main\n  File \"/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/cli.py\", line 1, in <module>\n    import click\nModuleNotFoundError: No module named 'click'\n",
+                    "tool_stdout": "",
+                    "update_time": "2026-04-11T02:26:24.137050",
+                    "user_email": "planemo@galaxyproject.org",
+                    "user_id": "35b1045f41c8fa1b"
+                },
+                "output_problems": [
+                    "Job in error state.. tool_id: metalncrna, exit_code: 1, stderr: Traceback (most recent call last):\n  File \"/home/menegidio/.miniforge3/envs/metalnc_dev/bin/metalncrna\", line 3, in <module>\n    from metalncrna.cli import main\n  File \"/media/menegidio/Storage/Trabalho/UMC/LaBiOmics/Bioinformatics/Bioinfo/lncRNA/metaLncRNA/src/metalncrna/cli.py\", line 1, in <module>\n    import click\nModuleNotFoundError: No module named 'click'\n.",
+                    "Expected job to complete with exit code 0, found 1",
+                    "Output output_tsv:  different than expected\nExpected text 'sequence_id' in output ('')"
+                ],
+                "status": "failure",
+                "test_index": 0,
+                "time_seconds": 18.988827228546143,
+                "tool_id": "metalncrna",
+                "tool_version": "1.1.0"
+            },
+            "has_data": true,
+            "id": "metalncrna-0"
+        }
+    ],
+    "version": "0.1"
+}
