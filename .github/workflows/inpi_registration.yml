@@ -1,0 +1,76 @@
+name: INPI Registration
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'INPI_Registration/**'
+
+jobs:
+  update-hashes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sorted file list
+        run: |
+          git ls-files \
+            | grep -v '^INPI_Registration/' \
+            | sort \
+            > /tmp/source_files.txt
+
+          echo "Files included in hash: $(wc -l < /tmp/source_files.txt)"
+
+      - name: Compute hashes
+        run: |
+          COMBINED_SHA256=$(while IFS= read -r f; do cat "$f"; done < /tmp/source_files.txt | sha256sum | awk '{print $1}')
+          COMBINED_SHA512=$(while IFS= read -r f; do cat "$f"; done < /tmp/source_files.txt | sha512sum | awk '{print $1}')
+
+          mkdir -p INPI_Registration
+
+          printf '%s  (concatenated source tree, commit %s)\n' \
+            "$COMBINED_SHA256" "${{ github.sha }}" \
+            > INPI_Registration/HASH_SHA256.txt
+
+          printf '%s  (concatenated source tree, commit %s)\n' \
+            "$COMBINED_SHA512" "${{ github.sha }}" \
+            > INPI_Registration/HASH_SHA512.txt
+
+          {
+            echo "# metaLncRNA — INPI Source Code Manifest"
+            echo "# Generated : $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            echo "# Commit    : ${{ github.sha }}"
+            echo "# Ref       : ${{ github.ref }}"
+            echo ""
+            echo "## Combined Hash (all files concatenated in alphabetical order)"
+            echo ""
+            echo "SHA256  $COMBINED_SHA256"
+            echo "SHA512  $COMBINED_SHA512"
+            echo ""
+            echo "## Per-file Hashes"
+            echo ""
+            printf '%-64s  %-64s  %s\n' "SHA256" "SHA512" "FILE"
+            printf '%-64s  %-64s  %s\n' \
+              "----------------------------------------------------------------" \
+              "----------------------------------------------------------------" \
+              "----"
+            while IFS= read -r f; do
+              s256=$(sha256sum "$f" | awk '{print $1}')
+              s512=$(sha512sum "$f" | awk '{print $1}')
+              printf '%-64s  %-64s  %s\n' "$s256" "$s512" "$f"
+            done < /tmp/source_files.txt
+          } > INPI_Registration/manifest.txt
+
+      - name: Amend commit with registration files
+        run: |
+          git config user.name  "$(git log -1 --format='%an')"
+          git config user.email "$(git log -1 --format='%ae')"
+          git add INPI_Registration/HASH_SHA256.txt \
+                  INPI_Registration/HASH_SHA512.txt \
+                  INPI_Registration/manifest.txt
+          git diff --staged --quiet || \
+            git commit --amend --no-edit
+          git push --force-with-lease
