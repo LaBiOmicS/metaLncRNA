@@ -1,8 +1,8 @@
+import sys
 import unittest
 from unittest.mock import MagicMock, patch
 import pandas as pd
 import io
-from metalncrna.utils.agent import LncRNAAgent
 
 class TestLncRNAAgent(unittest.TestCase):
     def setUp(self):
@@ -17,31 +17,32 @@ class TestLncRNAAgent(unittest.TestCase):
             "cpat_prob": [0.2, 0.7]
         }
         self.df = pd.DataFrame(data)
-        self.agent = LncRNAAgent(model="llama3.2")
 
-    @patch('ollama.generate')
-    def test_summarize_results(self, mock_generate):
-        # Mock the LLM response
-        mock_generate.return_value = {'response': "This is a summary."}
-        
-        # We need to mock the import of ollama inside _lazy_init
-        with patch.dict('sys.modules', {'ollama': MagicMock()}):
-            summary = self.agent.summarize_results(self.df)
+    def test_summarize_results(self):
+        mock_ollama = MagicMock()
+        mock_ollama.generate.return_value = {'response': "This is a summary."}
+        with patch.dict(sys.modules, {'ollama': mock_ollama}):
+            from metalncrna.utils.agent import LncRNAAgent
+            agent = LncRNAAgent(model="llama3.2")
+            summary = agent.summarize_results(self.df)
             self.assertEqual(summary, "This is a summary.")
-            mock_generate.assert_called()
 
-    @patch('ollama.generate')
-    def test_explain_sequence(self, mock_generate):
-        mock_generate.return_value = {'response': "Explanation for sequence."}
-        
-        with patch.dict('sys.modules', {'ollama': MagicMock()}):
-            explanation = self.agent.explain_sequence("transcript_01", self.df)
+    def test_explain_sequence(self):
+        mock_ollama = MagicMock()
+        mock_ollama.generate.return_value = {'response': "Explanation for sequence."}
+        with patch.dict(sys.modules, {'ollama': mock_ollama}):
+            from metalncrna.utils.agent import LncRNAAgent
+            agent = LncRNAAgent(model="llama3.2")
+            explanation = agent.explain_sequence("transcript_01", self.df)
             self.assertEqual(explanation, "Explanation for sequence.")
-            mock_generate.assert_called()
 
     def test_explain_sequence_not_found(self):
-        explanation = self.agent.explain_sequence("unknown", self.df)
-        self.assertIn("not found", explanation)
+        mock_ollama = MagicMock()
+        with patch.dict(sys.modules, {'ollama': mock_ollama}):
+            from metalncrna.utils.agent import LncRNAAgent
+            agent = LncRNAAgent(model="llama3.2")
+            explanation = agent.explain_sequence("unknown", self.df)
+            self.assertIn("not found", explanation)
 
 if __name__ == '__main__':
     unittest.main()

@@ -258,10 +258,12 @@ def chat(results, model):
 @click.option("-p", "--project", "project_name", help="Analysis project name (creates a subfolder).")
 @click.option("-c", "--config", "config_file", type=click.Path(exists=True))
 @click.option("--tools", help="Comma-separated tools.")
+@click.option("-s", "--species", help="Species for CPAT (e.g., human, mouse).")
+@click.option("--mode", help="Mode for CNCI (ve for vertebrate, pl for plant).")
 @click.option("--n-jobs", type=int, help="Number of parallel jobs.")
 @click.option("--no-mamba", is_flag=True, help="Disable mamba run.")
 @click.option("--keep-intermediates", is_flag=True, help="Keep raw tool output files.")
-def predict(input_fasta, output_base, project_name, config_file, tools, n_jobs, no_mamba, keep_intermediates):
+def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates):
     """Run the integrated lncRNA identification pipeline."""
     output_dir = Path(output_base).absolute()
     if project_name:
@@ -288,14 +290,14 @@ def predict(input_fasta, output_base, project_name, config_file, tools, n_jobs, 
         if tool == "rnasamba":
             tool_config.setdefault("weights", str(data_dir / "rnasamba" / "full_length_weights.hdf5"))
         elif tool == "cpat":
-            species = tool_config.get("species", "human").capitalize()
-            tool_config.setdefault("logit_model", str(data_dir / "cpat" / f"{species}_logitModel.RData"))
-            tool_config.setdefault("hexamer_table", str(data_dir / "cpat" / f"{species}_Hexamer.tsv"))
+            selected_species = (species or tool_config.get("species", "human")).capitalize()
+            tool_config.setdefault("logit_model", str(data_dir / "cpat" / f"{selected_species}_logitModel.RData"))
+            tool_config.setdefault("hexamer_table", str(data_dir / "cpat" / f"{selected_species}_Hexamer.tsv"))
         elif tool in ["cppred", "lgc"]:
             tool_config.setdefault("env_name", "metalnc_legacy")
         elif tool == "cnci":
             tool_config.setdefault("env_name", "metalnc_legacy")
-            tool_config.setdefault("mode", "ve")
+            tool_config.setdefault("mode", mode or tool_config.get("mode", "ve"))
         run_config[tool] = tool_config
 
     console.print("[bold cyan][*] metaLncRNA Integrated Pipeline[/bold cyan]")
@@ -309,7 +311,7 @@ def predict(input_fasta, output_base, project_name, config_file, tools, n_jobs, 
         setup_logger(output_dir, silent_console=False)
         logger.info("Computing consensus...")
         final_results = ConsensusEngine.simple_voting(
-            results, custom_weights=config.get("weights"), total_tools_count=len(tool_list)
+            results, custom_weights=config.get("weights"), total_tools_count=len(tool_list), input_fasta=input_fasta
         )
         final_output = output_dir / "metalncrna_results.tsv"
         final_results.to_csv(final_output, sep="\t", index=False)
@@ -317,6 +319,15 @@ def predict(input_fasta, output_base, project_name, config_file, tools, n_jobs, 
         logger.info("Generating FASTA output...")
         lncrna_ids = final_results[final_results["consensus_label"] == "noncoding"]["sequence_id"].tolist()
         extract_lncrnas(input_fasta, output_dir / "predicted_lncrnas.fasta", lncrna_ids)
+
+        logger.info("Generating HTML report dashboard...")
+        try:
+            from .utils.fasta import get_sequence_stats
+            from .utils.reports import generate_html_report
+            stats = get_sequence_stats(input_fasta)
+            generate_html_report(final_results, results, stats, output_dir / "metalncrna_report.html")
+        except Exception as e:
+            logger.warning(f"Could not generate HTML report: {e}")
 
         logger.info(f"Execution finished! Project files saved in: {output_dir}")
 

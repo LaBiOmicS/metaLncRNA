@@ -37,8 +37,27 @@ def test_id_normalization():
             "coding_label": ["coding", "noncoding"]
         })
     }
-    # Merging logic should normalize SEQ_1_ORF_1 to seq_1
     engine = ConsensusEngine()
-    # Mocking data dict
     result = engine.simple_voting(data, total_tools_count=1)
     assert result.iloc[0]["sequence_id"] == "seq_1"
+
+
+def test_original_fasta_id_preservation(tmp_path):
+    fasta_file = tmp_path / "transcriptome.fasta"
+    fasta_file.write_text(">TRINITY_DN100_c0_g1_i1 len=500\nATGC\n>MSTRG.1234.1\nATGC\n")
+
+    data = {
+        "tool1": pd.DataFrame({
+            "sequence_id": ["trinity_dn100_c0_g1_i1_orf_1", "mstrg.1234.1"],
+            "coding_probability": [0.1, 0.9],
+            "coding_label": ["noncoding", "coding"]
+        })
+    }
+
+    engine = ConsensusEngine()
+    result = engine.simple_voting(data, total_tools_count=1, input_fasta=str(fasta_file))
+
+    # Must preserve exact original ID strings and order from FASTA
+    assert result.iloc[0]["sequence_id"] == "TRINITY_DN100_c0_g1_i1"
+    assert result.iloc[1]["sequence_id"] == "MSTRG.1234.1"
+

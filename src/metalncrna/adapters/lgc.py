@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ..utils.fasta import clean_sequence_key
 from .base import BaseAdapter
 
 
@@ -38,8 +39,7 @@ class LGCAdapter(BaseAdapter):
             return pd.DataFrame()
 
         df = pd.DataFrame(rows)
-        # FIX: Added .str before .lower()
-        df["sequence_id"] = df.iloc[:, 0].astype(str).str.lower().str.split().str[0]
+        df["sequence_id"] = df.iloc[:, 0].apply(clean_sequence_key)
 
         def to_prob(s):
             try:

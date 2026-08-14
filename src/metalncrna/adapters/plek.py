@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ..utils.fasta import clean_sequence_key
 from .base import BaseAdapter
 
 
@@ -44,7 +45,7 @@ class PLEKAdapter(BaseAdapter):
                 if len(parts) >= 3:
                     label_raw = parts[0]
                     score = float(parts[1])
-                    seq_id = parts[2].lstrip(">")
+                    seq_id = parts[2]
 
                     # Convert to standard
                     label = "coding" if label_raw.lower() == "coding" else "noncoding"
@@ -52,7 +53,7 @@ class PLEKAdapter(BaseAdapter):
                     prob = 1 / (1 + pow(2.718, -score))
 
                     results.append({
-                        "sequence_id": seq_id.lower().split()[0],
+                        "sequence_id": clean_sequence_key(seq_id),
                         "coding_probability": prob,
                         "coding_label": label
                     })

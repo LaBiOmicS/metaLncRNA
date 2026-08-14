@@ -12,6 +12,7 @@ from ..utils.logger import logger
 class BaseAdapter(ABC):
     def __init__(self, tool_name, env_name, use_mamba=True):
         self.tool_name = tool_name
+        self.tool_path = tool_name
         self.env_name = env_name
         self.use_mamba = use_mamba
 

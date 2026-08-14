@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ..utils.fasta import clean_sequence_key
 from .base import BaseAdapter
 
 
@@ -47,9 +48,9 @@ class CPATAdapter(BaseAdapter):
         if "seq_ID" in df.columns:
             df["sequence_id"] = df["seq_ID"]
         else:
-            df["sequence_id"] = df["ID"].astype(str).str.replace(r"_ORF_\d+$", "", regex=True)
+            df["sequence_id"] = df["ID"]
 
-        df["sequence_id"] = df["sequence_id"].astype(str).str.lower().str.split().str[0]
+        df["sequence_id"] = df["sequence_id"].apply(clean_sequence_key)
 
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],

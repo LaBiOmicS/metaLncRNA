@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ..utils.fasta import clean_sequence_key
 from .base import BaseAdapter
 
 
@@ -21,7 +22,7 @@ class RNAsambaAdapter(BaseAdapter):
 
     def parse_results(self, raw_output_path):
         df = pd.read_csv(raw_output_path, sep="\t")
-        df["sequence_id"] = df["sequence_name"].astype(str).str.lower().str.split().str[0]
+        df["sequence_id"] = df["sequence_name"].apply(clean_sequence_key)
         standard_df = pd.DataFrame({
             "sequence_id": df["sequence_id"],
             "coding_probability": df["coding_score"],

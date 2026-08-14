@@ -5,6 +5,8 @@ from typing import Dict, Optional
 import numpy as np
 import pandas as pd
 
+from ..utils.fasta import build_id_mapping, clean_sequence_key, map_df_sequence_ids
+
 
 class ConsensusEngine:
     """
@@ -22,7 +24,8 @@ class ConsensusEngine:
     @staticmethod
     def simple_voting(data_dict: Dict[str, pd.DataFrame],
                       custom_weights: Optional[Dict[str, float]] = None,
-                      total_tools_count: int = 7) -> pd.DataFrame:
+                      total_tools_count: int = 7,
+                      input_fasta: Optional[str] = None) -> pd.DataFrame:
 
         default_weights = {
             "rnasamba": 1.5, "cpat": 1.2, "cppred": 1.1,
@@ -30,20 +33,45 @@ class ConsensusEngine:
         }
         weights = custom_weights or default_weights
 
+        original_order = []
+        norm_to_orig = {}
+        if input_fasta and Path(input_fasta).exists():
+            original_order, norm_to_orig = build_id_mapping(input_fasta)
+
         merged_df = None
         for name, df in data_dict.items():
+            if df.empty:
+                continue
             df = df.copy()
             df = df.rename(columns={
                 "coding_probability": f"{name}_prob",
                 "coding_label": f"{name}_label"
             })
-            df["sequence_id"] = (
-                df["sequence_id"].astype(str).str.lower().str.replace(r"(_orf_\d+|:.*)$", "", regex=True)
-            )
-            if merged_df is None: merged_df = df
-            else: merged_df = pd.merge(merged_df, df, on="sequence_id", how="outer")
+            if norm_to_orig:
+                df = map_df_sequence_ids(df, norm_to_orig)
+            else:
+                df["sequence_id"] = df["sequence_id"].apply(clean_sequence_key)
 
-        if merged_df is None: return pd.DataFrame()
+            # Deduplicate by sequence_id, selecting maximum probability per transcript if multiple ORFs exist
+            prob_col = f"{name}_prob"
+            if prob_col in df.columns:
+                df[prob_col] = pd.to_numeric(df[prob_col], errors="coerce")
+                df = df.sort_values(prob_col, ascending=False).drop_duplicates(subset=["sequence_id"], keep="first")
+            else:
+                df = df.drop_duplicates(subset=["sequence_id"], keep="first")
+
+            if merged_df is None:
+                merged_df = df
+            else:
+                merged_df = pd.merge(merged_df, df, on="sequence_id", how="outer")
+
+        if merged_df is None or merged_df.empty: return pd.DataFrame()
+
+        # Re-order according to original FASTA sequence order if available
+        if original_order:
+            order_map = {seq_id: i for i, seq_id in enumerate(original_order)}
+            merged_df["_sort_order"] = merged_df["sequence_id"].map(order_map).fillna(999999)
+            merged_df = merged_df.sort_values("_sort_order").drop(columns=["_sort_order"])
 
         prob_cols = [c for c in merged_df.columns if c.endswith("_prob")]
 
@@ -68,10 +96,11 @@ class ConsensusEngine:
         merged_df["consensus_label"] = np.where(merged_df["meta_score"] > 0.5, "coding", "noncoding")
 
         # Calculate agreement support (how many tools agree with the final label)
+        label_cols = [c for c in merged_df.columns if c.endswith("_label") and c != "consensus_label"]
+
         def calculate_agreement(row):
             label = row["consensus_label"]
             agreement_count = 0
-            label_cols = [c for c in merged_df.columns if c.endswith("_label") and c != "consensus_label"]
             for col in label_cols:
                 if str(row[col]).lower() == label:
                     agreement_count += 1

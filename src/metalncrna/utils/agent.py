@@ -29,8 +29,27 @@ class LncRNAAgent:
             self._client = ollama
             self._initialized = True
         except ImportError:
-            console.print("[yellow]Warning: 'ollama' package not found.[/yellow]")
-            raise ImportError("Agent dependencies not met.")
+            console.print("\n[bold red]✖ The 'ollama' Python package is not installed.[/bold red]")
+            console.print("[yellow]💡 To enable the AI Agent, please install it via:[/yellow]")
+            console.print("   [bold cyan]pip install metalncrna[agent][/bold cyan]  or  [bold cyan]pip install ollama[/bold cyan]\n")
+            raise ImportError("Agent dependencies not met. Please install 'ollama'.")
+
+    def _format_error(self, e: Exception) -> str:
+        err_msg = str(e)
+        if "connection" in err_msg.lower() or "refused" in err_msg.lower() or "connect" in err_msg.lower():
+            return (
+                "⚠️ [bold red]Could not connect to Ollama server.[/bold red]\n\n"
+                "Please make sure Ollama is installed and running locally:\n"
+                "1. Install Ollama: https://ollama.com\n"
+                "2. Start the daemon: [bold cyan]ollama serve[/bold cyan]\n"
+                f"3. Ensure the model is downloaded: [bold cyan]ollama pull {self.model}[/bold cyan]"
+            )
+        elif "not found" in err_msg.lower():
+            return (
+                f"⚠️ [bold red]Model '{self.model}' was not found in Ollama.[/bold red]\n\n"
+                f"Please download it by running: [bold cyan]ollama pull {self.model}[/bold cyan]"
+            )
+        return f"Error communicating with Ollama agent: {err_msg}"
 
     def summarize_results(self, df: pd.DataFrame) -> str:
         """Generates a high-level executive summary of the findings."""
@@ -69,7 +88,7 @@ class LncRNAAgent:
             response = self._client.generate(model=self.model, prompt=prompt)
             return response['response']
         except Exception as e:
-            return f"Error: {str(e)}"
+            return self._format_error(e)
 
     def explain_sequence(self, sequence_id: str, df: pd.DataFrame) -> str:
         """Detailed technical explanation of a specific classification."""
@@ -111,7 +130,7 @@ class LncRNAAgent:
             response = self._client.generate(model=self.model, prompt=prompt)
             return response['response']
         except Exception as e:
-            return f"Error: {str(e)}"
+            return self._format_error(e)
 
     def chat(self, df: pd.DataFrame):
         """Interactive session with biological context."""
@@ -134,4 +153,5 @@ class LncRNAAgent:
                 console.print(Markdown(response['response']))
                 console.print(f"[bold cyan]{'─' * 40}[/bold cyan]\n")
             except Exception as e:
-                console.print(f"[red]Error: {str(e)}[/red]")
+                console.print(f"[red]{self._format_error(e)}[/red]")
+
