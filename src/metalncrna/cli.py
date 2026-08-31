@@ -263,7 +263,8 @@ def chat(results, model):
 @click.option("--n-jobs", type=int, help="Number of parallel jobs.")
 @click.option("--no-mamba", is_flag=True, help="Disable mamba run.")
 @click.option("--keep-intermediates", is_flag=True, help="Keep raw tool output files.")
-def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates):
+@click.option("--strict", is_flag=True, help="Abort execution immediately if any predictor fails.")
+def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates, strict):
     """Run the integrated lncRNA identification pipeline."""
     output_dir = Path(output_base).absolute()
     if project_name:
@@ -309,9 +310,14 @@ def predict(input_fasta, output_base, project_name, config_file, tools, species,
 
     failed_tools = [t for t in tool_list if t not in results]
     if failed_tools:
-        logger.warning(
-            f"The following tool(s) failed during execution and were excluded from consensus: {', '.join(failed_tools)}"
-        )
+        if strict:
+            setup_logger(output_dir, silent_console=False)
+            logger.error(f"STRICT MODE: Tool(s) failed: {', '.join(failed_tools)}. Aborting pipeline.")
+            raise click.ClickException(f"Pipeline aborted in strict mode due to tool failures: {', '.join(failed_tools)}")
+        else:
+            logger.warning(
+                f"The following tool(s) failed during execution and were excluded from consensus: {', '.join(failed_tools)}"
+            )
 
     if results:
         setup_logger(output_dir, silent_console=False)
