@@ -46,10 +46,12 @@ metalncrna setup [--tools tool1,tool2]
 ### 2. Integrated Prediction
 Runs the full ensemble on your transcript dataset.
 ```bash
-metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis --tools rnasamba,cpc2,cpat,plek,cnci,cppred,lgc --strict
+metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis --tools rnasamba,cpc2,cpat,plek,cnci,cppred,lgc --strict --cutoff 0.5 --offline-report
 ```
 Options:
 - `--strict`: Aborts pipeline execution immediately if any configured tool fails, ensuring strict 100% ensemble completeness.
+- `--cutoff`: Probability threshold for classification (default: `0.5`). Values above the cutoff are labeled `coding`; values below are `noncoding`.
+- `--offline-report`: Embeds Plotly JS inline directly in the HTML report, allowing full interactive rendering in offline / air-gapped HPC environments.
 
 This automatically produces four primary output assets in your project directory:
 - **`metalncrna_results.tsv`**: Standardized tabular report with exact original sequence IDs, tool-specific probabilities, meta-scores, and consensus agreement.
@@ -60,14 +62,15 @@ This automatically produces four primary output assets in your project directory
 ### 3. Manual Aggregation
 If tools were run individually, you can aggregate results manually.
 ```bash
-metalncrna aggregate -d results_dir/ -o final_results.tsv
+metalncrna aggregate -d results_dir/ -o final_results.tsv --cutoff 0.5
 ```
 
 ### 4. Custom Model Training
-Train species-specific models for supported tools (RNAsamba, CPAT).
+Train species-specific models for supported tools (`rnasamba`, `cpat`).
 ```bash
 metalncrna train --coding coding.fa --noncoding noncoding.fa -o my_models/ --tools rnasamba,cpat
 ```
+*Note: Species-specific retraining is supported for tools offering public training APIs (RNAsamba deep learning neural nets and CPAT hexamer tables/logistic models). Other predictors (e.g., CNCI, PLEK, CPC2) utilize their benchmarked, pre-trained feature matrices.*
 
 ### 5. Interactive AI Insights (New! 🤖)
 Interpret your genomic results using a local AI Agent. While the default is the lightweight `llama3.2`, we highly recommend using a **Specialist Biomedical Model** for scientific publications:

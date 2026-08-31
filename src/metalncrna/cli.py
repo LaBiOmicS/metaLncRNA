@@ -166,7 +166,8 @@ def lgc(input, output, config): run_single_tool("lgc", input, output, config)
 @main.command()
 @click.option("-d", "--results-dir", required=True, type=click.Path(exists=True))
 @click.option("-o", "--output", required=True, type=click.Path())
-def aggregate(results_dir, output):
+@click.option("--cutoff", type=float, default=0.5, help="Classification probability cutoff threshold (default: 0.5).")
+def aggregate(results_dir, output, cutoff):
     output_path = Path(output).absolute()
     setup_logger(output_path.parent)
     results_dir = Path(results_dir)
@@ -178,7 +179,7 @@ def aggregate(results_dir, output):
     config = load_config()
     data_dict = ConsensusEngine.from_files(files_dict)
     final_df = ConsensusEngine.simple_voting(
-        data_dict, custom_weights=config.get("weights"), total_tools_count=len(files_dict)
+        data_dict, custom_weights=config.get("weights"), total_tools_count=len(files_dict), cutoff=cutoff
     )
     final_df.to_csv(output, sep="\t", index=False)
     logger.info(f"Aggregation finished! Saved to: {output}")
@@ -264,7 +265,9 @@ def chat(results, model):
 @click.option("--no-mamba", is_flag=True, help="Disable mamba run.")
 @click.option("--keep-intermediates", is_flag=True, help="Keep raw tool output files.")
 @click.option("--strict", is_flag=True, help="Abort execution immediately if any predictor fails.")
-def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates, strict):
+@click.option("--cutoff", type=float, default=0.5, help="Classification probability cutoff threshold (default: 0.5).")
+@click.option("--offline-report", is_flag=True, help="Embed Plotly JS inline in HTML report for air-gapped environments.")
+def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates, strict, cutoff, offline_report):
     """Run the integrated lncRNA identification pipeline."""
     output_dir = Path(output_base).absolute()
     if project_name:
@@ -323,7 +326,7 @@ def predict(input_fasta, output_base, project_name, config_file, tools, species,
         setup_logger(output_dir, silent_console=False)
         logger.info("Computing consensus...")
         final_results = ConsensusEngine.simple_voting(
-            results, custom_weights=config.get("weights"), total_tools_count=len(tool_list), input_fasta=input_fasta
+            results, custom_weights=config.get("weights"), total_tools_count=len(tool_list), input_fasta=input_fasta, cutoff=cutoff
         )
         final_output = output_dir / "metalncrna_results.tsv"
         final_results.to_csv(final_output, sep="\t", index=False)
@@ -337,7 +340,7 @@ def predict(input_fasta, output_base, project_name, config_file, tools, species,
             from .utils.fasta import get_sequence_stats
             from .utils.reports import generate_html_report
             stats = get_sequence_stats(input_fasta)
-            generate_html_report(final_results, results, stats, output_dir / "metalncrna_report.html")
+            generate_html_report(final_results, results, stats, output_dir / "metalncrna_report.html", offline_plotly=offline_report)
         except Exception as e:
             logger.warning(f"Could not generate HTML report: {e}")
 

@@ -61,3 +61,22 @@ def test_original_fasta_id_preservation(tmp_path):
     assert result.iloc[0]["sequence_id"] == "TRINITY_DN100_c0_g1_i1"
     assert result.iloc[1]["sequence_id"] == "MSTRG.1234.1"
 
+
+def test_custom_cutoff():
+    data = {
+        "tool1": pd.DataFrame({
+            "sequence_id": ["seq1"],
+            "coding_probability": [0.45],
+            "coding_label": ["noncoding"]
+        })
+    }
+    engine = ConsensusEngine()
+    # Default cutoff 0.5 -> noncoding
+    res_default = engine.simple_voting(data, cutoff=0.5)
+    assert res_default.iloc[0]["consensus_label"] == "noncoding"
+
+    # Lower cutoff 0.4 -> coding
+    res_low = engine.simple_voting(data, cutoff=0.4)
+    assert res_low.iloc[0]["consensus_label"] == "coding"
+
+

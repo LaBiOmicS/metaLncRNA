@@ -25,7 +25,8 @@ class ConsensusEngine:
     def simple_voting(data_dict: Dict[str, pd.DataFrame],
                       custom_weights: Optional[Dict[str, float]] = None,
                       total_tools_count: int = 7,
-                      input_fasta: Optional[str] = None) -> pd.DataFrame:
+                      input_fasta: Optional[str] = None,
+                      cutoff: float = 0.5) -> pd.DataFrame:
 
         default_weights = {
             "rnasamba": 1.5, "cpat": 1.2, "cppred": 1.1,
@@ -93,7 +94,7 @@ class ConsensusEngine:
         res = merged_df.apply(calculate_weighted_prob, axis=1)
         merged_df["meta_score"] = res.apply(lambda x: x[0])
         merged_df["consensus_run_count"] = res.apply(lambda x: x[1])
-        merged_df["consensus_label"] = np.where(merged_df["meta_score"] > 0.5, "coding", "noncoding")
+        merged_df["consensus_label"] = np.where(merged_df["meta_score"] > cutoff, "coding", "noncoding")
 
         # Calculate agreement support (how many tools agree with the final label)
         label_cols = [c for c in merged_df.columns if c.endswith("_label") and c != "consensus_label"]
