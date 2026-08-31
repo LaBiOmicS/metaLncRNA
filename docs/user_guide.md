@@ -46,8 +46,11 @@ metalncrna setup [--tools tool1,tool2]
 ### 2. Integrated Prediction
 Runs the full ensemble on your transcript dataset.
 ```bash
-metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis --tools rnasamba,cpc2,cpat,plek,cnci,cppred,lgc
+metalncrna predict -i transcripts.fasta -o ./results -p MyAnalysis --tools rnasamba,cpc2,cpat,plek,cnci,cppred,lgc --strict
 ```
+Options:
+- `--strict`: Aborts pipeline execution immediately if any configured tool fails, ensuring strict 100% ensemble completeness.
+
 This automatically produces four primary output assets in your project directory:
 - **`metalncrna_results.tsv`**: Standardized tabular report with exact original sequence IDs, tool-specific probabilities, meta-scores, and consensus agreement.
 - **`metalncrna_report.html`**: Interactive scientific dashboard featuring score distributions, GC content, sequence length histograms, and tool agreement heatmaps.

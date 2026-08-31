@@ -106,8 +106,10 @@ class ConsensusEngine:
                     agreement_count += 1
             return agreement_count
 
+        executed_tools_count = len(data_dict)
+        denom = executed_tools_count if executed_tools_count > 0 else total_tools_count
         merged_df["consensus_support_count"] = merged_df.apply(calculate_agreement, axis=1)
-        merged_df["consensus_support"] = merged_df["consensus_support_count"].astype(str) + f"/{total_tools_count}"
+        merged_df["consensus_support"] = merged_df["consensus_support_count"].astype(str) + f"/{denom}"
 
         # Optimize memory usage for large genomic datasets
         for col in merged_df.select_dtypes(include=['float64']).columns:
