@@ -307,6 +307,12 @@ def predict(input_fasta, output_base, project_name, config_file, tools, species,
     dispatcher = Dispatcher(run_config, n_jobs=n_jobs, use_mamba=not no_mamba, keep_intermediates=keep_intermediates)
     results = dispatcher.run_all(input_fasta, output_dir, log_file=log_file, parallel=True)
 
+    failed_tools = [t for t in tool_list if t not in results]
+    if failed_tools:
+        logger.warning(
+            f"The following tool(s) failed during execution and were excluded from consensus: {', '.join(failed_tools)}"
+        )
+
     if results:
         setup_logger(output_dir, silent_console=False)
         logger.info("Computing consensus...")

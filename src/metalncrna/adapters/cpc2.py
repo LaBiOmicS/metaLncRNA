@@ -17,7 +17,7 @@ class CPC2Adapter(BaseAdapter):
         abs_input = Path(input_fasta).absolute()
 
         # CPC2.py -i input.fasta -o output.txt
-        cmd = ["python", self.tool_path, "-i", str(abs_input), "-o", str(raw_output)]
+        cmd = [self.tool_path, "-i", str(abs_input), "-o", str(raw_output)]
         self.run_command(cmd, log_file=log_file)
         return raw_output
 

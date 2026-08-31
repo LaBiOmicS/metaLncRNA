@@ -107,6 +107,7 @@ class Dispatcher:
                 elif raw_output.is_dir(): shutil.rmtree(raw_output)
             return name, res
         except Exception as e:
+            logger.error(f"Tool '{name}' execution failed: {e}")
             if log_file:
                 with open(log_file, "a") as f:
                     f.write(f"\nCRITICAL EXCEPTION in {name}: {str(e)}\n")
