@@ -5,7 +5,7 @@ import plotly.express as px
 # Nature-inspired palette
 COLORS = {"coding": "#D62728", "noncoding": "#1F77B4", "unknown": "#95A5A6"}
 
-def generate_html_report(final_df, results_dict, sequence_stats, output_path):
+def generate_html_report(final_df, results_dict, sequence_stats, output_path, offline_plotly: bool = False):
     stats_df = (
         pd.DataFrame.from_dict(sequence_stats, orient='index')
         .reset_index()
@@ -33,12 +33,19 @@ def generate_html_report(final_df, results_dict, sequence_stats, output_path):
                          color_continuous_scale="RdBu", text_auto=".2f")
     fig_heat.update_layout(width=600, height=600)
 
+    plotly_js_option = True if offline_plotly else "cdn"
+    sun_html = fig_sun.to_html(full_html=False, include_plotlyjs=plotly_js_option)
+    heat_html = fig_heat.to_html(full_html=False, include_plotlyjs=False)
+    conf_html = fig_conf.to_html(full_html=False, include_plotlyjs=False)
+
+    js_header = "" if offline_plotly else '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>'
+
     # Generate HTML
     html = f"""
     <html>
     <head>
         <title>metaLncRNA Report</title>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        {js_header}
         <style>
             body {{ font-family: 'Arial', sans-serif; background: #f4f6f7; padding: 30px; }}
             .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
@@ -49,10 +56,10 @@ def generate_html_report(final_df, results_dict, sequence_stats, output_path):
     <body>
         <h1>metaLncRNA Analysis Dashboard</h1>
         <div class="grid">
-            <div class="card">{fig_sun.to_html(full_html=False, include_plotlyjs=False)}</div>
-            <div class="card">{fig_heat.to_html(full_html=False, include_plotlyjs=False)}</div>
+            <div class="card">{sun_html}</div>
+            <div class="card">{heat_html}</div>
             <div class="card" style="grid-column: span 2;">
-                {fig_conf.to_html(full_html=False, include_plotlyjs=False)}
+                {conf_html}
             </div>
         </div>
         <div class="card" style="margin-top:20px;">
