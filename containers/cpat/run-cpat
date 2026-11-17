@@ -1,0 +1,4 @@
+#!/bin/sh
+# Thin launcher: unmodified `cpat`. Models are under /opt/cpat/models/. CPAT writes
+# CPAT_run_info.log into the CWD, so run it from the output directory.
+exec cpat "$@"

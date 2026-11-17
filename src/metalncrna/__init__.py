@@ -1,5 +1,3 @@
-"""
-metaLncRNA: A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs).
-"""
+"""metaLncRNA: consensus lncRNA identification from unmodified, containerised predictors."""
 
-__version__ = "2.0.6"
+__version__ = "3.0.0.dev0"

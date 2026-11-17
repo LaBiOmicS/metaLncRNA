@@ -1,350 +1,135 @@
-import datetime
+"""Command-line interface: setup, check, predict."""
+
+from __future__ import annotations
+
+import argparse
+import logging
+import subprocess
+import sys
 from pathlib import Path
 
-import click
-import yaml
-from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from . import __version__
+from .config import Manifest, cache_dir
+from .fasta import FastaError
+from .pipeline import PipelineError, run
+from .runner import Runner, RunnerError
+from .tools import ALL, SPECIES, Options
 
-from .engine.consensus import ConsensusEngine
-from .engine.dispatcher import Dispatcher
-from .engine.trainer import Trainer
-from .utils.downloader import download_all_resources
-from .utils.fasta import extract_lncrnas
-from .utils.logger import logger, setup_logger
-from .utils.setup_envs import create_environments
+log = logging.getLogger("metalncrna")
 
-console = Console()
 
-def load_config(config_path=None):
-    # Internal default config
-    pkg_default = Path(__file__).parent / "data" / "default_config.yaml"
+def _tools(value: str) -> list[str]:
+    names = [t.strip().lower() for t in value.split(",") if t.strip()]
+    bad = [n for n in names if n not in ALL]
+    if bad:
+        raise argparse.ArgumentTypeError(f"unknown tool(s): {', '.join(bad)} (choose from {', '.join(ALL)})")
+    return list(dict.fromkeys(names))
 
-    # User paths
-    default_paths = [config_path, Path.cwd() / "metaLncRNA_config.yaml", Path.home() / ".metalncrna" / "config.yaml"]
 
-    config = {}
-    # 1. Load internal package defaults first
-    if pkg_default.exists():
-        with open(pkg_default, "r") as f:
-            config = yaml.safe_load(f) or {}
-
-    # 2. Override with user configuration if available
-    for p in default_paths:
-        if p and Path(p).exists():
-            with open(p, "r") as f:
-                user_config = yaml.safe_load(f) or {}
-                config.update(user_config)
-            break
-    return config
-
-def get_data_dir(config):
-    return Path(config.get("data_dir", Path.home() / ".metalncrna" / "data")).expanduser().absolute()
-
-@click.group()
-def main():
-    """metaLncRNA: A modular and modern meta-predictor for lncRNA identification."""
-    pass
-
-@main.command()
-@click.option("--data-dir", help="Directory for models and databases.")
-@click.option("--tools", help="Specify tools.")
-@click.option("-c", "--config", "config_file", type=click.Path(exists=True))
-def setup(data_dir, tools, config_file):
-    """Setup isolated environments and download databases."""
-    setup_logger()
-    logger.info("Starting metaLncRNA setup...")
-    config = load_config(config_file)
-    final_data_dir = get_data_dir(config) if not data_dir else Path(data_dir).expanduser().absolute()
-    final_data_dir.mkdir(parents=True, exist_ok=True)
-
-    # FIX: Pass requested tools to downloader to avoid redundant/broken downloads
-    tool_list = (tools or config.get("tools", "rnasamba,cpc2,cpat,plek,cnci,cppred,lgc")).split(",")
-    tool_list = [t.strip() for t in tool_list]
-    download_all_resources(final_data_dir, tools=tool_list)
-
-    create_environments(tool_list)
-    logger.info(f"Setup completed! Data stored in {final_data_dir}.")
-
-@main.command()
-@click.option("--coding", required=True, type=click.Path(exists=True), help="FASTA file with protein-coding sequences.")
-@click.option("--noncoding", required=True, type=click.Path(exists=True), help="FASTA file with non-coding sequences.")
-@click.option("-o", "--output", required=True, type=click.Path(), help="Directory to save custom models.")
-@click.option("--tools", default="rnasamba,cpat", help="Tools to train (rnasamba,cpat).")
-def train(coding, noncoding, output, tools):
-    """Train supported models (RNAsamba, CPAT) with custom datasets."""
-    setup_logger()
-    console.print("[bold cyan][*] metaLncRNA Training Module[/bold cyan]")
-    trainer = Trainer(coding, noncoding, output)
-    tool_list = [t.strip() for t in tools.split(",")]
-    trainer.train_all(tools=tool_list)
-    console.print(f"[bold green][+] Training completed! Models saved in {output}[/bold green]")
-
-def run_single_tool(name, input_fasta, output_dir, config_file, **kwargs):
-    output_dir = Path(output_dir).absolute()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    setup_logger(output_dir, silent_console=True)
-    input_fasta = Path(input_fasta).absolute()
-    log_file = output_dir / "metalncrna.log"
-    config = load_config(config_file)
-    data_dir = get_data_dir(config)
-
-    tool_config = config.get(name, {})
-    if name == "rnasamba":
-        tool_config.setdefault("weights", str(data_dir / "rnasamba" / "full_length_weights.hdf5"))
-    elif name == "cpat":
-        species = (kwargs.get("species") or tool_config.get("species", "human")).capitalize()
-        tool_config.setdefault("logit_model", str(data_dir / "cpat" / f"{species}_logitModel.RData"))
-        tool_config.setdefault("hexamer_table", str(data_dir / "cpat" / f"{species}_Hexamer.tsv"))
-    elif name in ["cppred", "lgc"]:
-        tool_config.setdefault("env_name", "metalnc_legacy")
-    elif name == "cnci":
-        tool_config.setdefault("env_name", "metalnc_legacy")
-        tool_config.setdefault("mode", kwargs.get("mode", "ve"))
-
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        TimeElapsedColumn(),
-        console=console,
-    ) as progress:
-        task = progress.add_task(f"[cyan]Running {name.upper()}", total=1)
-        dispatcher = Dispatcher({name: tool_config}, use_mamba=True)
-        adapter = dispatcher.adapters[name]
-        results_df = adapter.get_standardized_results(input_fasta, output_dir, log_file=log_file)
-        progress.update(task, completed=1, description=f"[bold green]✓ {name.upper()} Finished")
-    if results_df is not None:
-        final_out = output_dir / f"{name}_standardized.tsv"
-        results_df.to_csv(final_out, sep="\t", index=False)
-        return results_df
-    return None
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-c", "--config", type=click.Path(exists=True))
-def rnasamba(input, output, config): run_single_tool("rnasamba", input, output, config)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-c", "--config", type=click.Path(exists=True))
-def cpc2(input, output, config): run_single_tool("cpc2", input, output, config)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-s", "--species")
-@click.option("-c", "--config", type=click.Path(exists=True))
-def cpat(input, output, species, config): run_single_tool("cpat", input, output, config, species=species)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-c", "--config", type=click.Path(exists=True))
-def plek(input, output, config): run_single_tool("plek", input, output, config)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-c", "--config", type=click.Path(exists=True))
-def cppred(input, output, config): run_single_tool("cppred", input, output, config)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-m", "--mode", default="ve", help="ve (vertebrate) or pl (plant)")
-@click.option("-c", "--config", type=click.Path(exists=True))
-def cnci(input, output, mode, config): run_single_tool("cnci", input, output, config, mode=mode)
-
-@main.command()
-@click.option("-i", "--input", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("-c", "--config", type=click.Path(exists=True))
-def lgc(input, output, config): run_single_tool("lgc", input, output, config)
-
-@main.command()
-@click.option("-d", "--results-dir", required=True, type=click.Path(exists=True))
-@click.option("-o", "--output", required=True, type=click.Path())
-@click.option("--cutoff", type=float, default=0.5, help="Classification probability cutoff threshold (default: 0.5).")
-def aggregate(results_dir, output, cutoff):
-    output_path = Path(output).absolute()
-    setup_logger(output_path.parent)
-    results_dir = Path(results_dir)
-    files = list(results_dir.glob("*_standardized.tsv"))
-    if not files:
-        logger.error("No files found.")
-        return
-    files_dict = {f.name.replace("_standardized.tsv", ""): f for f in files}
-    config = load_config()
-    data_dict = ConsensusEngine.from_files(files_dict)
-    final_df = ConsensusEngine.simple_voting(
-        data_dict, custom_weights=config.get("weights"), total_tools_count=len(files_dict), cutoff=cutoff
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog="metalncrna",
+        description="Consensus lncRNA identification: seven unmodified predictors, one majority vote.",
     )
-    final_df.to_csv(output, sep="\t", index=False)
-    logger.info(f"Aggregation finished! Saved to: {output}")
+    p.add_argument("--version", action="version", version=f"metalncrna {__version__}")
+    p.add_argument("-v", "--verbose", action="store_true")
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--engine", choices=["docker", "apptainer", "singularity"],
+                        help="container engine (default: first available)")
+    common.add_argument("--manifest", type=Path, help="alternative image manifest (TOML)")
+    common.add_argument("--tools", type=_tools, default=list(ALL),
+                        help=f"comma-separated subset (default: {','.join(ALL)})")
+    sub = p.add_subparsers(dest="command", required=True)
 
-@main.command()
-@click.argument("query")
-@click.option("-r", "--results", required=True, type=click.Path(exists=True), help="Results TSV file.")
-@click.option("-m", "--model", default="phi3", help="LLM model name (e.g., phi3, llama3, mistral).")
-def ask(query, results, model):
-    """Ask the metaLncRNA AI agent about your analysis results."""
+    s = sub.add_parser("setup", parents=[common], help="fetch (or build) the tool images")
+    s.add_argument("--build-from", type=Path, metavar="DIR",
+                   help="containers/ directory used to build images that are not in a registry")
+
+    sub.add_parser("check", parents=[common], help="report what is installed and verified")
+
+    r = sub.add_parser("predict", parents=[common], help="run the tools and build the consensus")
+    r.add_argument("-i", "--input", type=Path, required=True, help="transcripts in FASTA format")
+    r.add_argument("-o", "--outdir", type=Path, required=True)
+    r.add_argument("-s", "--species", choices=SPECIES, default="human",
+                   help="selects CPAT/CPPred/CNCI models (default: human)")
+    r.add_argument("-j", "--jobs", type=int, default=3, help="tools run concurrently (default: 3)")
+    r.add_argument("-t", "--threads", type=int, default=4, help="threads per tool where supported (default: 4)")
+    r.add_argument("--min-agree", type=int, metavar="N",
+                   help="lncrna.fasta: also require at least N noncoding votes")
+    r.add_argument("--min-length", type=int, default=200,
+                   help="lncrna.fasta: minimum transcript length in nt (default: 200)")
+    r.add_argument("--allow-failures", action="store_true",
+                   help="build the consensus even if some tools fail (default: abort)")
+    r.add_argument("--force", action="store_true", help="ignore checkpoints and rerun every tool")
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO,
+        format="%(asctime)s %(levelname)-7s %(message)s", datefmt="%H:%M:%S",
+    )
     try:
-        import pandas as pd
-
-        from .utils.agent import LncRNAAgent
-    except ImportError:
-        console.print("[red]Error: Agent dependencies not found.[/red]")
-        console.print("Please install with: [bold]pip install ollama[/bold]")
-        return
-
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
-        task = progress.add_task(f"[cyan]Consulting AI Agent ({model})...", total=None)
-
-        try:
-            df = pd.read_csv(results, sep="\t")
-            agent = LncRNAAgent(model=model)
-
-            # Simple routing based on the query content
-            q_lower = query.lower()
-            if any(x in q_lower for x in ["summary", "resumo", "overview"]):
-                response = agent.summarize_results(df)
-            elif any(x in q_lower for x in ["explain", "expliqu", "why", "por que"]):
-                # Try to extract a potential sequence ID from the query
-                # This is a simple heuristic, we could improve it
-                words = query.replace("?", "").split()
-                # Find the word that matches a sequence ID in the DF
-                seq_id = next((w for w in words if w.lower() in df["sequence_id"].str.lower().values), None)
-                if seq_id:
-                    response = agent.explain_sequence(seq_id, df)
-                else:
-                    response = (
-                        "I couldn't identify a sequence ID in your query to explain. Please provide the exact ID."
-                    )
-            else:
-                # Fallback to general query with context
-                response = agent.summarize_results(df) # Default for now
-
-            progress.update(task, completed=True)
-            console.print("\n[bold cyan]─── metaLncRNA AI Insight ───[/bold cyan]")
-            console.print(response)
-            console.print("[bold cyan]──────────────────────────────[/bold cyan]\n")
-
-        except Exception as e:
-            progress.update(task, completed=True)
-            console.print(f"[red]Error interacting with the agent: {str(e)}[/red]")
-
-@main.command()
-@click.option("-r", "--results", required=True, type=click.Path(exists=True), help="Results TSV file.")
-@click.option("-m", "--model", default="llama3.2", help="LLM model name.")
-def chat(results, model):
-    """Start an interactive chat with the metaLncRNA AI agent."""
-    try:
-        import pandas as pd
-
-        from .utils.agent import LncRNAAgent
-    except ImportError:
-        console.print("[red]Error: Agent dependencies not found.[/red]")
-        console.print("Please install with: [bold]pip install ollama[/bold]")
-        return
-
-    df = pd.read_csv(results, sep="\t")
-    agent = LncRNAAgent(model=model)
-    agent.chat(df)
-
-@main.command()
-@click.option("-i", "--input", "input_fasta", required=True, type=click.Path(exists=True), help="Input FASTA file.")
-@click.option("-o", "--output", "output_base", required=True, type=click.Path(), help="Base output directory.")
-@click.option("-p", "--project", "project_name", help="Analysis project name (creates a subfolder).")
-@click.option("-c", "--config", "config_file", type=click.Path(exists=True))
-@click.option("--tools", help="Comma-separated tools.")
-@click.option("-s", "--species", help="Species for CPAT (e.g., human, mouse).")
-@click.option("--mode", help="Mode for CNCI (ve for vertebrate, pl for plant).")
-@click.option("--n-jobs", type=int, help="Number of parallel jobs.")
-@click.option("--no-mamba", is_flag=True, help="Disable mamba run.")
-@click.option("--keep-intermediates", is_flag=True, help="Keep raw tool output files.")
-@click.option("--strict", is_flag=True, help="Abort execution immediately if any predictor fails.")
-@click.option("--cutoff", type=float, default=0.5, help="Classification probability cutoff threshold (default: 0.5).")
-@click.option("--offline-report", is_flag=True, help="Embed Plotly JS inline in HTML report for air-gapped environments.")
-def predict(input_fasta, output_base, project_name, config_file, tools, species, mode, n_jobs, no_mamba, keep_intermediates, strict, cutoff, offline_report):
-    """Run the integrated lncRNA identification pipeline."""
-    output_dir = Path(output_base).absolute()
-    if project_name:
-        output_dir = output_dir / project_name
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-    setup_logger(output_dir, silent_console=True)
-    input_fasta = Path(input_fasta).absolute()
-    log_file = output_dir / "metalncrna.log"
-
-    with open(log_file, "w") as f:
-        f.write("--- metaLncRNA Project Analysis ---\n")
-        f.write(f"Project: {project_name or 'Default'}\n")
-        f.write(f"Started at: {datetime.datetime.now()}\n\n")
-
-    config = load_config(config_file)
-    data_dir = get_data_dir(config)
-    tool_list = (tools or config.get("tools", "rnasamba,cpc2,cpat,plek,cnci,cppred,lgc")).split(",")
-    tool_list = [t.strip() for t in tool_list]
-
-    run_config = {}
-    for tool in tool_list:
-        tool_config = config.get(tool, {})
-        if tool == "rnasamba":
-            tool_config.setdefault("weights", str(data_dir / "rnasamba" / "full_length_weights.hdf5"))
-        elif tool == "cpat":
-            selected_species = (species or tool_config.get("species", "human")).capitalize()
-            tool_config.setdefault("logit_model", str(data_dir / "cpat" / f"{selected_species}_logitModel.RData"))
-            tool_config.setdefault("hexamer_table", str(data_dir / "cpat" / f"{selected_species}_Hexamer.tsv"))
-        elif tool in ["cppred", "lgc"]:
-            tool_config.setdefault("env_name", "metalnc_legacy")
-        elif tool == "cnci":
-            tool_config.setdefault("env_name", "metalnc_legacy")
-            tool_config.setdefault("mode", mode or tool_config.get("mode", "ve"))
-        run_config[tool] = tool_config
-
-    console.print("[bold cyan][*] metaLncRNA Integrated Pipeline[/bold cyan]")
-    if project_name:
-        console.print(f"[bold white]Project:[/bold white] [green]{project_name}[/green]")
-
-    dispatcher = Dispatcher(run_config, n_jobs=n_jobs, use_mamba=not no_mamba, keep_intermediates=keep_intermediates)
-    results = dispatcher.run_all(input_fasta, output_dir, log_file=log_file, parallel=True)
-
-    failed_tools = [t for t in tool_list if t not in results]
-    if failed_tools:
-        if strict:
-            setup_logger(output_dir, silent_console=False)
-            logger.error(f"STRICT MODE: Tool(s) failed: {', '.join(failed_tools)}. Aborting pipeline.")
-            raise click.ClickException(f"Pipeline aborted in strict mode due to tool failures: {', '.join(failed_tools)}")
-        else:
-            logger.warning(
-                f"The following tool(s) failed during execution and were excluded from consensus: {', '.join(failed_tools)}"
-            )
-
-    if results:
-        setup_logger(output_dir, silent_console=False)
-        logger.info("Computing consensus...")
-        final_results = ConsensusEngine.simple_voting(
-            results, custom_weights=config.get("weights"), total_tools_count=len(tool_list), input_fasta=input_fasta, cutoff=cutoff
+        manifest = Manifest.load(args.manifest)
+        runner = Runner.detect(args.engine, cache_dir())
+        log.info("engine: %s, cache: %s", runner.engine, runner.cache_dir)
+        return {"setup": cmd_setup, "check": cmd_check, "predict": cmd_predict}[args.command](
+            args, manifest, runner
         )
-        final_output = output_dir / "metalncrna_results.tsv"
-        final_results.to_csv(final_output, sep="\t", index=False)
+    except (RunnerError, FastaError, PipelineError) as exc:
+        log.error("%s", exc)
+        return 1
 
-        logger.info("Generating FASTA output...")
-        lncrna_ids = final_results[final_results["consensus_label"] == "noncoding"]["sequence_id"].tolist()
-        extract_lncrnas(input_fasta, output_dir / "predicted_lncrnas.fasta", lncrna_ids)
 
-        logger.info("Generating HTML report dashboard...")
-        try:
-            from .utils.fasta import get_sequence_stats
-            from .utils.reports import generate_html_report
-            stats = get_sequence_stats(input_fasta)
-            generate_html_report(final_results, results, stats, output_dir / "metalncrna_report.html", offline_plotly=offline_report)
-        except Exception as e:
-            logger.warning(f"Could not generate HTML report: {e}")
+def cmd_setup(args, manifest: Manifest, runner: Runner) -> int:
+    for name in args.tools:
+        image = manifest.images[name]
+        if image.local_only:
+            exists = subprocess.run(["docker", "image", "inspect", image.ref], capture_output=True).returncode == 0
+            if not exists:
+                if not (args.build_from and image.build):
+                    raise RunnerError(f"{name}: image {image.ref} is not in any registry; use --build-from containers/")
+                log.info("%s: building %s from %s", name, image.ref, args.build_from / image.build)
+                proc = subprocess.run(["docker", "build", "-t", image.ref, str(args.build_from / image.build)])
+                if proc.returncode != 0:
+                    raise RunnerError(f"{name}: docker build failed")
+        if runner.has_image(image.ref):
+            log.info("image ok: %s (%s)", name, image.ref)
+            continue
+        log.info("%s: fetching %s", name, image.ref)
+        runner.pull(image.ref, local_only=image.local_only)
+        log.info("image ok: %s", name)
+    return 0
 
-        logger.info(f"Execution finished! Project files saved in: {output_dir}")
+
+def cmd_check(args, manifest: Manifest, runner: Runner) -> int:
+    ok = True
+    for name in args.tools:
+        present = runner.has_image(manifest.images[name].ref)
+        ok &= present
+        print(f"image  {name:9} {'ok' if present else 'MISSING'}  {manifest.images[name].ref}")
+    print("ready" if ok else "not ready: run `metalncrna setup`")
+    return 0 if ok else 1
+
+
+def cmd_predict(args, manifest: Manifest, runner: Runner) -> int:
+    if not args.input.is_file():
+        raise FastaError(f"input not found: {args.input}")
+    summary = run(
+        input_fasta=args.input, out_dir=args.outdir, tool_names=args.tools,
+        opts=Options(species=args.species, threads=args.threads),
+        runner=runner, manifest=manifest, jobs=args.jobs, min_agree=args.min_agree,
+        min_length=args.min_length, allow_failures=args.allow_failures, force=args.force,
+    )
+    c = summary["consensus"]
+    log.info(
+        "consensus over %d sequences: %d coding, %d noncoding, %d ambiguous, %d unclassified",
+        summary["sequences"], c["coding"], c["noncoding"], c["ambiguous"], c["unclassified"],
+    )
+    log.info("%d sequences written to %s", summary["lncrna_fasta"]["sequences"], args.outdir / "lncrna.fasta")
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

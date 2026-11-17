@@ -1,0 +1,8 @@
+#!/bin/sh
+# Thin launcher. LGC writes temp files (ORF*.temp, top*.temp) into the CWD, so run in a private dir.
+# Usage: run-lgc <input.fasta> <output.txt>  (absolute paths). Upstream code is not altered.
+set -e
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+cd "$work"
+python /opt/LGC/lgc.py "$@"

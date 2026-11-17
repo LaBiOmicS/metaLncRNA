@@ -1,0 +1,4 @@
+#!/bin/sh
+# Thin launcher: unmodified PLEK.py. Note: PLEK.py exits with status 1 even after a
+# successful run (it ends with sys.exit(1)); success is judged by its "Run complete" message.
+exec PLEK.py "$@"

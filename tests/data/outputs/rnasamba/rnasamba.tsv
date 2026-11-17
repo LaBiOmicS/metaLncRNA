@@ -1,0 +1,8 @@
+sequence_name	coding_score	classification
+s0000001	0.99576	coding
+s0000002	0.99723	coding
+s0000003	0.99559	coding
+s0000004	0.21552	noncoding
+s0000005	0.61847	coding
+s0000006	0.00213	noncoding
+s0000007	0.09071	noncoding

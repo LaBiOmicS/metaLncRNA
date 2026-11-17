@@ -1,0 +1,3 @@
+#!/bin/sh
+# Thin launcher: unmodified CPC2.py.
+exec CPC2.py "$@"

@@ -1,0 +1,42 @@
+# The image each tool runs in. Every image is built the same way from containers/<tool>/ and is
+# self-contained: the authors' unmodified tool, its dependencies, its model files (checked by
+# SHA-256 at build time) and a thin `run-<tool>` launcher.
+#
+# Published images are referenced by digest, so provenance.json records exactly what ran.
+# To use another registry, copy this file, change the `ref` values and pass it with `--manifest`.
+# `build` is the directory under containers/ used by `metalncrna setup --build-from containers`.
+
+[images.cnci]
+ref = "metalncrna/cnci:dev"
+build = "cnci"
+upstream = "https://github.com/www-bioinfo-org/CNCI @ 745e2d1942f0fa6c061f5308fdc876de430a114f"
+
+[images.cppred]
+ref = "metalncrna/cppred:dev"
+build = "cppred"
+upstream = "http://www.rnabinding.com/CPPred/ (CPPred.tar.gz, 2018-05-17)"
+
+[images.lgc]
+ref = "metalncrna/lgc:dev"
+build = "lgc"
+upstream = "https://ngdc.cncb.ac.cn/lgc/ (LGC-1.0.tar.gz)"
+
+[images.cpat]
+ref = "metalncrna/cpat:dev"
+build = "cpat"
+upstream = "https://github.com/liguowang/cpat v3.0.5 (Bioconda build) + prebuilt_models @ v3.0.5"
+
+[images.cpc2]
+ref = "metalncrna/cpc2:dev"
+build = "cpc2"
+upstream = "https://github.com/gao-lab/CPC2_standalone 1.0.1 (Bioconda build)"
+
+[images.plek]
+ref = "metalncrna/plek:dev"
+build = "plek"
+upstream = "https://sourceforge.net/projects/plek/ 1.2 (Bioconda build)"
+
+[images.rnasamba]
+ref = "metalncrna/rnasamba:dev"
+build = "rnasamba"
+upstream = "https://github.com/apcamargo/RNAsamba 0.2.5 (Bioconda build) + data/full_length_weights.hdf5 @ 0.2.5"

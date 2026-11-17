@@ -1,56 +1,31 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
 
 [project]
 name = "metalncrna"
-version = "2.0.6"
-description = "A portable and modular meta-predictor for identifying Long Non-coding RNAs (lncRNAs)."
+version = "3.0.0.dev0"
+description = "Consensus lncRNA identification by majority vote of seven unmodified, containerised coding-potential predictors"
 readme = "README.md"
-requires-python = ">=3.8"
-license = {text = "MIT"}
-authors = [
-    {name = "Fabiano Bezerra Menegidio", email = "fabianomenegidio@umc.br"}
-]
-keywords = ["lncRNA", "bioinformatics", "genomics", "ensemble"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: POSIX :: Linux",
-    "Topic :: Scientific/Engineering :: Bio-Informatics"
-]
-dependencies = [
-    "click",
-    "pandas",
-    "biopython",
-    "plotly",
-    "pyyaml",
-    "rich",
-    "matplotlib"
-]
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
 
 [project.optional-dependencies]
-agent = ["ollama"]
+test = ["pytest>=8"]
 
 [project.scripts]
 metalncrna = "metalncrna.cli:main"
 
-[tool.setuptools]
-include-package-data = true
+[tool.hatch.build.targets.wheel]
+packages = ["src/metalncrna"]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["containers: runs the real tool containers (needs docker or apptainer and `metalncrna setup`)"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py310"
-exclude = [
-    "src/metalncrna/third_party",
-    "build",
-    "dist",
-    "__pycache__",
-]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
-ignore = ["E722", "E701"] # Ignorando bare except e múltiplas declarações por agora para evitar quebras de lógica legada
+select = ["E", "F", "W", "B", "I"]

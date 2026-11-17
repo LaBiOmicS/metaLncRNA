@@ -1,112 +1,91 @@
-# metaLncRNA v2.0.3 🧬🤖
+# metaLncRNA
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/LaBiOmicS/metaLncRNA/main/logo.png" alt="metaLncRNA Logo" width="70%">
-</p>
+Consensus identification of long non-coding RNAs. metaLncRNA runs seven published
+coding-potential predictors, each **exactly as released by its authors** and isolated in its own
+container, and calls a transcript coding or noncoding by **majority vote of the tools' own verdicts**.
 
-<!-- Institutional Badges -->
-[![DOI](https://zenodo.org/badge/1208858176.svg)](https://doi.org/10.5281/zenodo.19547230)
-[![University: UMC](https://img.shields.io/badge/University-UMC-0D47A1.svg)](https://www.umc.br/)
-[![Laboratory: LaBiOmicS](https://img.shields.io/badge/Laboratory-LaBiOmicS-7B1FA2.svg)](https://github.com/LaBiOmicS)
-[![Bioinformatics](https://img.shields.io/badge/Bioinformatics-lncRNA-green.svg)](https://github.com/LaBiOmicS/metaLncRNA)
+| Tool | Version | Built from |
+|---|---|---|
+| CNCI | v2 (`745e2d1`) | the authors' code (Python 2.7) |
+| CPPred | 2018-05-17 tarball | the authors' code (Python 2.7) |
+| LGC | 1.0 download | the authors' code (Python 2.7) |
+| CPAT | 3.0.5 | BioContainers image + the authors' prebuilt models |
+| CPC2 | 1.0.1 | BioContainers image |
+| PLEK | 1.2 | BioContainers image |
+| RNAsamba | 0.2.5 | BioContainers image + the authors' pretrained weights |
 
-<!-- Open Science Badges -->
-[![PyPI Version](https://img.shields.io/pypi/v/metalncrna.svg)](https://pypi.org/project/metalncrna/)
-[![Open Source](https://img.shields.io/badge/Open-Source-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
-[![Open Science](https://img.shields.io/badge/Open-Science-blue.svg)](https://github.com/LaBiOmicS/metaLncRNA)
-[![Open Data](https://img.shields.io/badge/Open-Data-brightgreen.svg)](https://github.com/LaBiOmicS/metaLncRNA)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![JOSS Status](https://img.shields.io/badge/JOSS-Pre--submission-brightgreen.svg)](https://joss.theoj.org/)
-[![CI Status](https://github.com/LaBiOmicS/metaLncRNA/actions/workflows/ci.yml/badge.svg)](https://github.com/LaBiOmicS/metaLncRNA/actions/workflows/ci.yml)
+All seven images are built the same way from [`containers/`](containers/README.md): each is
+self-contained (unmodified tool, dependencies, model files verified by SHA-256 at build time), has
+a `run-<tool>` entry point and OCI provenance labels. Published images are referenced by digest in
+[`src/metalncrna/manifest.toml`](src/metalncrna/manifest.toml).
 
-<!-- Tech & Method Badges -->
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Powered by Ollama](https://img.shields.io/badge/AI-Powered_by_Ollama-orange.svg)](https://ollama.com)
-[![Ensemble Learning](https://img.shields.io/badge/Method-Ensemble_Learning-blueviolet.svg)](https://github.com/LaBiOmicS/metaLncRNA)
+## Consensus rule
 
----
+1. Each tool gives its own label with its own default parameters. CPAT does not emit a label, so the
+   authors' published species cut-off is applied (human 0.364, mouse 0.44, fly 0.39, zebrafish 0.38);
+   transcripts in which CPAT finds no ORF are counted as noncoding.
+2. A tool that does not report on a transcript **abstains** (PLEK skips transcripts ≤ 200 nt, CNCI
+   skips transcripts with ambiguous bases, CPAT has no plant model, a tool may have failed...).
+3. Among the tools that voted: more coding votes → `coding`, more noncoding votes → `noncoding`,
+   a tie → `ambiguous`, no votes → `unclassified`.
 
-`metaLncRNA` is a modular, high-performance Python framework designed to identify Long Non-coding RNAs (lncRNAs) by orchestrating an ensemble of seven diverse computational tools. It resolves the "reproducibility gap" by automating environment management and providing a robust consensus prediction through weighted soft-voting.
+`lncrna.fasta` contains the `noncoding` transcripts of at least `--min-length` nt (default 200, the
+conventional lncRNA length threshold), optionally requiring at least `--min-agree N` noncoding votes.
 
----
+## Install
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/LaBiOmicS/metaLncRNA/main/infografico.png" alt="metaLncRNA Infographic" width="100%">
-</p>
+Requirements: Python ≥ 3.11 and Docker or Apptainer/Singularity.
 
----
-
-## 📂 Repository Structure
-
-```text
-.
-├── conda/                   # Bioconda recipe and metadata
-├── deploy/                  # Containerization (Dockerfile, Singularity.def)
-├── docs/                    # Technical documentation and user guides
-├── examples/                # Quick-start samples (FASTA, config templates)
-├── galaxy/                  # Galaxy Tool wrapper and test data
-├── INPI_Registration/       # Legal software registration assets
-├── paper/                   # JOSS publication manuscript and bibliography
-├── scripts/                 # Bash scripts for HPC/Batch processing
-├── src/
-│   └── metalncrna/          # Main Python Package
-│       ├── cli.py           # Command-line interface entry point
-│       ├── adapters/        # Wrappers for 7 lncRNA predictors
-│       ├── engine/          # Core logic (Consensus, Dispatcher, Trainer)
-│       ├── utils/           # AI Agent, Env management, Reports, FASTA handling
-│       ├── data/            # Built-in weights and default configurations
-│       └── third_party/     # Bundled legacy tools (CNCI, CPPred, LGC)
-├── tests/                   # Comprehensive Unit and Integration tests
-├── pyproject.toml           # Build system and dependency definitions
-└── pixi.toml                # Environment management configuration
+```sh
+pip install .                                 # no Python dependencies
+metalncrna setup                              # pull the 7 images (or --build-from containers)
+metalncrna check
 ```
 
-### 🧩 Core Components Detail
+`scripts/publish-images.sh --update-manifest` builds and pushes the seven images and pins them in
+the manifest. With Apptainer, `setup` converts each image to a SIF file in the cache
+(`~/.cache/metalncrna`, or `$METALNCRNA_CACHE`). Converting the larger images (CPAT, RNAsamba)
+needs several GB of temporary space; if `/tmp` is a small tmpfs, set `APPTAINER_TMPDIR` to a
+directory on disk. To use images from another registry, copy
+`manifest.toml`, change the `ref` values and pass `--manifest`.
 
-- **`src/metalncrna/adapters/`**: Orchestrates external tools like RNAsamba, CPAT, CPC2, etc., providing a unified interface for prediction.
-- **`src/metalncrna/engine/`**: 
-    - `consensus.py`: Implements the weighted soft-voting algorithm.
-    - `dispatcher.py`: Manages parallel execution of the ensemble.
-- **`src/metalncrna/utils/agent.py`**: Integrates with local LLMs (Ollama) for automated biological interpretation of results.
-- **`galaxy/`**: Allows `metaLncRNA` to be integrated into Galaxy instances, supporting reproducible web-based workflows.
+## Run
 
----
+```sh
+metalncrna predict -i transcripts.fa -o results/ --species human
+```
 
-## 🔧 Recent Fixes (v2.0.3)
-- **100% Original Sequence ID Preservation:** Implemented `build_id_mapping` and `map_df_sequence_ids` to ensure original transcript names from transcriptome assemblers (Trinity, StringTie, Cufflinks, etc.) remain intact throughout the entire consensus and reporting pipeline.
-- **Deduplication & Merge Safety:** Prevents Cartesian product row explosions by deduplicating predictions per transcript before cross-tool voting.
-- **Adapter Attribute Bugfix:** Fixed `AttributeError` caused by missing `self.tool_path` in `BaseAdapter`.
-- **Automatic HTML Dashboard:** Integrated HTML report generation directly into `metalncrna predict`.
-- **Enhanced AI Agent Feedback:** Clear installation guidance and connection diagnostics for Ollama (`pip install metalncrna[agent]`, `ollama serve`, `ollama pull`).
-- **PyPI Release Workflow:** Enabled `skip-existing: true` in GitHub Actions publishing pipeline.
+| Option | Meaning |
+|---|---|
+| `-s/--species` | `human` (default), `mouse`, `fly`, `zebrafish`, `plant`, `other` — selects CPAT, CPPred and CNCI models |
+| `--tools` | subset, e.g. `cpc2,cpat,rnasamba` |
+| `-j/--jobs`, `-t/--threads` | tools run concurrently / threads per tool |
+| `--min-agree N`, `--min-length` | filters for `lncrna.fasta` |
+| `--allow-failures` | build the consensus from the tools that succeeded (default: abort) |
+| `--engine` | `docker`, `apptainer` or `singularity` (default: first available) |
+| `--force` | ignore checkpoints |
 
-## 🔧 Previous Fixes (v2.0.0)
-- **CNCI Stability:** Fixed a critical hang in the CNCI legacy tool caused by non-canonical nucleotides (e.g., K, V, M) and a multiprocessing deadlock in the original Python 2.7 implementation.
-- **Improved Filtering:** Implemented rigorous FASTA validation in the CNCI adapter to exclude sequences with ambiguous characters, preventing `KeyError` crashes.
-- **Resource Optimization:** Optimized tool dispatching by limiting CNCI threads to 4, reducing I/O overhead and improving performance for small-to-medium files.
-- **Debug Resiliency:** The dispatcher now preserves intermediate files automatically if a tool failure occurs, facilitating troubleshooting.
+Outputs in `results/`:
 
-## 🔧 Previous Fixes (v1.2.1)
-- **Consensus Logic:** Updated `consensus_support` to reflect the number of tools that agree with the final consensus label, providing better interpretability.
-- **CPC2 Integration:** Fixed a critical parsing error where coding probability and label columns were mismatched (v1.1.8).
-- **Cleanup:** Removed unimplemented/experimental adapters to ensure stability.
+* `results.tsv` — per transcript: original ID, length, each tool's label and native score
+  (`NA` = abstained), vote counts, consensus and agreement (fraction of voters agreeing).
+* `lncrna.fasta` — selected transcripts with their original headers.
+* `provenance.json` — input SHA-256, image IDs/digests and labels, exact commands, run times,
+  per-tool status and citations.
+* `logs/<tool>.log` — the full output of each tool.
 
----
+Transcripts are renamed to internal IDs before the tools run (tools mangle names differently, e.g.
+CPAT upper-cases them) and mapped back afterwards; sequences are never altered. A tool is not rerun
+if its input, image and parameters are unchanged (checkpoint).
 
-## ⚙️ Configuration
+## Development
 
-`metaLncRNA` follows a robust configuration loading order:
-1. **Internal Defaults:** Built-in weights and paths in `src/metalncrna/data/default_config.yaml`.
-2. **Local Config:** `metaLncRNA_config.yaml` in your current working directory.
-3. **User Home:** `~/.metalncrna/config.yaml`.
-4. **Explicit Path:** Provided via the `-c` or `--config` flag.
+```sh
+uv venv && uv pip install -e '.[test]'
+pytest -m "not containers"   # unit tests, replay recorded tool outputs
+pytest                       # also runs the real containers on tests/data/small.fa
+```
 
----
+## Citing
 
-## 🚀 Key Features
-
-- **Ensemble Prediction:** Combines 7 tools (RNAsamba, CPAT, CPC2, PLEK, CNCI, CPPred, LGC).
-- **Interactive AI Agent:** Integrated local LLM assistant (**Llama-3.2** or **OpenBioLLM**) to interpret results and explain classification decisions.
-- **Reproducibility First:** Built-in environment isolation via **Mamba** and **Pixi**.
-- **Standardized Reports:** Comprehensive TSV reports with tool congruence metrics.
-- **Publication Ready:** Formatted according to JOSS standards for scientific software.
+Please cite the seven tools (their references are listed in `provenance.json`) alongside metaLncRNA.
