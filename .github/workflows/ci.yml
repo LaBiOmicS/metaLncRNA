@@ -25,8 +25,11 @@ jobs:
         run: pytest -m "not containers"
 
   containers:
-    # Builds the seven tool images and runs them end to end on tests/data/small.fa.
+    # Builds the seven tool images from containers/ (so the Dockerfiles are tested too) and runs
+    # them end to end on tests/data/small.fa, using a manifest that points at the local builds.
     runs-on: ubuntu-latest
+    env:
+      METALNCRNA_MANIFEST: ${{ github.workspace }}/ci-manifest.toml
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,6 +37,12 @@ jobs:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e '.[test]'
+      - name: Local manifest
+        run: |
+          sed -E 's#^ref = "[^"]*"#ref = "metalncrna/TOOL:ci"#' src/metalncrna/manifest.toml \
+            | awk '/^\[images\./{t=$0; sub(/^\[images\./,"",t); sub(/\]$/,"",t)} {gsub("TOOL",t); print}' \
+            > ci-manifest.toml
+          grep '^ref' ci-manifest.toml
       - name: Build images
         run: metalncrna setup --build-from containers
       - name: Container tests

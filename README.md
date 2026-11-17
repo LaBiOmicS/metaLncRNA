@@ -43,7 +43,7 @@ metalncrna check
 ```
 
 `scripts/publish-images.sh --update-manifest` builds and pushes the seven images and pins them in
-the manifest. With Apptainer, `setup` converts each image to a SIF file in the cache
+the manifest (`$METALNCRNA_MANIFEST` or `--manifest` selects another one). With Apptainer, `setup` converts each image to a SIF file in the cache
 (`~/.cache/metalncrna`, or `$METALNCRNA_CACHE`). Converting the larger images (CPAT, RNAsamba)
 needs several GB of temporary space; if `/tmp` is a small tmpfs, set `APPTAINER_TMPDIR` to a
 directory on disk. To use images from another registry, copy

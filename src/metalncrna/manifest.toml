@@ -7,36 +7,36 @@
 # `build` is the directory under containers/ used by `metalncrna setup --build-from containers`.
 
 [images.cnci]
-ref = "metalncrna/cnci:dev"
+ref = "ghcr.io/labiomics/metalncrna-cnci:2-745e2d1@sha256:9d243731a8c00797b6c18a664b9aa52e227e9ed2ec41d30fd00801e910d19ff1"
 build = "cnci"
 upstream = "https://github.com/www-bioinfo-org/CNCI @ 745e2d1942f0fa6c061f5308fdc876de430a114f"
 
 [images.cppred]
-ref = "metalncrna/cppred:dev"
+ref = "ghcr.io/labiomics/metalncrna-cppred:2018.05.17@sha256:f27b30900ca3f52c2dceb78416f249e60314d88c0921aedb31d4dfd75aa82a14"
 build = "cppred"
 upstream = "http://www.rnabinding.com/CPPred/ (CPPred.tar.gz, 2018-05-17)"
 
 [images.lgc]
-ref = "metalncrna/lgc:dev"
+ref = "ghcr.io/labiomics/metalncrna-lgc:1.0@sha256:a34f6f3a0a4576a1ea83f491aed208a2c781a47a00eb97e3a5adcf8835706bb2"
 build = "lgc"
 upstream = "https://ngdc.cncb.ac.cn/lgc/ (LGC-1.0.tar.gz)"
 
 [images.cpat]
-ref = "metalncrna/cpat:dev"
+ref = "ghcr.io/labiomics/metalncrna-cpat:3.0.5@sha256:5f6c59e59e3f547e7d390fed1f551567f264683426dd7c9d0b651422e92e067f"
 build = "cpat"
 upstream = "https://github.com/liguowang/cpat v3.0.5 (Bioconda build) + prebuilt_models @ v3.0.5"
 
 [images.cpc2]
-ref = "metalncrna/cpc2:dev"
+ref = "ghcr.io/labiomics/metalncrna-cpc2:1.0.1@sha256:3176476df7c211848d3998e6283fe94f2d7036e756bfb842cfb80afc47d3b569"
 build = "cpc2"
 upstream = "https://github.com/gao-lab/CPC2_standalone 1.0.1 (Bioconda build)"
 
 [images.plek]
-ref = "metalncrna/plek:dev"
+ref = "ghcr.io/labiomics/metalncrna-plek:1.2@sha256:32cc018324bbc8796234c7b27d89249a884edb576a94643244be93824b4256dc"
 build = "plek"
 upstream = "https://sourceforge.net/projects/plek/ 1.2 (Bioconda build)"
 
 [images.rnasamba]
-ref = "metalncrna/rnasamba:dev"
+ref = "ghcr.io/labiomics/metalncrna-rnasamba:0.2.5@sha256:cc1512d14a2a58aa01f2e348766f995089d13a7df368f4e850efdc00c9e2dde6"
 build = "rnasamba"
 upstream = "https://github.com/apcamargo/RNAsamba 0.2.5 (Bioconda build) + data/full_length_weights.hdf5 @ 0.2.5"

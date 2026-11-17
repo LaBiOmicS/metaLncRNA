@@ -30,6 +30,9 @@ class Manifest:
 
     @staticmethod
     def load(path: Path | None = None) -> "Manifest":
+        """Load ``path``, else $METALNCRNA_MANIFEST, else the manifest shipped with the package."""
+        if path is None and (env := os.environ.get("METALNCRNA_MANIFEST")):
+            path = Path(env)
         if path is None:
             text = resources.files("metalncrna").joinpath("manifest.toml").read_text()
             source = "builtin"

@@ -32,7 +32,12 @@ for tool in "${TOOLS[@]}"; do
   dst="$NS/$PREFIX$tool:${VERSION[$tool]}"
   echo "== $tool -> $dst" >&2
   docker build -q -t "$dst" "$ROOT/containers/$tool" >/dev/null
-  docker push -q "$dst" >/dev/null
+  # GHCR sometimes denies the first push while it creates a new package; retry.
+  for attempt in 1 2 3 4 5; do
+    docker push -q "$dst" >/dev/null && break
+    (( attempt == 5 )) && { echo "push failed: $dst" >&2; exit 1; }
+    sleep $(( attempt * 5 ))
+  done
   digest=$(docker buildx imagetools inspect "$dst" --format '{{json .Manifest}}' \
            | python3 -c 'import json,sys; print(json.load(sys.stdin)["digest"])')
   REF[$tool]="$dst@$digest"
