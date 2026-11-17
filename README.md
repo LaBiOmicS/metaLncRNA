@@ -86,6 +86,13 @@ pytest -m "not containers"   # unit tests, replay recorded tool outputs
 pytest                       # also runs the real containers on tests/data/small.fa
 ```
 
+## Contributing and support
+
+Bug reports, questions and feature requests: [GitHub issues](https://github.com/LaBiOmicS/metaLncRNA/issues).
+Contributions are welcome as pull requests against `main`; please run `pytest` (and `ruff check src tests`)
+first. Adding a predictor means a `containers/<tool>/` directory (Dockerfile + `run-<tool>` launcher, upstream
+code unmodified), an entry in `manifest.toml` and a `Tool` subclass in `src/metalncrna/tools/`.
+
 ## Citing
 
 Please cite the seven tools (their references are listed in `provenance.json`) alongside metaLncRNA.

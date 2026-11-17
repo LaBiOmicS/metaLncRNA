@@ -4,12 +4,25 @@ build-backend = "hatchling.build"
 
 [project]
 name = "metalncrna"
-version = "3.0.0.dev0"
+version = "3.0.0"
 description = "Consensus lncRNA identification by majority vote of seven unmodified, containerised coding-potential predictors"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
+authors = [
+    {name = "Fabiano Bezerra Menegidio", email = "fabianomenegidio@umc.br"}
+]
+keywords = ["lncRNA", "bioinformatics", "genomics", "consensus", "coding potential"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/LaBiOmicS/metaLncRNA"
+Issues = "https://github.com/LaBiOmicS/metaLncRNA/issues"
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
