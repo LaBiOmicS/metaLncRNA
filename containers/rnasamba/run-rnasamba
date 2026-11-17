@@ -1,0 +1,3 @@
+#!/bin/sh
+# Thin launcher: unmodified rnasamba. Weights are under /opt/rnasamba/.
+exec rnasamba "$@"

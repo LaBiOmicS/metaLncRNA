@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "metalncrna"
+version = "1.0.0"
+description = "Consensus lncRNA identification by majority vote of seven unmodified, containerised coding-potential predictors"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    {name = "Fabiano Bezerra Menegidio", email = "fabianomenegidio@umc.br"}
+]
+keywords = ["lncRNA", "bioinformatics", "genomics", "consensus", "coding potential"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/LaBiOmicS/metaLncRNA"
+Issues = "https://github.com/LaBiOmicS/metaLncRNA/issues"
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+metalncrna = "metalncrna.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metalncrna"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["containers: runs the real tool containers (needs docker or apptainer and `metalncrna setup`)"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]

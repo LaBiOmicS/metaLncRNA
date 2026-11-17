@@ -1,0 +1,3 @@
+#!/bin/sh
+# Thin launcher: runs the unmodified upstream script. CNCI writes only under its -o directory.
+exec python /opt/CNCI/CNCI.py "$@"

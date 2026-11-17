@@ -1,0 +1,10 @@
+#!/bin/sh
+# Thin launcher. CPPred must run from CPPred/bin (it calls ../libsvm-3.22/svm-*) and writes
+# fixed-name temp files (test.*, tmp*) into the CWD, so every run gets a private copy of the tree.
+# Input/model/output paths must be absolute. Upstream code is not altered.
+set -e
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+cp -r /opt/CPPred "$work/"
+cd "$work/CPPred/bin"
+python CPPred.py "$@"

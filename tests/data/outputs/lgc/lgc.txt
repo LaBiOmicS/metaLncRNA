@@ -1,0 +1,18 @@
+# Sequence Name: name of transcript
+# ORF Length: length of the longest ORF
+# GC Content: GC content of the longest ORF
+# Coding Potential Score: coding potential score for a transcript, which is protein-coding RNA if greater than 0 or ncRNA if smaller than 0. '0' indicates that mRNA probability equals lncRNA probability. Also, if the ORF length is shorter than 100nt, '0' is output.
+# pc: ORF probability for coding sequence
+# pnc: ORF probability for non-coding sequence
+# fc: Stop-codon probability for coding sequence
+# fnc: Stop-codon probability for non-coding sequence
+# Coding Label: 'Coding' represents mRNA and 'Non-coding' represents ncRNA
+# 
+# Sequence Name	ORF Length	GC Content	Conding Potential Score	pc	pnc	fc	fnc	Coding Label	
+s0000001	540	0.561	0.266	Coding	9.479e-06	7.263e-06	0.006	0.014	
+s0000002	303	0.627	-0.043	Non-coding	3.416e-03	3.568e-03	0.007	0.012	
+s0000003	438	0.47	-0.12	Non-coding	1.109e-07	1.250e-07	0.007	0.016	
+s0000004	0	0.000e+00	0.000e+00	Non-coding	1.000e+00	1.000e+00	1.0	1.0	
+s0000005	132	0.462	-0.904	Non-coding	2.761e-05	6.818e-05	0.007	0.016	
+s0000006	0	0.000e+00	0.000e+00	Non-coding	1.000e+00	1.000e+00	1.0	1.0	
+s0000007	0	0.000e+00	0.000e+00	Non-coding	1.000e+00	1.000e+00	1.0	1.0	
