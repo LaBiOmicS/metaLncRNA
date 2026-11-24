@@ -1,0 +1,81 @@
+cff-version: 1.2.0
+message: "If you use metaLncRNA, please cite this software record for the version you ran, and also
+  the seven predictors it runs (CNCI, CPPred, LGC, CPAT, CPC2, PLEK, RNAsamba; see the references below)."
+title: "metaLncRNA: consensus identification of long non-coding RNAs from seven unmodified coding-potential predictors"
+version: 1.0.0
+date-released: 2026-11-24
+license: MIT
+authors:
+  - family-names: Menegidio
+    given-names: Fabiano Bezerra
+    affiliation: "Universidade de Mogi das Cruzes"
+  - name: LaBiOmicS
+repository-code: "https://github.com/LaBiOmicS/metaLncRNA"
+url: "https://labiomics.github.io/metaLncRNA/"
+keywords:
+  - lncRNA
+  - long non-coding RNA
+  - coding potential
+  - consensus
+  - containers
+  - reproducibility
+  - bioinformatics
+references:
+  - type: article
+    title: "Utilizing sequence intrinsic composition to classify protein-coding and long non-coding transcripts"
+    authors: [{family-names: Sun, given-names: Liang}, {name: "et al."}]
+    journal: Nucleic Acids Research
+    year: 2013
+    volume: 41
+    start: e166
+    doi: 10.1093/nar/gkt646
+  - type: article
+    title: "CPPred: coding potential prediction based on the global description of RNA sequence"
+    authors: [{family-names: Tong, given-names: Xiaoxue}, {family-names: Liu, given-names: Shiyong}]
+    journal: Nucleic Acids Research
+    year: 2019
+    volume: 47
+    start: e43
+    doi: 10.1093/nar/gkz087
+  - type: article
+    title: "Characterization and identification of long non-coding RNAs based on feature relationship"
+    authors: [{family-names: Wang, given-names: Guangyu}, {name: "et al."}]
+    journal: Bioinformatics
+    year: 2019
+    volume: 35
+    start: 2949
+    end: 2956
+    doi: 10.1093/bioinformatics/btz008
+  - type: article
+    title: "CPAT: Coding-Potential Assessment Tool using an alignment-free logistic regression model"
+    authors: [{family-names: Wang, given-names: Liguo}, {name: "et al."}]
+    journal: Nucleic Acids Research
+    year: 2013
+    volume: 41
+    start: e74
+    doi: 10.1093/nar/gkt006
+  - type: article
+    title: "CPC2: a fast and accurate coding potential calculator based on sequence intrinsic features"
+    authors: [{family-names: Kang, given-names: Yu-Jian}, {name: "et al."}]
+    journal: Nucleic Acids Research
+    year: 2017
+    volume: 45
+    start: W12
+    end: W16
+    doi: 10.1093/nar/gkx428
+  - type: article
+    title: "PLEK: a tool for predicting long non-coding RNAs and messenger RNAs based on an improved k-mer scheme"
+    authors: [{family-names: Li, given-names: Aimin}, {name: "et al."}]
+    journal: BMC Bioinformatics
+    year: 2014
+    volume: 15
+    start: 311
+    doi: 10.1186/1471-2105-15-311
+  - type: article
+    title: "RNAsamba: neural network-based assessment of the protein-coding potential of RNA sequences"
+    authors: [{family-names: Camargo, given-names: Antonio P.}, {name: "et al."}]
+    journal: NAR Genomics and Bioinformatics
+    year: 2020
+    volume: 2
+    start: lqz024
+    doi: 10.1093/nargab/lqz024

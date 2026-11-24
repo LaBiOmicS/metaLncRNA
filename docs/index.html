@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>metaLncRNA</title>
+<meta name="description" content="metaLncRNA identifies long non-coding RNAs by majority vote of seven coding-potential predictors (CNCI, CPPred, LGC, CPAT, CPC2, PLEK, RNAsamba), each run unmodified in its own container.">
+<meta property="og:title" content="metaLncRNA">
+<meta property="og:description" content="Seven coding-potential predictors, run exactly as their authors released them. One majority vote.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://labiomics.github.io/metaLncRNA/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23241a40'/%3E%3Crect x='5' y='7' width='2.6' height='9' rx='1.3' fill='%23b794f6'/%3E%3Crect x='8.9' y='7' width='2.6' height='9' rx='1.3' fill='%23b794f6'/%3E%3Crect x='12.8' y='7' width='2.6' height='9' rx='1.3' fill='%23ff9a76'/%3E%3Crect x='16.7' y='7' width='2.6' height='9' rx='1.3' fill='%23b794f6'/%3E%3Crect x='20.6' y='7' width='2.6' height='9' rx='1.3' fill='%23b794f6'/%3E%3Crect x='24.5' y='7' width='2.6' height='9' rx='1.3' fill='%23ff9a76'/%3E%3Crect x='5' y='20' width='22' height='5' rx='2.5' fill='%23b794f6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f4f1;
+  --paper: #fffefb;
+  --ink: #1b1630;
+  --ink-2: #433d58;
+  --muted: #716b82;
+  --line: #e3dfe3;
+  --line-2: #edeaec;
+  --nc: #6b3fa0;          /* noncoding: the class metaLncRNA selects */
+  --nc-ink: #53297f;
+  --nc-soft: #efe7f8;
+  --cd: #bf532c;          /* coding */
+  --cd-ink: #9a3f1f;
+  --cd-soft: #fbe8df;
+  --ab: #a8a2b5;          /* abstained */
+  --dark: #17122a;
+  --dark-2: #1f1838;
+  --dark-line: #322a52;
+  --dark-text: #e8e4f2;
+  --dark-muted: #a39cbc;
+  --term-nc: #c4a5ff;
+  --term-cd: #ff9f7c;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(27,22,48,.05), 0 10px 28px -14px rgba(27,22,48,.22);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #110d1f; --paper: #18132b; --ink: #ece8f5; --ink-2: #c3bdd6; --muted: #948daa;
+    --line: #2a2342; --line-2: #211b36; --nc: #b794f6; --nc-ink: #d0b8ff; --nc-soft: #2a1f48;
+    --cd: #ff9a76; --cd-ink: #ffb79c; --cd-soft: #3a2119; --ab: #5d5675;
+    --dark: #0b0816; --dark-2: #120e22; --dark-line: #2a2342;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #110d1f; --paper: #18132b; --ink: #ece8f5; --ink-2: #c3bdd6; --muted: #948daa;
+  --line: #2a2342; --line-2: #211b36; --nc: #b794f6; --nc-ink: #d0b8ff; --nc-soft: #2a1f48;
+  --cd: #ff9a76; --cd-ink: #ffb79c; --cd-soft: #3a2119; --ab: #5d5675;
+  --dark: #0b0816; --dark-2: #120e22; --dark-line: #2a2342;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16.5px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+a { color: var(--nc); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: var(--nc-ink); }
+code, pre, .mono { font-family: var(--mono); }
+code { font-size: .86em; background: var(--line-2); padding: .12em .4em; border-radius: 5px; color: var(--ink); }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 720px) { .wrap { padding: 0 28px; } }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 12px; z-index: 50; background: var(--paper); padding: 8px 12px; border-radius: 8px; }
+
+/* ---------- Navigation ---------- */
+.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.nav.scrolled { border-bottom-color: var(--line); }
+.nav .wrap { display: flex; align-items: center; height: 60px; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 700; letter-spacing: -.01em; font-size: 1.04rem; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.brand small { font: 500 .72rem var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+.nav-links { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+.nav-links a { color: var(--ink-2); text-decoration: none; font-size: .93rem; font-weight: 500; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links .pill { color: var(--paper); background: var(--ink); padding: 7px 14px; border-radius: 9px; }
+.nav-links .pill:hover { color: var(--paper); opacity: .9; }
+.icon-btn { background: none; border: 1px solid var(--line); border-radius: 9px; width: 36px; height: 36px; display: grid; place-items: center; color: var(--ink-2); cursor: pointer; flex: none; }
+.icon-btn svg { width: 17px; height: 17px; }
+@media (max-width: 900px) { .nav-links a.opt { display: none; } }
+@media (max-width: 480px) { .nav .wrap, .nav-links { gap: 10px; } .nav-links .pill { padding: 7px 11px; } .brand small { display: none; } }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; padding: 60px 0 56px; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 28px 28px; opacity: .55; mask-image: radial-gradient(ellipse 80% 70% at 70% 30%, #000 10%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 30%, #000 10%, transparent 75%); pointer-events: none; }
+.hero .wrap { position: relative; display: grid; gap: 44px; grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 1000px) { .hero .wrap { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); } .hero { padding: 84px 0 80px; } }
+.kicker { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 500 .8rem var(--mono); color: var(--nc-ink); background: var(--nc-soft); border-radius: 999px; padding: 5px 12px 5px 6px; }
+.kicker b { background: var(--nc); color: #fff; font-weight: 600; border-radius: 999px; padding: 1px 8px; }
+:root[data-theme="dark"] .kicker b { color: #1a1030; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .kicker b { color: #1a1030; } }
+.hero h1 { font-size: clamp(2.15rem, 5vw, 3.45rem); line-height: 1.06; letter-spacing: -.035em; margin: 20px 0 18px; font-weight: 700; }
+.hero h1 .hl-n { color: var(--nc); }
+.hero h1 .hl-c { color: var(--cd); }
+.lede { font-size: clamp(1.04rem, 2vw, 1.17rem); color: var(--ink-2); margin: 0 0 30px; max-width: 35em; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: .96rem; text-decoration: none; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+.btn:hover { border-color: var(--ink-2); color: var(--ink); }
+.btn.primary { background: var(--nc); border-color: var(--nc); color: #fff; }
+.btn.primary:hover { background: var(--nc-ink); border-color: var(--nc-ink); color: #fff; }
+:root[data-theme="dark"] .btn.primary, :root[data-theme="dark"] .btn.primary:hover { color: #1a1030; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary, :root:not([data-theme="light"]) .btn.primary:hover { color: #1a1030; } }
+.btn svg { width: 17px; height: 17px; }
+.pipcmd { margin-top: 22px; display: flex; align-items: center; gap: 12px; font: .86rem var(--mono); color: var(--ink-2); border: 1px dashed var(--line); padding: 8px 8px 8px 14px; border-radius: 10px; max-width: 100%; width: fit-content; }
+.pipcmd > span { white-space: nowrap; overflow-x: auto; min-width: 0; }
+.pipcmd .dollar { color: var(--muted); user-select: none; }
+
+/* Vote board */
+.board { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
+.board-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.board-head b { font-size: .95rem; }
+.board-head span { font: .76rem var(--mono); color: var(--muted); }
+.board .scroll { overflow-x: auto; }
+.vt { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .86rem; min-width: 500px; }
+.vt th { font: 600 .62rem var(--mono); letter-spacing: .02em; text-transform: uppercase; color: var(--muted); padding: 12px 2px 8px; text-align: center; white-space: nowrap; }
+.vt th:first-child { text-align: left; padding-left: 16px; }
+.vt th.cons { text-align: left; padding-left: 10px; }
+.vt td { padding: 5px 2px; text-align: center; border-top: 1px solid var(--line-2); }
+.vt td:first-child { text-align: left; padding: 8px 6px 8px 16px; }
+.vt td.cons { text-align: left; padding: 6px 14px 6px 10px; }
+.vt tbody tr:hover td { background: color-mix(in srgb, var(--nc-soft) 40%, transparent); }
+.vt th.cons, .vt td.cons { position: sticky; right: 0; background: var(--paper); box-shadow: -10px 0 10px -10px rgba(27,22,48,.25); }
+@media (min-width: 640px) { .vt th.cons, .vt td.cons { box-shadow: none; } }
+.vt tbody tr:hover td.cons { background: color-mix(in srgb, var(--nc-soft) 40%, var(--paper)); }
+@media (max-width: 520px) { .kicker { border-radius: 12px; } }
+.tx { display: block; font-weight: 600; white-space: nowrap; font-size: .87rem; }
+.tx small { display: block; font: .7rem var(--mono); color: var(--muted); font-weight: 400; }
+.cell { display: inline-grid; place-items: center; width: 25px; height: 25px; border-radius: 6px; font: 600 .74rem var(--mono); }
+.cell.c { background: var(--cd-soft); color: var(--cd-ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cd) 35%, transparent); }
+.cell.n { background: var(--nc-soft); color: var(--nc-ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--nc) 35%, transparent); }
+.cell.a { background: repeating-linear-gradient(135deg, transparent 0 4px, var(--line) 4px 5px); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.verdict { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.chip { display: inline-block; font: 600 .74rem var(--mono); padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.chip.c { background: var(--cd); color: #fff; }
+.chip.n { background: var(--nc); color: #fff; }
+:root[data-theme="dark"] .chip.c, :root[data-theme="dark"] .chip.n { color: #1a1030; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip.c, :root:not([data-theme="light"]) .chip.n { color: #1a1030; } }
+.chip.soft { background: var(--line-2); color: var(--ink-2); }
+.verdict .frac { font: .74rem var(--mono); color: var(--muted); }
+.board-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; padding: 12px 18px 14px; border-top: 1px solid var(--line); font-size: .8rem; color: var(--muted); }
+.board-foot .k { display: inline-flex; align-items: center; gap: 6px; }
+.board-foot .cell { width: 20px; height: 16px; font-size: .62rem; border-radius: 4px; }
+
+/* ---------- Stats ---------- */
+.stats { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+.stats .wrap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 760px) { .stats .wrap { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.stat { padding: 24px 8px 22px 20px; border-left: 1px solid var(--line); }
+.stat:nth-child(odd) { border-left: 0; padding-left: 0; }
+@media (min-width: 760px) { .stat:nth-child(odd) { border-left: 1px solid var(--line); padding-left: 20px; } .stat:first-child { border-left: 0; padding-left: 0; } }
+@media (max-width: 759px) { .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
+.stat b { display: block; font-size: 2.05rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 700; }
+.stat b em { font-style: normal; color: var(--nc); }
+.stat span { color: var(--muted); font-size: .91rem; }
+
+/* ---------- Sections ---------- */
+section { padding: 84px 0; }
+section + section { border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 10px; margin-bottom: 40px; max-width: 780px; }
+.label { font: 600 .76rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--nc); }
+.sec-head h2 { font-size: clamp(1.65rem, 3.4vw, 2.35rem); line-height: 1.15; letter-spacing: -.025em; margin: 0; }
+.sec-head p { margin: 0; color: var(--ink-2); font-size: 1.05rem; }
+
+.features { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); }
+@media (min-width: 720px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.feature { padding: 26px 24px 28px 0; border-bottom: 1px solid var(--line); }
+@media (min-width: 720px) { .feature { padding-right: 32px; } }
+.feature .n { font: 500 .78rem var(--mono); color: var(--muted); }
+.feature h3 { font-size: 1.1rem; margin: 6px 0 8px; letter-spacing: -.01em; }
+.feature p { margin: 0; color: var(--ink-2); font-size: .96rem; }
+.notice { margin-top: 36px; display: flex; gap: 14px; align-items: flex-start; background: var(--nc-soft); border-radius: var(--radius); padding: 16px 20px; color: var(--ink); }
+.notice.warm { background: var(--cd-soft); }
+.notice svg { flex: none; width: 22px; height: 22px; color: var(--nc); margin-top: 2px; }
+.notice.warm svg { color: var(--cd); }
+.notice p { margin: 0; font-size: .96rem; }
+
+/* Method */
+.steps { display: grid; gap: 0; grid-template-columns: minmax(0, 1fr); counter-reset: s; }
+@media (min-width: 900px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.st { position: relative; padding: 0 0 30px 46px; }
+@media (min-width: 900px) { .st { padding: 48px 24px 0 0; } }
+.st::before { counter-increment: s; content: counter(s, decimal-leading-zero); position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--nc); color: var(--nc); display: grid; place-items: center; font: 600 .78rem var(--mono); z-index: 1; }
+.st::after { content: ""; position: absolute; left: 16px; top: 32px; bottom: 0; width: 1.5px; background: var(--line); }
+.st:last-child::after { display: none; }
+@media (min-width: 900px) { .st::after { left: 32px; right: 0; top: 16px; bottom: auto; width: auto; height: 1.5px; } }
+.st h3 { margin: 0 0 6px; font-size: 1.07rem; }
+.st p { margin: 0; color: var(--ink-2); font-size: .95rem; }
+.split { margin-top: 44px; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .split { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.panel-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; min-width: 0; }
+.panel-card h3 { margin: 0 0 14px; font-size: 1.04rem; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 16px; margin: 0; font-size: .94rem; }
+.kv dt { font: 600 .82rem var(--mono); color: var(--nc-ink); padding-top: 2px; white-space: nowrap; }
+.kv dd { margin: 0; color: var(--ink-2); }
+.kv dt .chip { font-size: .72rem; }
+
+/* Rule diagram */
+.rule { margin-top: 18px; display: grid; gap: 10px; }
+.rule .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.bar { display: flex; gap: 3px; }
+.bar i { flex: 1; height: 14px; border-radius: 3px; }
+.bar i.c { background: var(--cd); } .bar i.n { background: var(--nc); } .bar i.a { background: repeating-linear-gradient(135deg, transparent 0 3px, var(--ab) 3px 4px); box-shadow: inset 0 0 0 1px var(--ab); }
+
+/* Tools table */
+.tbl { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.tbl .scroll { overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.tbl th { text-align: left; font: 600 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 14px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 13px 16px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tbody tr:hover { background: color-mix(in srgb, var(--nc-soft) 40%, transparent); }
+.tbl .name { font-weight: 700; white-space: nowrap; }
+.tbl .num { font-family: var(--mono); font-size: .84rem; white-space: nowrap; color: var(--ink-2); }
+.tbl .ap { min-width: 230px; color: var(--ink-2); }
+.tbl .ref { white-space: nowrap; font-size: .88rem; }
+.tag { display: inline-block; font: 600 .7rem var(--mono); padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+.tag.py2 { background: var(--cd-soft); color: var(--cd-ink); }
+.tag.bc { background: var(--nc-soft); color: var(--nc-ink); }
+.tag.lic { background: var(--line-2); color: var(--ink-2); }
+.fineprint { font-size: .86rem; color: var(--muted); margin: 14px 2px 0; }
+
+/* Validation */
+.val-grid { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .val-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+.tbl td.best { font-weight: 700; color: var(--nc-ink); }
+.tbl tr.cons td { background: var(--nc-soft); }
+.tbl tr.cons td:first-child { font-weight: 700; }
+.acc { display: grid; gap: 9px; margin-top: 4px; }
+.acc .r { display: grid; grid-template-columns: 76px minmax(0, 1fr) 46px; gap: 10px; align-items: center; font-size: .86rem; }
+.acc .r span:first-child { font-weight: 600; white-space: nowrap; }
+.acc .r b { font: 600 .8rem var(--mono); text-align: right; }
+.acc .track { height: 12px; background: var(--line-2); border-radius: 4px; position: relative; overflow: hidden; }
+.acc .fill { position: absolute; inset: 0 auto 0 0; background: var(--ab); border-radius: 4px; }
+.acc .r.cons .fill { background: var(--nc); }
+.acc .r.cons span:first-child, .acc .r.cons b { color: var(--nc-ink); }
+
+/* Install */
+.install-grid { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .install-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
+.req { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.req li { position: relative; padding-left: 16px; color: var(--ink-2); font-size: .97rem; }
+.req li::before { content: ""; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--nc); }
+.tabs { display: inline-flex; gap: 4px; padding: 4px; background: var(--line-2); border-radius: 11px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab { border: 0; background: none; color: var(--ink-2); padding: 7px 14px; border-radius: 8px; font: 600 .9rem var(--sans); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.tabpanel[hidden] { display: none; }
+.tabpanel p { margin: 0 0 12px; color: var(--ink-2); font-size: .95rem; }
+.code { position: relative; background: var(--dark); color: var(--dark-text); border-radius: 12px; margin: 0 0 14px; }
+.code pre { margin: 0; padding: 16px 18px; overflow-x: auto; font: .84rem/1.7 var(--mono); }
+.code .c { color: var(--dark-muted); }
+.code .n { color: var(--term-nc); }
+.code .o { color: var(--term-cd); }
+.copy { position: absolute; top: 9px; right: 9px; font: 600 .74rem var(--sans); color: var(--dark-text); background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+.copy:hover { background: rgba(255,255,255,.15); }
+.pipcmd .copy { position: static; color: var(--ink-2); background: var(--paper); border-color: var(--line); flex: none; }
+
+/* Usage */
+.recipes { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.recipe { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.recipe h3 { margin: 0 0 8px; font-size: .97rem; }
+.recipe code { display: block; background: none; padding: 0; font-size: .81rem; color: var(--ink-2); white-space: nowrap; overflow-x: auto; }
+.outputs { margin-top: 28px; }
+
+/* Scope */
+.scope { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .scope { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.scope ul { margin: 0; padding-left: 1.1em; }
+.scope li { margin: 7px 0; color: var(--ink-2); font-size: .96rem; }
+.scope .yes h3 { color: var(--nc-ink); }
+.scope .no h3 { color: var(--cd-ink); }
+
+/* Cite */
+#cite { background: var(--dark); color: var(--dark-text); border-top: 0; }
+#cite .label { color: var(--term-nc); }
+#cite h2 { color: #f4f1fa; }
+#cite .sec-head p { color: var(--dark-muted); }
+#cite a { color: var(--term-nc); }
+#cite code { background: rgba(255,255,255,.08); color: var(--dark-text); }
+.cite-grid { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .cite-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; } }
+#cite .code { background: var(--dark-2); box-shadow: inset 0 0 0 1px var(--dark-line); }
+.refs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.refs li { padding: 11px 0; border-top: 1px solid var(--dark-line); font-size: .92rem; color: var(--dark-muted); }
+.refs li:first-child { border-top: 0; padding-top: 0; }
+.refs b { color: var(--dark-text); font-weight: 600; margin-right: 6px; }
+
+/* Footer */
+footer { background: var(--dark); color: var(--dark-muted); padding: 8px 0 56px; font-size: .92rem; }
+footer .wrap { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--dark-line); padding-top: 44px; }
+@media (min-width: 820px) { footer .wrap { grid-template-columns: 1.4fr 1fr 1fr; } }
+footer h4 { color: var(--dark-text); margin: 0 0 10px; font-size: .95rem; }
+footer a { color: var(--dark-text); text-decoration: none; display: block; margin: 4px 0; }
+footer a:hover { color: var(--term-nc); }
+footer .brand { color: var(--dark-text); margin-bottom: 10px; }
+footer p { margin: 0 0 6px; }
+</style>
+<script>
+  try { var t = localStorage.getItem("mlr-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="metaLncRNA home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#241a40"/><rect x="5" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="8.9" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="12.8" y="7" width="2.6" height="9" rx="1.3" fill="#ff9a76"/><rect x="16.7" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="20.6" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="24.5" y="7" width="2.6" height="9" rx="1.3" fill="#ff9a76"/><rect x="5" y="20" width="22" height="5" rx="2.5" fill="#b794f6"/></svg>
+      metaLncRNA <small>1.0.0</small>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a class="opt" href="#method">Method</a>
+      <a class="opt" href="#tools">Predictors</a>
+      <a class="opt" href="#validation">Validation</a>
+      <a class="opt" href="#install">Install</a>
+      <a class="opt" href="#cite">Cite</a>
+      <button class="icon-btn" id="theme" type="button" aria-label="Toggle dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      <a class="pill" href="https://github.com/LaBiOmicS/metaLncRNA">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="kicker"><b>v1.0.0</b> lncRNA identification · MIT licence</span>
+      <h1>Seven predictors, run as their authors released them. <span class="hl-n">One vote.</span></h1>
+      <p class="lede">metaLncRNA identifies long non-coding RNAs by majority vote of seven published coding-potential predictors. Each tool runs <strong>unmodified</strong> in its own container, pinned by digest, and decides with its own rule; metaLncRNA only counts the verdicts and records exactly what ran.</p>
+      <div class="cta">
+        <a class="btn primary" href="#install">Get started
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="https://github.com/LaBiOmicS/metaLncRNA">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+          Source code</a>
+        <a class="btn" href="https://github.com/LaBiOmicS/metaLncRNA/releases/tag/v1.0.0">Release notes</a>
+      </div>
+      <div class="pipcmd"><span><span class="dollar">$ </span>pip install git+https://github.com/LaBiOmicS/metaLncRNA@v1.0.0</span><button class="copy" type="button" data-copy="pip install git+https://github.com/LaBiOmicS/metaLncRNA@v1.0.0">Copy</button></div>
+    </div>
+
+    <figure class="board" aria-labelledby="board-cap" style="margin:0">
+      <div class="board-head"><b id="board-cap">How seven verdicts become one</b><span>tests/data/small.fa · human models</span></div>
+      <div class="scroll">
+        <table class="vt">
+          <thead><tr><th scope="col">Transcript</th><th scope="col">CNCI</th><th scope="col">CPPred</th><th scope="col">LGC</th><th scope="col">CPAT</th><th scope="col">CPC2</th><th scope="col">PLEK</th><th scope="col" title="RNAsamba">RNAs.</th><th scope="col" class="cons">Consensus</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tx">SHH mRNA<small>733 nt</small></span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td class="cons"><span class="verdict"><span class="chip c">coding</span><span class="frac">6/7</span></span></td></tr>
+            <tr><td><span class="tx">BGLAP mRNA<small>760 nt</small></span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td class="cons"><span class="verdict"><span class="chip c">coding</span><span class="frac">4/7</span></span></td></tr>
+            <tr><td><span class="tx">NUDT15 mRNA<small>934 nt</small></span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td><span class="cell c">C</span></td><td class="cons"><span class="verdict"><span class="chip c">coding</span><span class="frac">5/7</span></span></td></tr>
+            <tr><td><span class="tx"><i>A. thaliana</i> lncRNA<small>414 nt</small></span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td class="cons"><span class="verdict"><span class="chip n">noncoding</span><span class="frac">7/7</span></span></td></tr>
+            <tr><td><span class="tx"><i>A. thaliana</i> lncRNA<small>419 nt</small></span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell c">C</span></td><td class="cons"><span class="verdict"><span class="chip n">noncoding</span><span class="frac">6/7</span></span></td></tr>
+            <tr><td><span class="tx">U6 snRNA pseudogene<small>111 nt · PLEK abstains</small></span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell a" title="abstained">–</span></td><td><span class="cell n">N</span></td><td class="cons"><span class="verdict"><span class="chip n">noncoding</span><span class="frac">6/6</span></span></td></tr>
+            <tr><td><span class="tx">lncRNA with an N base<small>419 nt · CNCI abstains</small></span></td><td><span class="cell a" title="abstained">–</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td><span class="cell n">N</span></td><td class="cons"><span class="verdict"><span class="chip n">noncoding</span><span class="frac">6/6</span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption class="board-foot">
+        <span class="k"><span class="cell c">C</span>coding</span>
+        <span class="k"><span class="cell n">N</span>noncoding</span>
+        <span class="k"><span class="cell a">–</span>abstained</span>
+        <span>Labels produced by the real containers, checked in CI on every push.</span>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="stats" aria-label="Key figures">
+  <div class="wrap">
+    <div class="stat"><b>7</b><span>published predictors, none modified</span></div>
+    <div class="stat"><b>7</b><span>containers, each pinned by digest</span></div>
+    <div class="stat"><b>0</b><span>Python dependencies in the wrapper</span></div>
+    <div class="stat"><b><em>1 in 8</em></b><span>test transcripts on which the seven tools disagree</span></div>
+  </div>
+</div>
+
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Why a consensus of originals</span>
+      <h2>Predictors disagree, and the classics are hard to run as published.</h2>
+      <p>Each coding-potential predictor was trained on different data with different features, so their calls differ on real transcripts. Several of the best known ones are Python 2 programs; rewriting them changes results, so a port is no longer the published tool.</p>
+    </div>
+    <div class="features">
+      <div class="feature"><span class="n">01</span><h3>The tools as published</h3><p>CNCI, CPPred and LGC run from the authors' original archives, checked by SHA-256. CPAT, CPC2, PLEK and RNAsamba come from their Bioconda builds with the authors' own models.</p></div>
+      <div class="feature"><span class="n">02</span><h3>One container per tool</h3><p>Python 2.7, old LIBSVM builds and TensorFlow never meet. Every image is self-contained, pinned by digest and runs on Docker or Apptainer/Singularity.</p></div>
+      <div class="feature"><span class="n">03</span><h3>Each tool decides</h3><p>The consensus uses the label each tool itself outputs, with its own threshold. Scores are kept for inspection but never mixed or re-weighted.</p></div>
+      <div class="feature"><span class="n">04</span><h3>Honest abstentions</h3><p>A tool that cannot judge a transcript (too short for PLEK, an ambiguous base for CNCI, no CPAT model for plants) does not vote, instead of being guessed.</p></div>
+      <div class="feature"><span class="n">05</span><h3>Provenance by default</h3><p><code>provenance.json</code> records the input hash, image digests, exact commands, run times and the reference of every tool that ran.</p></div>
+      <div class="feature"><span class="n">06</span><h3>A small, plain wrapper</h3><p>Python ≥ 3.11 standard library only. Checkpoints skip tools whose input, image and parameters did not change.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Method</span>
+      <h2>From a FASTA file to one verdict per transcript.</h2>
+      <p>metaLncRNA never touches a sequence and never interprets a score: it prepares the input, runs the seven containers and counts the votes.</p>
+    </div>
+    <div class="steps">
+      <div class="st"><h3>Prepare</h3><p>Transcripts get internal IDs, because the tools mangle names differently (CPAT upper-cases them). Sequences are not altered.</p></div>
+      <div class="st"><h3>Run</h3><p>Each predictor runs in its own container with its default parameters and the model chosen by <code>--species</code>.</p></div>
+      <div class="st"><h3>Read</h3><p>Each tool's own coding/noncoding label is parsed from its output; for CPAT, the authors' published species cut-off.</p></div>
+      <div class="st"><h3>Vote</h3><p>The majority of the tools that voted decides. Original IDs are restored in <code>results.tsv</code> and <code>lncrna.fasta</code>.</p></div>
+    </div>
+
+    <div class="split">
+      <div class="panel-card">
+        <h3>The rule</h3>
+        <dl class="kv">
+          <dt><span class="chip c">coding</span></dt><dd>more coding than noncoding votes</dd>
+          <dt><span class="chip n">noncoding</span></dt><dd>more noncoding than coding votes</dd>
+          <dt><span class="chip soft">ambiguous</span></dt><dd>a tie among the tools that voted</dd>
+          <dt><span class="chip soft">unclassified</span></dt><dd>no tool voted</dd>
+        </dl>
+        <div class="rule" aria-label="Example vote: four noncoding, two coding, one abstention">
+          <div class="row"><div class="bar"><i class="n"></i><i class="n"></i><i class="c"></i><i class="n"></i><i class="a"></i><i class="n"></i><i class="c"></i></div><span class="chip n">noncoding</span></div>
+          <div class="row"><div class="bar"><i class="c"></i><i class="n"></i><i class="c"></i><i class="n"></i><i class="c"></i><i class="a"></i><i class="n"></i></div><span class="chip soft">ambiguous</span></div>
+        </div>
+        <p class="fineprint">Every tool counts once: no weights, no calibration, no stacking. <code>agreement</code> is the fraction of voters that side with the consensus.</p>
+      </div>
+      <div class="panel-card">
+        <h3>When a tool abstains</h3>
+        <dl class="kv">
+          <dt>PLEK</dt><dd>skips transcripts of 200 nt or less</dd>
+          <dt>CNCI</dt><dd>skips sequences that contain ambiguous bases</dd>
+          <dt>CPAT</dt><dd>has no model for <code>plant</code> or <code>other</code></dd>
+          <dt>any tool</dt><dd>may fail; with <code>--allow-failures</code> the others still vote, otherwise the run stops</dd>
+        </dl>
+        <p class="fineprint">Abstentions appear as <code>NA</code> in <code>results.tsv</code>; the <code>voters</code> column says how many tools decided each transcript.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">The seven predictors</span>
+      <h2>Different features, different training, one table.</h2>
+      <p>Versions are fixed in <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/src/metalncrna/manifest.toml"><code>manifest.toml</code></a>; how each image is built is described in <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/containers/README.md"><code>containers/</code></a>.</p>
+    </div>
+    <div class="tbl">
+      <div class="scroll">
+        <table>
+          <thead><tr><th scope="col">Tool</th><th scope="col">Version run</th><th scope="col">Approach</th><th scope="col">Built from</th><th scope="col">Licence</th><th scope="col">Reference</th></tr></thead>
+          <tbody>
+            <tr><td class="name">CNCI</td><td class="num">v2 · 745e2d1</td><td class="ap">Adjacent-nucleotide-triplet profile and SVM; vertebrate or plant model</td><td><span class="tag py2">authors' code · Py 2.7</span></td><td><span class="tag lic">GPL-2.0</span></td><td class="ref"><a href="https://doi.org/10.1093/nar/gkt646">Sun 2013, NAR</a></td></tr>
+            <tr><td class="name">CPPred</td><td class="num">2018-05-17</td><td class="ap">SVM on ORF, hexamer and composition-transition-distribution features; human or integrated model</td><td><span class="tag py2">authors' code · Py 2.7</span></td><td><span class="tag lic">none declared</span></td><td class="ref"><a href="https://doi.org/10.1093/nar/gkz087">Tong &amp; Liu 2019, NAR</a></td></tr>
+            <tr><td class="name">LGC</td><td class="num">1.0</td><td class="ap">Relationship between ORF length and GC content</td><td><span class="tag py2">authors' code · Py 2.7</span></td><td><span class="tag lic">none declared</span></td><td class="ref"><a href="https://doi.org/10.1093/bioinformatics/btz008">Wang 2019, Bioinformatics</a></td></tr>
+            <tr><td class="name">CPAT</td><td class="num">3.0.5</td><td class="ap">Logistic regression on ORF size and coverage, Fickett and hexamer scores; human, mouse, fly, zebrafish</td><td><span class="tag bc">BioContainers + models</span></td><td><span class="tag lic">GPL-2.0+</span></td><td class="ref"><a href="https://doi.org/10.1093/nar/gkt006">Wang 2013, NAR</a></td></tr>
+            <tr><td class="name">CPC2</td><td class="num">1.0.1</td><td class="ap">SVM on Fickett score, ORF length and integrity, isoelectric point</td><td><span class="tag bc">BioContainers</span></td><td><span class="tag lic">GPL-3.0</span></td><td class="ref"><a href="https://doi.org/10.1093/nar/gkx428">Kang 2017, NAR</a></td></tr>
+            <tr><td class="name">PLEK</td><td class="num">1.2</td><td class="ap">Improved k-mer scheme and SVM</td><td><span class="tag bc">BioContainers</span></td><td><span class="tag lic">GPL-2.0</span></td><td class="ref"><a href="https://doi.org/10.1186/1471-2105-15-311">Li 2014, BMC Bioinf.</a></td></tr>
+            <tr><td class="name">RNAsamba</td><td class="num">0.2.5</td><td class="ap">Neural network on the whole sequence and its ORF</td><td><span class="tag bc">BioContainers + weights</span></td><td><span class="tag lic">GPL-3.0</span></td><td class="ref"><a href="https://doi.org/10.1093/nargab/lqz024">Camargo 2020, NARGAB</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="fineprint">CPPred and LGC are distributed by their authors without a licence statement; their original archives and images are redistributed unmodified, solely for reproducibility, with all rights remaining with the authors. The wrapper itself is MIT-licensed.</p>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Validation</span>
+      <h2>All seven containers checked on 800 transcripts from four species.</h2>
+      <p>The coding and ncRNA test sets shipped inside the CPPred package (100 + 100 per species) were run through <code>metalncrna predict</code> with the public images. The script and the full table are in the repository, so anyone can rerun it.</p>
+    </div>
+    <div class="val-grid">
+      <div>
+        <div class="tbl">
+          <div class="scroll">
+            <table>
+              <thead><tr><th scope="col">Accuracy</th><th scope="col">Human</th><th scope="col">Mouse</th><th scope="col">Zebrafish</th><th scope="col">Fruit fly</th></tr></thead>
+              <tbody>
+<tr><td class="name">CNCI</td><td class="num">.935</td><td class="num">.975</td><td class="num">.990</td><td class="num">.995</td></tr>
+<tr><td class="name">CPPred</td><td class="num">.990</td><td class="num">.995</td><td class="num">.970</td><td class="num">.995</td></tr>
+<tr><td class="name">LGC</td><td class="num">.945</td><td class="num">.965</td><td class="num">.960</td><td class="num">.960</td></tr>
+<tr><td class="name">CPAT</td><td class="num">.995</td><td class="num best">1.000</td><td class="num best">1.000</td><td class="num best">1.000</td></tr>
+<tr><td class="name">CPC2</td><td class="num">.980</td><td class="num">.970</td><td class="num">.980</td><td class="num">.995</td></tr>
+<tr><td class="name">PLEK*</td><td class="num">.960</td><td class="num">.870</td><td class="num">.890</td><td class="num">.721</td></tr>
+<tr><td class="name">RNAsamba</td><td class="num best">1.000</td><td class="num best">1.000</td><td class="num">.990</td><td class="num">.965</td></tr>
+<tr class="cons"><td>Consensus</td><td class="num">.995</td><td class="num best">1.000</td><td class="num">.985</td><td class="num best">1.000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="fineprint">Accuracy on the transcripts each tool labelled; bold marks the best value per species. *PLEK abstains on transcripts of 200 nt or less, so it labelled only 50–61% of each set (almost only the mRNAs). The consensus labelled every transcript. Sensitivity, specificity and precision: <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/docs/validation/metrics-1.0.0.tsv"><code>metrics-1.0.0.tsv</code></a>; rerun with <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/scripts/validate.py"><code>scripts/validate.py</code></a>.</p>
+      </div>
+      <div class="panel-card">
+        <h3>Transcripts that split the tools</h3>
+        <p class="fineprint" style="margin:0 0 14px">Share of each test set on which the voting tools did not all agree.</p>
+        <div class="acc"><div class="r"><span>Human</span><div class="track"><div class="fill" style="width:46.0%"></div></div><b>12%</b></div><div class="r"><span>Mouse</span><div class="track"><div class="fill" style="width:38.0%"></div></div><b>10%</b></div><div class="r"><span>Zebrafish</span><div class="track"><div class="fill" style="width:38.0%"></div></div><b>10%</b></div><div class="r"><span>Fruit fly</span><div class="track"><div class="fill" style="width:80.0%"></div></div><b>20%</b></div></div>
+        <h3 style="margin-top:26px">How to read this</h3>
+        <ul class="req">
+          <li>The consensus scored above the median tool in every species and matched the best tool in mouse and fly; in human and zebrafish one tool alone did slightly better.</li>
+          <li>No single tool was best everywhere, and which one is best on your data is not known in advance.</li>
+          <li>Disagreement is common even on this easy set, which is why every tool's label is kept in <code>results.tsv</code>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="notice warm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>
+      <p><strong>A consistency check, not a lncRNA benchmark.</strong> The ncRNAs in these sets are mostly short (median ≈ 110 nt; the human set is 95 snRNA and 5 rRNA; only 23 of 400 reach 200 nt), while the coding RNAs are mRNAs of 2–3 kb. They are CPPred's own held-out sets, and the other tools may have seen some of these transcripts in training. The numbers show that each container runs and is read correctly; they do not measure performance on long non-coding RNAs.</p>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Install</span>
+      <h2>A pip install and one setup command.</h2>
+      <p>The wrapper has no Python dependencies; the seven public images are pulled from <code>ghcr.io/labiomics</code> by digest.</p>
+    </div>
+    <div class="install-grid">
+      <div class="panel-card">
+        <h3>Requirements</h3>
+        <ul class="req">
+          <li>Linux (x86-64)</li>
+          <li>Python 3.11 or newer</li>
+          <li>Docker, or Apptainer/Singularity on HPC clusters</li>
+          <li>Disk space for the images: CPAT and RNAsamba are the largest</li>
+        </ul>
+        <p class="fineprint">The <code>metalncrna</code> releases 1.1.1–2.0.6 on PyPI belong to the previous, unrelated code base. Install 1.0.0 from GitHub.</p>
+      </div>
+      <div>
+        <div class="tabs" role="tablist" aria-label="Container engine">
+          <button class="tab" role="tab" id="t-docker" aria-selected="true" aria-controls="p-docker">Docker</button>
+          <button class="tab" role="tab" id="t-apptainer" aria-selected="false" aria-controls="p-apptainer" tabindex="-1">Apptainer</button>
+          <button class="tab" role="tab" id="t-build" aria-selected="false" aria-controls="p-build" tabindex="-1">Build locally</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-docker" aria-labelledby="t-docker">
+          <div class="code"><button class="copy" type="button">Copy</button><pre><span class="c"># the wrapper</span>
+pip install git+https://github.com/LaBiOmicS/metaLncRNA@v1.0.0
+<span class="c"># pull the seven images and verify them</span>
+metalncrna setup
+metalncrna check</pre></div>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-apptainer" aria-labelledby="t-apptainer" hidden>
+          <p>Each image is converted into a SIF file in <code>~/.cache/metalncrna</code> (or <code>$METALNCRNA_CACHE</code>). The larger images need several GB of temporary space.</p>
+          <div class="code"><button class="copy" type="button">Copy</button><pre>pip install git+https://github.com/LaBiOmicS/metaLncRNA@v1.0.0
+<span class="c"># if /tmp is a small tmpfs</span>
+export APPTAINER_TMPDIR=$HOME/tmp
+metalncrna setup --engine apptainer
+metalncrna check --engine apptainer</pre></div>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p-build" aria-labelledby="t-build" hidden>
+          <p>Build the seven images from the Dockerfiles instead of pulling them. Upstream archives and model files are checked by SHA-256 during the build.</p>
+          <div class="code"><button class="copy" type="button">Copy</button><pre>git clone https://github.com/LaBiOmicS/metaLncRNA
+cd metaLncRNA
+pip install .
+metalncrna setup --build-from containers</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="usage">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Usage</span>
+      <h2>One command per run.</h2>
+      <p>Pick the species to select the CNCI, CPPred and CPAT models: <code>human</code> (default), <code>mouse</code>, <code>fly</code>, <code>zebrafish</code>, <code>plant</code> or <code>other</code>.</p>
+    </div>
+    <div class="recipes">
+      <div class="recipe"><h3>Human transcripts, all seven tools</h3><code>metalncrna predict -i transcripts.fa -o results/</code></div>
+      <div class="recipe"><h3>Plant transcripts (CPAT abstains)</h3><code>metalncrna predict -i tx.fa -o res/ -s plant</code></div>
+      <div class="recipe"><h3>Stronger support for lncRNA selection</h3><code>metalncrna predict -i tx.fa -o res/ --min-agree 5</code></div>
+      <div class="recipe"><h3>A subset of tools</h3><code>metalncrna predict -i tx.fa -o res/ --tools cpc2,cpat,rnasamba</code></div>
+      <div class="recipe"><h3>Keep going if a tool fails</h3><code>metalncrna predict -i tx.fa -o res/ --allow-failures</code></div>
+      <div class="recipe"><h3>More parallelism</h3><code>metalncrna predict -i tx.fa -o res/ -j 7 -t 8</code></div>
+    </div>
+    <div class="panel-card outputs">
+      <h3>Outputs</h3>
+      <dl class="kv">
+        <dt>results.tsv</dt><dd>one row per transcript: original ID, length, each tool's label and native score (<code>NA</code> = abstained), vote counts, consensus and agreement</dd>
+        <dt>lncrna.fasta</dt><dd>noncoding transcripts of at least <code>--min-length</code> nt (default 200), optionally with <code>--min-agree</code> noncoding votes, with their original headers</dd>
+        <dt>provenance.json</dt><dd>input SHA-256, image references and digests, exact commands, run times, per-tool status and citations</dd>
+        <dt>logs/</dt><dd>the complete output of each tool</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="label">Scope</span>
+      <h2>What metaLncRNA does, and what it leaves to you.</h2>
+    </div>
+    <div class="scope">
+      <div class="panel-card yes">
+        <h3>It does</h3>
+        <ul>
+          <li>Run seven published predictors without changing their code, models or thresholds.</li>
+          <li>Combine their own labels by a transparent, unweighted majority vote.</li>
+          <li>Keep every tool's label and score, so you can apply a different rule yourself.</li>
+          <li>Record what ran, down to image digests and commands, for each result.</li>
+        </ul>
+      </div>
+      <div class="panel-card no">
+        <h3>It does not</h3>
+        <ul>
+          <li>Retrain or tune any predictor, or add a model of its own.</li>
+          <li>Tell lncRNAs from other ncRNA classes: "noncoding" means no coding potential, and the length filter is the only lncRNA criterion.</li>
+          <li>Prove that a transcript is not translated; small ORFs and micropeptides need experimental evidence.</li>
+          <li>Assemble or quantify transcripts; it starts from a FASTA file of transcripts.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cite">
+  <div class="wrap">
+    <div class="cite-grid">
+      <div>
+        <div class="sec-head">
+          <span class="label">Cite</span>
+          <h2>Cite metaLncRNA and the seven tools.</h2>
+          <p>The predictors do the classification; please credit their authors. Their references are also written to <code>provenance.json</code> for the tools that ran. A machine-readable record is in <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/CITATION.cff"><code>CITATION.cff</code></a>.</p>
+        </div>
+        <div class="code"><button class="copy" type="button">Copy</button><pre>@software{metalncrna,
+  author  = {Menegidio, Fabiano Bezerra and {LaBiOmicS}},
+  title   = {metaLncRNA: consensus identification of long
+             non-coding RNAs from seven unmodified
+             coding-potential predictors},
+  version = {1.0.0},
+  year    = {2026},
+  url     = {https://github.com/LaBiOmicS/metaLncRNA}
+}</pre></div>
+      </div>
+      <ol class="refs">
+        <li><b>CNCI</b>Sun L. <i>et al.</i> (2013) Nucleic Acids Res 41:e166. <a href="https://doi.org/10.1093/nar/gkt646">doi:10.1093/nar/gkt646</a></li>
+        <li><b>CPPred</b>Tong X., Liu S. (2019) Nucleic Acids Res 47:e43. <a href="https://doi.org/10.1093/nar/gkz087">doi:10.1093/nar/gkz087</a></li>
+        <li><b>LGC</b>Wang G. <i>et al.</i> (2019) Bioinformatics 35:2949–2956. <a href="https://doi.org/10.1093/bioinformatics/btz008">doi:10.1093/bioinformatics/btz008</a></li>
+        <li><b>CPAT</b>Wang L. <i>et al.</i> (2013) Nucleic Acids Res 41:e74. <a href="https://doi.org/10.1093/nar/gkt006">doi:10.1093/nar/gkt006</a></li>
+        <li><b>CPC2</b>Kang Y.-J. <i>et al.</i> (2017) Nucleic Acids Res 45:W12–W16. <a href="https://doi.org/10.1093/nar/gkx428">doi:10.1093/nar/gkx428</a></li>
+        <li><b>PLEK</b>Li A. <i>et al.</i> (2014) BMC Bioinformatics 15:311. <a href="https://doi.org/10.1186/1471-2105-15-311">doi:10.1186/1471-2105-15-311</a></li>
+        <li><b>RNAsamba</b>Camargo A.P. <i>et al.</i> (2020) NAR Genomics and Bioinformatics 2:lqz024. <a href="https://doi.org/10.1093/nargab/lqz024">doi:10.1093/nargab/lqz024</a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true" width="26" height="26"><rect width="32" height="32" rx="8" fill="#2a2150"/><rect x="5" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="8.9" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="12.8" y="7" width="2.6" height="9" rx="1.3" fill="#ff9a76"/><rect x="16.7" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="20.6" y="7" width="2.6" height="9" rx="1.3" fill="#b794f6"/><rect x="24.5" y="7" width="2.6" height="9" rx="1.3" fill="#ff9a76"/><rect x="5" y="20" width="22" height="5" rx="2.5" fill="#b794f6"/></svg>metaLncRNA</a>
+      <p>Consensus identification of long non-coding RNAs.</p>
+      <p>Developed at LaBiOmicS, Laboratory of Bioinformatics and Omics Sciences, Universidade de Mogi das Cruzes (UMC), Brazil. MIT licence.</p>
+    </div>
+    <div>
+      <h4>Project</h4>
+      <a href="https://github.com/LaBiOmicS/metaLncRNA">Source code</a>
+      <a href="https://github.com/LaBiOmicS/metaLncRNA/releases">Releases</a>
+      <a href="https://github.com/LaBiOmicS/metaLncRNA/issues">Issues and questions</a>
+      <a href="https://github.com/LaBiOmicS/metaLncRNA/blob/main/containers/README.md">Container images</a>
+    </div>
+    <div>
+      <h4>LaBiOmicS</h4>
+      <a href="https://labiomics.github.io/">Laboratory website</a>
+      <a href="https://labiomics.github.io/humaninfinder/">HumaninFinder</a>
+      <a href="https://labiomics.github.io/q2-periobiome/">q2-periobiome</a>
+      <a href="https://github.com/LaBiOmicS">All projects on GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("scrolled", window.scrollY > 8); };
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  var root = document.documentElement;
+  document.getElementById("theme").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("mlr-theme", next); } catch (e) {}
+  });
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { select(t); });
+    t.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { var n = tabs[(i + d + tabs.length) % tabs.length]; select(n); n.focus(); }
+    });
+  });
+
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var text = b.getAttribute("data-copy");
+      if (!text) { var pre = b.parentNode.querySelector("pre"); text = pre ? pre.innerText : ""; }
+      var done = function () { var o = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = o; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+  });
+})();
+</script>
+</body>
+</html>
