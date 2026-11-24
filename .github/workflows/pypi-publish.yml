@@ -1,10 +1,9 @@
 name: PyPI Publish
 
+# Manual only: PyPI still holds the old 1.1.1–2.0.6 releases of `metalncrna`, so the 1.0.0
+# rewrite is not published there yet (see README, Install).
 on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch: # Permite execução manual
+  workflow_dispatch:
 
 jobs:
   build-n-publish:
