@@ -37,10 +37,13 @@ conventional lncRNA length threshold), optionally requiring at least `--min-agre
 Requirements: Python ≥ 3.11 and Docker or Apptainer/Singularity.
 
 ```sh
-pip install .                                 # no Python dependencies
+pip install git+https://github.com/LaBiOmicS/metaLncRNA@v1.0.0   # no Python dependencies
 metalncrna setup                              # pull the 7 images (or --build-from containers)
 metalncrna check
 ```
+
+The `metalncrna` releases 1.1.1–2.0.6 on PyPI are the previous, unrelated code base; install
+this version from GitHub as above (or `pip install .` from a clone).
 
 `scripts/publish-images.sh --update-manifest` builds and pushes the seven images and pins them in
 the manifest (`$METALNCRNA_MANIFEST` or `--manifest` selects another one). With Apptainer, `setup` converts each image to a SIF file in the cache
@@ -96,3 +99,27 @@ code unmodified), an entry in `manifest.toml` and a `Tool` subclass in `src/meta
 ## Citing
 
 Please cite the seven tools (their references are listed in `provenance.json`) alongside metaLncRNA.
+
+## License
+
+The metaLncRNA wrapper (`src/`, `scripts/`, `tests/`, the Dockerfiles and `run-<tool>` launchers)
+is released under the [MIT License](LICENSE). The predictors keep their own licenses; metaLncRNA
+only runs them as separate programs, each in its own container, and does not modify them.
+
+| Tool | License |
+|---|---|
+| CNCI | GPL-2.0 (`LICENSE` in the authors' repository) |
+| CPAT | GPL-2.0-or-later |
+| CPC2 | GPL-3.0 |
+| PLEK | GPL-2.0 |
+| RNAsamba | GPL-3.0 |
+| CPPred | none declared by the authors |
+| LGC | none declared by the authors |
+| LIBSVM (bundled with CNCI and CPPred) | BSD-3-Clause |
+
+CPPred and LGC are distributed by their authors without a license statement. Their original
+archives (`containers/cppred/upstream/`, `containers/lgc/upstream/`) and the corresponding images
+are redistributed unmodified, solely so that results can be reproduced; all rights remain with
+the authors. If you are an author of one of these tools and want this changed, please open an
+issue or contact the maintainers and the files will be removed or replaced by a download at build
+time.

@@ -64,7 +64,10 @@ Amostra do conjunto de teste humano que vem dentro do pacote do CPPred (100 codi
 - Docker e Apptainer produziram saídas **idênticas byte a byte** (CPPred, CNCI) e rótulos idênticos (LGC).
 - Execuções simultâneas da mesma imagem não interferem entre si.
 
-## Pendências
+## Licenças
 
-- CPPred e LGC **não declaram licença**. Antes de publicar as imagens ou redistribuir os arquivos
-  upstream, convém pedir autorização aos autores (ou baixar da fonte durante o build, sem redistribuir).
+CNCI GPL-2.0, CPAT GPL-2.0-or-later, CPC2 GPL-3.0, PLEK GPL-2.0, RNAsamba GPL-3.0; LIBSVM (dentro do
+CNCI e do CPPred) BSD-3-Clause. CPPred e LGC **não declaram licença**: os arquivos originais e as
+imagens são redistribuídos sem modificação apenas para reprodutibilidade, com todos os direitos
+reservados aos autores; a pedido deles, passam a ser baixados da fonte no build. Ver a seção
+"License" do README principal.
